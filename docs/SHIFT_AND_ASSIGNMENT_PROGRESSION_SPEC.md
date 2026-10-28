@@ -362,3 +362,8 @@ The progression design is ready to implement only when a prototype can demonstra
 ## Summary of design intent
 
 DEAD AIR progression should feel like work accumulating in an archive, not a puzzle clock counting down. The player chooses what to examine and when to stop. Evidence persists, reports preserve uncertainty, supervisors close administrative tasks rather than cosmic questions, and the institution's records remain the primary source of dread.
+
+
+## 15. Current prototype mapping
+
+The first prototype persists current section, receiver state, notes/drafts, report drafts/submissions, assignment states, messages seen, and text-size setting. A-006 submission is blocked until the player has opened M-02, M-05, M-07, M-08, and M-09 in the archive; each item is always recoverable there. A submitted report is permanent; a later submission creates a separate addendum. A-006 closes, while the case status remains unresolved. This is a small vertical slice, not full implementation of all queue/time progression described above.
