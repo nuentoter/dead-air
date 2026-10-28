@@ -453,8 +453,25 @@ func _clear_archive_search() -> void:
 
 func _select_document(document_id: String) -> void:
 	selected_document_id = document_id
+	game.mark_document_read(document_id)
 	status_message = "Opened " + document_id + ". Original record text is unchanged."
 	_refresh()
+
+func _open_required_document(document_id: String) -> void:
+	archive_query = ""
+	selected_document_id = document_id
+	game.mark_document_read(document_id)
+	game.data["current_section"] = "Archive"
+	game.save_game()
+	status_message = "Opened required record " + document_id + " from the evidence checklist."
+	_refresh()
+
+func _has_required_documents() -> bool:
+	var required_ids := ["M-02", "M-05", "M-07", "M-08", "M-09"]
+	for document_id in required_ids:
+		if not game.data.get("documents_read", []).has(document_id):
+			return false
+	return true
 
 func _draw_notebook() -> void:
 	_heading("NOTEBOOK", "Private working notes. Notes are interpretations, not automatic facts.")
@@ -524,6 +541,14 @@ func _draw_assignments() -> void:
 	var action_row := _row()
 	_button("MARK IN PROGRESS", _mark_selected_assignment_in_progress, action_row)
 	if selected_assignment_id == "A-006":
+		_add_text("REQUIRED RECORD REVIEW", 14, ACCENT)
+		for required_id in ["M-02", "M-05", "M-07", "M-08", "M-09"]:
+			if game.data.get("documents_read", []).has(required_id):
+				_add_text("READ  /  " + required_id, 12, ACCENT)
+			else:
+				_button("OPEN REQUIRED RECORD  /  " + required_id, _open_required_document.bind(required_id))
+		if not _has_required_documents():
+			_add_text("Review each required record before submitting. All records remain available in the archive; no live reception is required.", 12, WARNING)
 		_add_text("REPORT DRAFT", 14, ACCENT)
 		report_editor = TextEdit.new()
 		report_editor.text = String(game.data.get("report_draft", ""))
@@ -546,7 +571,8 @@ func _draw_assignments() -> void:
 				recommendation_select.select(i)
 		body.add_child(recommendation_select)
 		var submit_label := "SUBMIT REPORT" if game.data.get("reports", []).is_empty() else "SUBMIT ADDENDUM"
-		_button(submit_label, _submit_report)
+		var submit_button := _button(submit_label, _submit_report)
+		submit_button.disabled = not _has_required_documents()
 		_add_text("Submissions are permanent. Later submissions append a separate report; the assignment remains closed and the case thread unresolved.", 12, WARNING)
 	if not game.data.get("reports", []).is_empty():
 		_add_text("SUBMITTED REPORTS", 14, ACCENT)
@@ -579,6 +605,10 @@ func _on_report_draft_changed() -> void:
 		game.save_game()
 
 func _submit_report() -> void:
+	if not _has_required_documents():
+		status_message = "Report not submitted: review the required archive records first."
+		_refresh()
+		return
 	var report_body := String(game.data.get("report_draft", "")).strip_edges()
 	if report_body.is_empty():
 		status_message = "Report not submitted: enter observations first."
