@@ -66,3 +66,8 @@ These must be run before claiming the build tested.
 
 ## 8. Risks
 Godot version differences may affect settings and themes; procedural UI needs device tuning; under-25-MB is unverified; GDScript is not validated until run in Godot; GitHub-only edits must be cloned/downloaded to a local Godot environment for proper build testing.
+
+
+## 9. Current implementation coverage
+
+The current code implements the data model, local persistence, six primary sections, text-size controls, deterministic authored events, tuning/mode match feedback, manual-record provenance, archive search, notebook notes, required-document review, report submission/addenda, and administrative review. It does not yet implement physical scan behavior, true waterfall rendering, audio, Android export, or a complete eight-hour simulated clock. The gap between design and code is tracked in IMPLEMENTATION_STATUS.md.
