@@ -16,6 +16,7 @@ var game
 var root_column: VBoxContainer
 var body: VBoxContainer
 var status_label: Label
+var text_scale_label: Label
 var selected_document_id := ""
 var selected_assignment_id := "A-001"
 var archive_query := ""
@@ -121,6 +122,17 @@ func _build_shell() -> void:
 	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root_column.add_child(status_label)
 
+	var settings_row := HBoxContainer.new()
+	settings_row.add_theme_constant_override("separation", 6)
+	root_column.add_child(settings_row)
+	text_scale_label = Label.new()
+	text_scale_label.text = "TEXT SIZE"
+	text_scale_label.add_theme_color_override("font_color", MUTED)
+	settings_row.add_child(text_scale_label)
+	_button("A−", _decrease_text_size, settings_row)
+	_button("A+", _increase_text_size, settings_row)
+	_add_text("AUDIO: TEXT-ONLY PROTOTYPE", 11, MUTED, settings_row)
+
 func _refresh() -> void:
 	if body == null:
 		return
@@ -145,6 +157,31 @@ func _refresh() -> void:
 			_draw_receiver()
 	status_label.text = status_message
 
+func _text_scale() -> float:
+	if game == null:
+		return 1.0
+	var settings: Dictionary = game.data.get("settings", {})
+	return clampf(float(settings.get("text_scale", 1.0)), 0.85, 1.35)
+
+func _decrease_text_size() -> void:
+	_change_text_scale(-0.1)
+
+func _increase_text_size() -> void:
+	_change_text_scale(0.1)
+
+func _change_text_scale(delta: float) -> void:
+	var settings: Dictionary = game.data.get("settings", {})
+	settings["text_scale"] = clampf(_text_scale() + delta, 0.85, 1.35)
+	game.data["settings"] = settings
+	game.save_game()
+	for child in root_column.get_children():
+		if child is HBoxContainer:
+			for control in child.get_children():
+				if control is Button:
+					control.add_theme_font_size_override("font_size", int(round(14.0 * _text_scale())))
+	status_message = "Text size set to %d%%." % int(round(_text_scale() * 100.0))
+	_refresh()
+
 func _on_nav_pressed(section: String) -> void:
 	game.data["current_section"] = section
 	game.save_game()
@@ -153,7 +190,7 @@ func _on_nav_pressed(section: String) -> void:
 func _heading(title: String, subtitle: String = "") -> void:
 	var title_label := Label.new()
 	title_label.text = title
-	title_label.add_theme_font_size_override("font_size", 21)
+	title_label.add_theme_font_size_override("font_size", int(round(21.0 * _text_scale())))
 	title_label.add_theme_color_override("font_color", ACCENT)
 	body.add_child(title_label)
 	if not subtitle.is_empty():
@@ -164,7 +201,7 @@ func _add_text(value: String, size: int = 15, color: Color = TEXT, target: Conta
 	label.text = value
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	label.add_theme_font_size_override("font_size", size)
+	label.add_theme_font_size_override("font_size", int(round(float(size) * _text_scale())))
 	label.add_theme_color_override("font_color", color)
 	if target == null:
 		body.add_child(label)
@@ -176,6 +213,7 @@ func _button(label_text: String, callback: Callable, target: Container = null) -
 	var button := Button.new()
 	button.text = label_text
 	button.custom_minimum_size = Vector2(112, 38)
+	button.add_theme_font_size_override("font_size", int(round(14.0 * _text_scale())))
 	button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	button.pressed.connect(callback)
 	if target == null:
