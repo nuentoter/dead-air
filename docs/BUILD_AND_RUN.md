@@ -3,7 +3,7 @@
 ## Current baseline
 The repository's first workstation prototype is configured for Godot 4.x. The headless CI workflow uses Godot 4.3 and currently checks script parsing, main-scene startup, core chronology, retained event IDs, report submission, unresolved case status, and save/load persistence.
 
-This is a desktop-testable prototype, not yet an Android release. There is no committed Android export preset because export templates, SDK paths, and signing configuration are machine-specific.
+This is a desktop-testable prototype, not yet an Android release. A minimal arm64 Android debug export preset and a GitHub Actions APK-export workflow are committed. SDK paths and release signing credentials remain machine-specific; the workflow uses debug signing and is still being validated.
 
 ## Run locally
 1. Install Godot 4.3 or a compatible later Godot 4 release.
@@ -29,8 +29,8 @@ The UI-flow and self-tests write test reports into Godot's user:// save for that
 1. Install the Android SDK and JDK supported by the chosen Godot version.
 2. Install matching Godot export templates.
 3. Configure Android SDK/JDK paths in Godot Editor Settings.
-4. Create a local Android export preset and set the package identifier/signing options.
-5. Export a debug APK and test it in landscape on a device/emulator.
+4. The repository includes a debug Android preset. For a local export, verify SDK paths in Editor Settings and adjust the preset if your device/API requirements differ.
+5. Export a debug APK and test it in landscape on a device/emulator. The Android Actions workflow will publish a temporary downloadable artifact when it succeeds.
 6. Test suspend/resume, process death, offline launch, readable text, and touch targets.
 7. Measure the actual package size. Do not claim the under-25-MB goal is met until measured.
 
