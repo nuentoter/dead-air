@@ -106,6 +106,6 @@ Choices affect a small number of hidden variables (institutional trust, evidence
 
 No 3D, walkable world, character animation, real RF DSP, actual speech recognition, online AI, real SDR input, online services, microphone access, export-to-file, or complex evidence-board UI.
 
-## 12. Implementation Gate
+## 12. Implementation Status and Gate
 
-Do not begin coding until the concept/design is sufficiently settled and the user explicitly asks to begin. Godot 4.x and the under-25-MB target require a later minimal prototype/export test before either can be treated as validated.
+The project owner explicitly requested continued development through implementation on 28 October 2026. A small Godot 4.x workstation prototype is now present in the repository, with a headless CI workflow and integrity test. The prototype is not yet an Android release. Godot parser/startup checks, Android export, device layout, lifecycle behavior, and the under-25-MB target must be verified separately; see IMPLEMENTATION_STATUS.md.
