@@ -153,9 +153,9 @@ Each artifact should track, where available: stable ID/title; source/parent and 
 
 ## 9. Open decisions
 
-1. Canonical numeric sequence.
+1. Working numeric sequence `731904` (meaning unknown; verify it is propagated in every linked artifact).
 2. Global date standard and exact incident-document dates.
-3. Frequency plan, Signal IDs, CW timing, and reception timestamps.
+3. Frequency plan and Signal IDs are assigned in the canonical register; exact CW keying cadence, calendar dates, and reception timestamps remain open.
 4. Whether NRMS, Remote Monitoring Site 04, and Mara Venn are final names.
 5. Whether the facility/research project remain unnamed.
 6. Whether M-11–M-14 all ship.
