@@ -2,7 +2,7 @@
 
 **Status:** Working design specification  
 **Scope:** Shift structure, routine duties, assignment lifecycle, simulated time, archive requests, supervisor review, evidence discovery, and player-facing progression.  
-**Implementation status:** Design only. This document does not authorize or begin coding.
+**Implementation status:** Behavioral contract for the active prototype. Implemented coverage is summarized in IMPLEMENTATION_STATUS.md; unimplemented progression rules remain future work.
 
 ## 1. Design goals
 
