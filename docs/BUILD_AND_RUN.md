@@ -18,11 +18,12 @@ Run these from the repository root:
 ```sh
 godot --headless --path . --editor --quit
 godot --headless --path . -s res://tests/parse_project.gd
+godot --headless --path . -s res://tests/ui_flow_test.gd
 godot --headless --path . -s res://tests/self_test.gd
 godot --headless --path . --quit-after 3
 ```
 
-The self-test writes a test report into Godot's user:// save for that environment. Prefer a clean test profile when checking a personal save. GitHub Actions runs in a disposable runner.
+The UI-flow and self-tests write test reports into Godot's user:// save for that environment. Prefer a clean test profile when checking a personal save. GitHub Actions runs in a disposable runner.
 
 ## Android export (not yet verified)
 1. Install the Android SDK and JDK supported by the chosen Godot version.
