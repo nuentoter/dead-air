@@ -60,6 +60,13 @@ jobs:
           export/android/android_sdk_path = "/usr/local/lib/android/sdk"
           export/android/java_sdk_path = "$JAVA_HOME"
           EOF
+      - name: Generate temporary CI signing key
+        shell: bash
+        run: |
+          keytool -genkeypair -v -keystore "$RUNNER_TEMP/dead-air-ci.keystore" -alias dead-air-ci -keyalg RSA -keysize 2048 -validity 10000 -storepass dead-air-ci-password -keypass dead-air-ci-password -dname "CN=DEAD AIR CI, OU=Build, O=Dead Air, L=Unknown, ST=Unknown, C=US"
+          echo "GODOT_ANDROID_KEYSTORE_RELEASE_PATH=$RUNNER_TEMP/dead-air-ci.keystore" >> "$GITHUB_ENV"
+          echo "GODOT_ANDROID_KEYSTORE_RELEASE_USER=dead-air-ci" >> "$GITHUB_ENV"
+          echo "GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD=dead-air-ci-password" >> "$GITHUB_ENV"
       - name: Import project
         run: godot --headless --path . --editor --quit
       - name: Export Android debug APK
@@ -67,11 +74,18 @@ jobs:
           mkdir -p build
           godot --headless --verbose --path . --export-debug "Android" build/dead-air-debug.apk
           test -s build/dead-air-debug.apk
-          stat -c "APK size: %s bytes" build/dead-air-debug.apk
-      - name: Upload debug APK
+          stat -c "Debug APK size: %s bytes" build/dead-air-debug.apk
+      - name: Export CI-signed release APK
+        run: |
+          godot --headless --verbose --path . --export-release "Android" build/dead-air-ci-release.apk
+          test -s build/dead-air-ci-release.apk
+          stat -c "CI-signed release APK size: %s bytes" build/dead-air-ci-release.apk
+      - name: Upload Android APKs
         uses: actions/upload-artifact@v4
         with:
-          name: dead-air-android-debug
-          path: build/dead-air-debug.apk
+          name: dead-air-android-apks
+          path: |
+            build/dead-air-debug.apk
+            build/dead-air-ci-release.apk
           if-no-files-found: error
           retention-days: 14
