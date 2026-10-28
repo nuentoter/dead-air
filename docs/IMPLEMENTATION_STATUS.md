@@ -11,7 +11,9 @@
 - Local JSON save/load with schema version, temporary write, backup/restore during save replacement, and recovery-copy attempt for unreadable saves.
 - Persistent text-size controls.
 - Receiver power, frequency and mode state; authored event-match feedback; deterministic SEEK NEXT; manual-record provenance; a data-driven current-shift frequency/time plot.
-- Searchable archive, read-state tracking for required documents, notebook notes/source links, assignment status, report drafts, player-selectable source citations persisted with the draft, immutable report submissions/addenda, and unresolved case status.
+- Searchable archive, read-state tracking for required documents, notebook notes/source links, and player-selectable report citations persisted with the draft.
+- Evidence-driven assignment progress: A-001/A-002/A-004/A-005 complete from their defined receiver/document actions; A-003 requires inspection of both NR-041 receptions and a separate comparison confirmation.
+- Immutable report submissions/addenda and unresolved case status.
 - A-006 submission is blocked until M-02, M-05, M-07, M-08, and M-09 have been opened in the archive. All five are recoverable without live reception.
 - Supervisor review appears after submission; M-10B remains hidden from archive until then.
 - GitHub Actions checks project import, strict script parsing, main-scene startup, UI report flow, chronology consistency, report immutability/addenda, accessibility setting persistence, save/load behavior, Android export, APK size, manifest permissions, and orientation metadata.

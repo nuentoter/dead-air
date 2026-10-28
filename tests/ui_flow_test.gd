@@ -19,6 +19,14 @@ func _run() -> void:
 	var initial_report_count: int = game.data.get("reports", []).size()
 	instance.call("_submit_report")
 	assert(game.data.get("reports", []).size() == initial_report_count, "A-006 should block submission until required records are reviewed.")
+	instance.call("_on_nav_pressed", "Receiver")
+	instance.call("_select_event", "SIG-0004")
+	instance.call("_select_event", "SIG-0005")
+	instance.call("_on_nav_pressed", "Assignments")
+	instance.call("_select_assignment", "A-003")
+	instance.call("_complete_comparison_assignment")
+	if not _expect(String(game.data["assignments"]["A-003"]) == "COMPLETED", "A-003 comparison did not complete after both events were inspected."):
+		return
 	instance.call("_on_nav_pressed", "Archive")
 	for document_id in ["M-02", "M-05", "M-07", "M-08", "M-09"]:
 		instance.call("_select_document", document_id)

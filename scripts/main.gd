@@ -600,7 +600,14 @@ func _draw_assignments() -> void:
 	_add_text(String(assignment.get("title", "")), 19, TEXT)
 	_add_text(String(assignment.get("description", "")), 15, TEXT)
 	var action_row := _row()
-	_button("MARK IN PROGRESS", _mark_selected_assignment_in_progress, action_row)
+	var progress_button := _button("MARK IN PROGRESS", _mark_selected_assignment_in_progress, action_row)
+	progress_button.disabled = current_status == "COMPLETED" or current_status == "CLOSED"
+	if selected_assignment_id == "A-003":
+		var inspected_events: Array = game.data.get("inspected_event_ids", [])
+		if inspected_events.has("SIG-0004") and inspected_events.has("SIG-0005"):
+			_button("MARK COMPARISON REVIEWED", _complete_comparison_assignment, action_row)
+		else:
+			_add_text("Inspect both retained NR-041 receptions before marking this comparison reviewed.", 12, MUTED)
 	if selected_assignment_id == "A-006":
 		_add_text("REQUIRED RECORD REVIEW", 14, ACCENT)
 		for required_id in ["M-02", "M-05", "M-07", "M-08", "M-09"]:
@@ -665,9 +672,25 @@ func _find_assignment(assignment_id: String) -> Dictionary:
 	return {}
 
 func _mark_selected_assignment_in_progress() -> void:
+	var current_status := String(game.data["assignments"].get(selected_assignment_id, "OPEN"))
+	if current_status == "COMPLETED" or current_status == "CLOSED":
+		status_message = selected_assignment_id + " is already closed to further progress changes."
+		_refresh()
+		return
 	game.data["assignments"][selected_assignment_id] = "IN PROGRESS"
 	game.save_game()
 	status_message = selected_assignment_id + " marked in progress."
+	_refresh()
+
+func _complete_comparison_assignment() -> void:
+	var inspected_events: Array = game.data.get("inspected_event_ids", [])
+	if not inspected_events.has("SIG-0004") or not inspected_events.has("SIG-0005"):
+		status_message = "Comparison remains open until both retained receptions have been inspected."
+		_refresh()
+		return
+	game.data["assignments"]["A-003"] = "COMPLETED"
+	game.save_game()
+	status_message = "A-003 comparison marked reviewed. Matching identifiers do not establish a common source."
 	_refresh()
 
 func _select_assignment(assignment_id: String) -> void:

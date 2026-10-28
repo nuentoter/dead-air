@@ -19,6 +19,8 @@ Mark only tests actually performed; “not run” is not a pass.
 
 ## Core interaction
 - [ ] Navigate all six sections.
+- [ ] Verify A-001/A-002/A-004/A-005 completion follows their evidence actions.
+- [ ] Verify A-003 requires both receptions and explicit comparison confirmation.
 - [ ] Power receiver on/off.
 - [ ] Change frequency and mode.
 - [ ] Waterfall maps current-shift event frequencies horizontally and time vertically; it excludes prior/next-shift records with unknown dates.

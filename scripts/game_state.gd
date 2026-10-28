@@ -30,6 +30,7 @@ func reset_defaults() -> void:
 		"mode": "AM",
 		"selected_event_id": "SIG-0001",
 		"retained_event_ids": ["SIG-0001", "SIG-0002", "SIG-0003", "SIG-0004", "SIG-0005"],
+		"inspected_event_ids": [],
 		"recorded_event_ids": [],
 		"documents_read": [],
 		"notes": [],
@@ -70,7 +71,7 @@ func _ensure_defaults() -> void:
 	var defaults := {
 		"current_section": "Receiver", "receiver_power": false, "frequency_mhz": 10.0,
 		"mode": "AM", "selected_event_id": "SIG-0001", "retained_event_ids": [],
-		"recorded_event_ids": [], "documents_read": [], "notes": [], "reports": [],
+		"inspected_event_ids": [], "recorded_event_ids": [], "documents_read": [], "notes": [], "reports": [],
 		"assignments": {}, "messages_seen": [], "settings": {"text_scale": 1.0, "audio_enabled": false},
 		"event_log": [], "next_note_id": 1, "next_report_id": 1,
 		"note_draft": "", "report_draft": "The retained records establish a repeated identifier and conflicting chronology. The available material does not establish a common transmitter or explain the source-clock difference.",
@@ -80,7 +81,10 @@ func _ensure_defaults() -> void:
 	for key in defaults:
 		if not data.has(key):
 			data[key] = defaults[key]
+	if typeof(data.get("inspected_event_ids", [])) != TYPE_ARRAY:
+		data["inspected_event_ids"] = []
 	data["schema_version"] = SCHEMA_VERSION
+	refresh_assignment_progress()
 	if data["retained_event_ids"].is_empty():
 		data["retained_event_ids"] = ["SIG-0001", "SIG-0002", "SIG-0003", "SIG-0004", "SIG-0005"]
 	for key in ["A-001", "A-002", "A-003", "A-004", "A-005", "A-006"]:
@@ -120,18 +124,37 @@ func set_receiver(powered: bool, frequency_mhz: float, mode: String) -> void:
 	data["receiver_power"] = powered
 	data["frequency_mhz"] = clampf(frequency_mhz, 0.1, 30000.0)
 	data["mode"] = mode
+	refresh_assignment_progress()
 	save_game()
 
 func select_event(event_id: String) -> void:
 	data["selected_event_id"] = event_id
 	if not data["retained_event_ids"].has(event_id):
 		data["retained_event_ids"].append(event_id)
+	if not data["inspected_event_ids"].has(event_id):
+		data["inspected_event_ids"].append(event_id)
+	refresh_assignment_progress()
 	save_game()
 
 func mark_document_read(document_id: String) -> void:
 	if not data["documents_read"].has(document_id):
 		data["documents_read"].append(document_id)
+	refresh_assignment_progress()
 	save_game()
+
+func refresh_assignment_progress() -> void:
+	var inspected: Array = data.get("inspected_event_ids", [])
+	var documents: Array = data.get("documents_read", [])
+	var assignments: Dictionary = data.get("assignments", {})
+	if bool(data.get("receiver_power", false)) and inspected.has("SIG-0001"):
+		assignments["A-001"] = "COMPLETED"
+	if (inspected.has("SIG-0004") or inspected.has("SIG-0005")) and documents.has("M-02"):
+		assignments["A-002"] = "COMPLETED"
+	if documents.has("M-07") and documents.has("M-08"):
+		assignments["A-004"] = "COMPLETED"
+	if documents.has("M-08") and documents.has("M-09"):
+		assignments["A-005"] = "COMPLETED"
+	data["assignments"] = assignments
 
 func record_event(event_id: String) -> void:
 	if not data["recorded_event_ids"].has(event_id):

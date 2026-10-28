@@ -34,6 +34,17 @@ func _run() -> void:
 	var state := GameState.new()
 	for event_id in ids:
 		assert(state.data["retained_event_ids"].has(event_id), "Essential authored event not retained: " + event_id)
+	state.set_receiver(true, 10.0, "AM")
+	state.select_event("SIG-0001")
+	assert(String(state.data["assignments"]["A-001"]) == "COMPLETED", "A-001 should complete after receiver check and reference event inspection.")
+	state.select_event("SIG-0004")
+	state.mark_document_read("M-02")
+	assert(String(state.data["assignments"]["A-002"]) == "COMPLETED", "A-002 should complete after NR-041 inspection and registry lookup.")
+	state.mark_document_read("M-07")
+	state.mark_document_read("M-08")
+	assert(String(state.data["assignments"]["A-004"]) == "COMPLETED", "A-004 should complete after reviewing M-07 and M-08.")
+	state.mark_document_read("M-09")
+	assert(String(state.data["assignments"]["A-005"]) == "COMPLETED", "A-005 should complete after reviewing M-08 and M-09.")
 	var report_count_before: int = state.data.get("reports", []).size()
 	state.data["assignments"]["A-006"] = "IN PROGRESS"
 	state.data["report_source_ids"] = ["M-07", "M-08", "M-09"]
