@@ -37,7 +37,7 @@ This file separates working canon from unresolved design choices. Do not silentl
 5. Decide whether the government facility/research project should remain unnamed.
 6. Define final recording and capture behavior: rolling buffer, manual recording, and whether/how auto-archive behaves.
 7. Finalize ending branches and their conditions without explaining the central phenomenon.
-8. Prototype Godot export size and receiver UI before committing to the under-25-MB target.
+8. Validate Godot Android export size and receiver UI on a target device before treating the under-25-MB target as achieved.
 
 ## Canon guardrails
 
