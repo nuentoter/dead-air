@@ -41,7 +41,7 @@ This is a narrative-first vertical slice with stable, deterministic simulationâ€
 - Opening assignments A-001/A-002 and main path A-003 through A-006.
 - Report draft, permanent submitted version, supervisor review.
 - Local save/load and schema version.
-- Text-size and mute/audio settings; essential evidence recoverable regardless of live receiver use.
+- Persistent text-size setting; audio playback and mute controls are deferred together until audio is actually included. Essential evidence is readable regardless of audio.
 
 ### Explicitly defer
 Real DSP, live RF, SDR, microphone, speech recognition, online services, full procedural voice ecosystem, long ambient transmissions, complete Silent Site branch, branch-heavy endings, complex evidence board, 3D station, export-to-file, cloud saves, monetization, ads, analytics. Package size remains unverified until an Android export is measured.
