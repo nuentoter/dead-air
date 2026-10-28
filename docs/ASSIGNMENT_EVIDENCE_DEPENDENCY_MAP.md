@@ -54,7 +54,7 @@ This is conceptual, not a mandatory click sequence. If M-07 or M-09 is discovere
 | Initial NR-041 discrepancy report | M-01 and M-02 available; submit factual report or save draft. | Player report, linked event/transcript, then M-03. Wording cannot gate evidence. |
 | A-003 — Compare recurring identifier (Core, proposed) | Initial task closed or recurrence available; compare receptions. | M-04 and sequence/transcript details. Source remains unknown. |
 | A-004 — Locate incident-file reference (Core, proposed) | Sequence available or archive search performed; search sequence/index/enclosure. | M-06A, M-07, M-08 available. No authenticity judgment required. |
-| A-005 — Find communications record (Core, proposed) | M-08 found, or broad search locates 04-C; search by sequence, route, or time. | M-09 opened; incomplete origin fields reviewed. |
+| A-005 — Find communications record (Core, proposed) | M-08 found, or broad search locates 04-C; search by sequence, route, or time. | M-08 and M-09 opened, then timestamps/routing explicitly compared; completion is persisted separately from reading the documents. |
 | A-006 — Request chronology review (Core, proposed) | M-04/M-05 and M-07/M-08 available; M-09 encouraged but not a hard gate. | M-10A report and M-10B response. Closes without resolving chronology. |
 | A-007 — Review personnel disposition index (Optional, proposed) | Deep archive/restricted index search. | M-11 date overlap or duplicate-looking disposition; no definitive identity explanation. |
 | A-008 — Search AI evaluation attachments (Optional, proposed) | Deep archive or cross-reference. | M-12 extract/missing page; no conclusion about AI responsibility. |

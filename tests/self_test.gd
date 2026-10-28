@@ -32,6 +32,9 @@ func _run() -> void:
 		assert(String(m09.get("body", "")).contains(stamp), "M-09 missing " + stamp)
 
 	var state := GameState.new()
+	state.data["communications_comparison_reviewed"] = false
+	state.data["assignments"]["A-005"] = "OPEN"
+	state.save_game()
 	for event_id in ids:
 		assert(state.data["retained_event_ids"].has(event_id), "Essential authored event not retained: " + event_id)
 	state.set_receiver(true, 10.0, "AM")
