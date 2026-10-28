@@ -131,8 +131,8 @@ This record was located through a separate communications-log search, not throug
 **Station:** Remote Monitoring Site 04  
 **Signal ID:** SIG-0005  
 **Mode:** CW  
-**Frequency:** [PENDING FREQUENCY PLAN]  
-**Reception time:** [DATE TBD], [TIME TBD]  
+**Frequency:** `7.418 MHz`  
+**Reception time:** Next routine shift, `08:42` Site 04 simulated local time; `[DATE TBD]`  
 **Decoder output:** `731904`  
 **Identifier heard:** NR-041  
 **Decode confidence:** High  
