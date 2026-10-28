@@ -2,7 +2,7 @@
 
 An offline, landscape-only Android radio-conspiracy horror game about ordinary monitoring work, contradictory records, and the limits of what an institution can account for.
 
-**Development status:** first workstation prototype implemented. Godot 4.3 headless parsing, UI-flow, and integrity checks pass, including evidence-driven assignment progression and malformed-save recovery. The receiver plot now labels its time and frequency axes. Submitted reports are visible in read-only history with their citation IDs. An arm64 debug APK previously exported at 24,330,645 bytes and a CI-signed release-mode APK at 22,966,724 bytes; both were under 25 MB. APK manifest audit confirmed no network or microphone permission and an explicit orientation entry; physical-device behavior remains unverified.
+**Development status:** first workstation prototype implemented. Godot 4.3 headless parsing, UI-flow, and integrity checks pass, including evidence-driven assignment progression and malformed-save recovery. The receiver plot now labels its time and frequency axes. Submitted reports are visible in read-only history with navigable citation IDs. Notebook entries display linked-source titles and can open the source without changing the note. An arm64 debug APK previously exported at 24,330,645 bytes and a CI-signed release-mode APK at 22,966,724 bytes; both were under 25 MB. APK manifest audit confirmed no network or microphone permission and an explicit orientation entry; physical-device behavior remains unverified.
 
 ## Design documents
 

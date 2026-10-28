@@ -72,7 +72,21 @@ func _run() -> void:
 		return
 	if not _expect(game.data.get("documents_read", []).has("M-07"), "Opening a report citation did not mark the document as reviewed."):
 		return
-	print("DEAD AIR UI flow test passed: navigate, compose report, submit, close assignment, preserve unresolved case, show immutable report history, open cited sources.")
+	game.add_note("Notebook interpretation: repeated sequence may indicate a shared source; this is not confirmed.", "M-07")
+	instance.call("_on_nav_pressed", "Notebook")
+	await process_frame
+	if not _expect(_tree_contains_text(instance, "Evidence reference: " + String(instance.call("_source_display_title", "M-07"))), "Notebook did not show a readable title for the linked source."):
+		return
+	if not _expect(_tree_contains_text(instance, "OPEN SOURCE M-07"), "Notebook did not offer a direct action to open its linked source."):
+		return
+	instance.call("_open_note_source", "M-07")
+	if not _expect(String(game.data["current_section"]) == "Archive", "Opening a notebook source did not navigate to Archive."):
+		return
+	if not _expect(String(instance.get("selected_document_id")) == "M-07", "Opening a notebook source did not select its linked document."):
+		return
+	if not _expect(String(game.data["notes"][-1].get("text", "")).contains("not confirmed"), "Opening a source altered the notebook interpretation."):
+		return
+	print("DEAD AIR UI flow test passed: report submission/history/citations and notebook source labels/navigation with interpretation preserved.")
 	quit(0)
 
 func _tree_contains_text(node: Node, expected: String) -> bool:

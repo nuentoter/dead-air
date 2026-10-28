@@ -562,9 +562,15 @@ func _draw_notebook() -> void:
 	if game.data.get("notes", []).is_empty():
 		_add_text("No saved notes yet.", 13, MUTED)
 	for note in game.data.get("notes", []):
-		_add_text(String(note.get("id", "")) + (("  /  " + String(note.get("source_id", ""))) if not String(note.get("source_id", "")).is_empty() else ""), 12, MUTED)
+		var note_id := String(note.get("id", ""))
+		var source_id := String(note.get("source_id", ""))
+		_add_text(note_id + (("  /  SOURCE: " + source_id) if not source_id.is_empty() else "  /  NO SOURCE LINK"), 12, MUTED)
 		_add_text(String(note.get("text", "")), 15, TEXT)
-		_button("DELETE " + String(note.get("id", "")), _delete_note.bind(String(note.get("id", ""))))
+		if not source_id.is_empty():
+			var source_title := _source_display_title(source_id)
+			_add_text("Evidence reference: " + source_title, 12, MUTED)
+			_button("OPEN SOURCE " + source_id, _open_note_source.bind(source_id))
+		_button("DELETE " + note_id, _delete_note.bind(note_id))
 
 func _save_note_from_ui() -> void:
 	var source_id := ""
@@ -591,6 +597,33 @@ func _delete_note(note_id: String) -> void:
 	game.data["notes"] = retained
 	game.save_game()
 	status_message = "Deleted " + note_id + ". Other notes are unchanged."
+	_refresh()
+
+func _source_display_title(source_id: String) -> String:
+	var event := _find_event(source_id)
+	if not event.is_empty():
+		return String(event.get("time_label", "")) + " / " + String(event.get("frequency_mhz", "")) + " MHz / " + String(event.get("mode", "")) + " reception"
+	var document := _find_document(source_id)
+	if not document.is_empty():
+		return String(document.get("title", source_id))
+	return "Source unavailable in current catalog"
+
+func _open_note_source(source_id: String) -> void:
+	if source_id.begins_with("SIG-"):
+		game.select_event(source_id)
+		game.data["current_section"] = "Receiver"
+		status_message = "Opened notebook source " + source_id + ". The saved note remains an interpretation, not a verified fact."
+	elif not _find_document(source_id).is_empty():
+		selected_document_id = source_id
+		archive_query = ""
+		game.mark_document_read(source_id)
+		game.data["current_section"] = "Archive"
+		status_message = "Opened notebook source " + source_id + ". The saved note remains unchanged."
+	else:
+		status_message = "Notebook source " + source_id + " is not available in the local catalog."
+		_refresh()
+		return
+	game.save_game()
 	_refresh()
 
 func _draw_assignments() -> void:
