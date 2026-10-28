@@ -31,12 +31,12 @@ class WaterfallPlot extends Control:
 			var x := plot_rect.position.x + plot_rect.size.x * float(step) / 4.0
 			draw_line(Vector2(x, plot_rect.position.y), Vector2(x, plot_rect.end.y), Color(0.12, 0.2, 0.19, 1), 1.0)
 			if step == 0 or step == 2 or step == 4:
-				var frequency_label := ["0", "7.5", "15"][int(step / 2)] + " MHz"
+				var frequency_label: String = ["0", "7.5", "15"][int(step / 2)] + " MHz"
 				draw_string(font, Vector2(x - 18.0, size.y - 3.0), frequency_label, HORIZONTAL_ALIGNMENT_LEFT, 42.0, label_size, Color(0.57, 0.68, 0.67, 1))
 		for minute in [0, 15, 30]:
 			var y := plot_rect.position.y + plot_rect.size.y * float(minute) / 30.0
 			draw_line(Vector2(plot_rect.position.x, y), Vector2(plot_rect.end.x, y), Color(0.16, 0.25, 0.23, 1), 1.0)
-			var time_label := "08:%02d" % minute
+			var time_label: String = "08:%02d" % minute
 			var label_y := clampf(y + 4.0, 12.0, size.y - bottom_gutter)
 			draw_string(font, Vector2(2.0, label_y), time_label, HORIZONTAL_ALIGNMENT_LEFT, left_gutter - 5.0, label_size, Color(0.57, 0.68, 0.67, 1))
 		for event in events:
