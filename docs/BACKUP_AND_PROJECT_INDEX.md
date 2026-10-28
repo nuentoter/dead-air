@@ -41,9 +41,9 @@ Repository: https://github.com/nuentoter/dead-air
 6. This repository currently backs up the working Markdown documents listed above. Original binary attachments (such as DOCX files) are not claimed as repository copies unless separately committed in a supported format.
 
 ### Prototype source files
-- [Godot project configuration](../project.godot) and [main scene](../scenes/main.tscn).
+- [Godot project configuration](../project.godot), [main scene](../scenes/main.tscn), and [Android export preset](../export_presets.cfg).
 - [Main UI](../scripts/main.gd), [game state and persistence](../scripts/game_state.gd), and [authored content catalog](../scripts/content_catalog.gd).
-- [Headless self-test](../tests/self_test.gd) and [GitHub Actions workflow](../.github/workflows/godot-check.yml).
+- [Headless self-test](../tests/self_test.gd), [Godot CI workflow](../.github/workflows/godot-check.yml), and [Android export workflow](../.github/workflows/android-export.yml).
 
 ## Current implementation status
 
