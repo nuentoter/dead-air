@@ -70,7 +70,7 @@ Avoid false precision. Technical measurements are simplified simulated values. L
 
 1. Show RX STARTING.
 2. Run a short, consistent startup sequence.
-3. Show RX READY and tune to the current saved frequency or the configured opening-shift time standard.
+3. Show RX READY and tune to the current saved frequency or the configured opening-shift time standard at `10.000 MHz AM`.
 4. Start adding simulated waterfall rows from the current active-play clock.
 5. Resume eligible active-play queue progression.
 
@@ -225,7 +225,7 @@ A recurring event is not necessarily the same transmission or transmitter. Match
 - Keep original classification, timestamp, and source record accessible.
 - Do not reassign a Signal ID to a different event.
 - Signal ID sequence is administrative, not a clue unless a story document explicitly establishes its meaning.
-- Example format: SIG-0042. This is illustrative; final allocation rules are TBD.
+- Working ID format: `SIG-####`, allocated in story-event order and never reassigned. Initial allocation: `SIG-0001` time standard; `SIG-0002` routine traffic A; `SIG-0003` routine traffic B; `SIG-0004` first NR-041 reception; `SIG-0005` NR-041 recurrence. `SIG-0042` is not assigned in the opening sequence.
 
 ## 12. Event list and archive recovery
 
