@@ -2,7 +2,7 @@
 
 **Status:** Working design specification.  
 **Scope:** Landscape Android layout, primary navigation, receiver, recordings, archive, notebook, assignments, reports, and messages.  
-**Implementation:** Design only. This document does not authorize or begin coding.
+**Implementation:** Contract for the active Godot prototype. The first pass is script-built and subject to verification against the acceptance criteria.
 
 ## 1. Purpose
 
