@@ -35,6 +35,7 @@ Mark only tests actually performed; “not run” is not a pass.
 - [ ] Submitted report remains immutable.
 - [ ] Report source links can be selected/deselected and are preserved in the submitted report.
 - [ ] Supervisor response appears after submission.
+- [ ] Submitted report history displays the exact body, recommendation, citation IDs, version, and unresolved status without editing the saved submission.
 - [ ] Assignment closes; case thread remains unresolved.
 
 ## Persistence and recovery

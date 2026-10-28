@@ -58,8 +58,20 @@ func _run() -> void:
 		return
 	if not _expect(not reports[-1].get("source_ids", []).has("SIG-0004"), "Deselected report source SIG-0004 was still attached."):
 		return
-	print("DEAD AIR UI flow test passed: navigate, compose report, submit, close assignment, preserve unresolved case.")
+	if not _expect(_tree_contains_text(instance, String(reports[-1].get("id", ""))), "Submitted report history is not visible in Messages."):
+		return
+	if not _expect(_tree_contains_text(instance, "Cited source IDs: M-07, M-08, M-09"), "Read-only report history does not display its citations."):
+		return
+	print("DEAD AIR UI flow test passed: navigate, compose report, submit, close assignment, preserve unresolved case, show immutable report history.")
 	quit(0)
+
+func _tree_contains_text(node: Node, expected: String) -> bool:
+	if node is Label and String((node as Label).text).contains(expected):
+		return true
+	for child in node.get_children():
+		if _tree_contains_text(child, expected):
+			return true
+	return false
 
 func _expect(condition: bool, message: String) -> bool:
 	if not condition:

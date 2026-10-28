@@ -758,11 +758,18 @@ func _draw_messages() -> void:
 		_add_text(String(message.get("body", "")), 15, TEXT)
 		_button("MARK READ", _mark_message_read.bind(String(message.get("id", ""))))
 	if not game.data.get("reports", []).is_empty():
+		_add_text("SUBMITTED REPORT HISTORY  /  READ-ONLY", 16, ACCENT)
+		for report in game.data.get("reports", []):
+			_add_text(String(report.get("id", "REPORT-UNKNOWN")) + "  /  " + String(report.get("kind", "INITIAL")) + "  /  " + String(report.get("status", "SUBMITTED")), 14, ACCENT)
+			_add_text(String(report.get("body", "")), 15, TEXT)
+			_add_text("Recommended action: " + String(report.get("recommendation", "")), 13, TEXT)
+			_add_text("Cited source IDs: " + ", ".join(PackedStringArray(report.get("source_ids", []))), 12, MUTED)
+			_add_text("Case status: " + String(report.get("case_status", "UNRESOLVED")) + "  •  Version " + str(report.get("version", 1)), 12, WARNING)
 		_add_text("MARA VENN  /  REGIONAL OPERATIONS REVIEW", 16, ACCENT)
 		var response := _find_document("M-10B")
 		_add_text(String(response.get("body", "")), 15, TEXT)
 		_add_text("Administrative status: accepted for filing. Case status: unresolved.", 12, WARNING)
-		_button("OPEN A-006 REPORT", _open_report_assignment)
+		_button("OPEN REPORT / ADDENDUM FORM", _open_report_assignment)
 		_add_text("SHIFT CLOSED — RECORDS RETAINED — SOURCE UNRESOLVED", 17, ACCENT)
 
 func _open_report_assignment() -> void:
