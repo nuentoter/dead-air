@@ -19,11 +19,11 @@ This register is the single place to check names, identifiers, timestamps, frequ
 
 | Item | Current value | Status | Notes / limits |
 |---|---|---|---|
-| Fictional regulator | National Radio Monitoring Service (NRMS) | Provisional | Used in project overview; confirm or rename globally. |
-| Player workplace | Remote Monitoring Site 04 | Working canon / label provisional | Remote civilian spectrum-monitoring station. Exact geographic location is not fixed. |
-| Supervisor | Mara Venn | Provisional | Regional Operations supervisor. Do not imply omniscience or a confirmed sinister role. |
-| Regional records office | Regional Technical Review Office | Draft value | Appears as the originating/receiving office in incident-file documents; relationship to NRMS/Regional Operations needs consistency review. |
-| Supervisor's office | Regional Operations | Working label | Used in Mara's correspondence and transfer chain. Exact organizational chart is not fixed. |
+| Fictional regulator | National Radio Monitoring Service (NRMS) | **Working canon v0.2** | Keep for the current release design unless explicitly renamed. |
+| Player workplace | Remote Monitoring Site 04 | **Working canon v0.2** | Remote civilian spectrum-monitoring station. Exact geographic location is not fixed. |
+| Supervisor | Mara Venn | **Working canon v0.2** | Regional Operations supervisor. Do not imply omniscience or a confirmed sinister role. |
+| Regional records office | Regional Technical Review Office | **Working canon v0.2** | Distinct technical-review/records office within the NRMS setting. Exact reporting hierarchy is intentionally unspecified. |
+| Supervisor's office | Regional Operations | **Working canon v0.2** | Mara's operational office; distinct from the Regional Technical Review Office. The handoff between offices does not establish a full organizational chart. |
 | Research facility | Unnamed government research facility | Unnamed by design for now | Government research combined advanced AI with experimental particle-physics research. Do not invent a facility or program name. |
 | Research project/program name | Not set | Unknown / placeholder | Decide whether to name it at all. |
 | Silent Site | “Silent Site” | Working branch label | Optional records-discrepancy branch, not yet a formal facility name. |
@@ -54,7 +54,7 @@ This register is the single place to check names, identifiers, timestamps, frequ
 
 ## 3. Current timestamp inventory
 
-The story packet's exact calendar dates remain placeholders. The **display convention** is now 24-hour time and ISO 8601 date format (`YYYY-MM-DD`) when a date is known. Times in the external incident records remain source-printed values with unresolved clock basis; the display convention does not synchronize those clocks.
+The story packet's exact calendar dates remain placeholders. The opening sequence uses shift-relative Site 04 simulated local times as recorded below. The **display convention** is 24-hour time and ISO 8601 date format (`YYYY-MM-DD`) when a date is known. Times in the external incident records remain source-printed values with unresolved clock basis; the display convention does not synchronize those clocks.
 
 | Artifact / field | Current value | Status | What is and is not established |
 |---|---|---|---|
@@ -69,7 +69,10 @@ The story packet's exact calendar dates remain placeholders. The **display conve
 | M-09 table in assignment script | `18:19`, `18:21`, `18:23` | Matches packet | Both copies now match. The 18:21 route-continuation row is not a chronology resolution; source and clock remain unknown. |
 | M-08/M-09 chronology relationship | Later than the M-07 claimed 18:00 discontinuation | Deliberate unresolved contradiction | Clock basis, date alignment, document authenticity, delay, and source relationship remain unresolved. The mismatch is story evidence, not permission to decide which record is correct. |
 | M-10A report date / M-10B response date | `[DATE TBD]` | Placeholder | No global date standard or fixed calendar date yet. |
-| Site 04 first and repeat NR-041 reception times | `[TIME PLACEHOLDER]` / pending chronology pass | Placeholder | Must be entered into the event register before player-facing text is finalized. |
+| First NR-041 reception | Prior monitoring cycle, `17:42` Site 04 simulated local time; date unknown | Working schedule v0.2 | Retained event available during the opening shift; it was not necessarily heard live by the player. |
+| NR-041 recurrence | Next routine shift after the opening shift, `08:42` Site 04 simulated local time; date unknown | Working schedule v0.2 | Separate event, same frequency, different pattern/timing and weaker/fading reception. Does not prove common source. |
+| Opening shift time standard | Opening shift, `08:00` Site 04 simulated local time | Working schedule v0.2 | Routine reference signal at 10.000 MHz AM; exact calendar date remains unknown. |
+| Routine traffic | Opening shift, `08:12` and `08:26` Site 04 simulated local time | Working schedule v0.2 | Two ordinary authored events, Signal IDs SIG-0002 and SIG-0003. |
 | Silent Site branch dates | Not fixed | Unknown / placeholder | Do not invent dates or imply exact elapsed time from the existing package trail. |
 | Global date display | ISO 8601 `YYYY-MM-DD`; time display 24-hour `HH:MM` | **Working convention v0.2** | Calendar dates and timezone are still unassigned. This is a formatting convention, not a shared-clock claim. |
 | Site 04 simulated clock label | `Site 04 local (simulated)` | Working convention v0.2 | The player's ordinary simulated clock; do not equate it with source clocks in external records. |
@@ -93,8 +96,8 @@ If the source does not identify the type or clock basis, write **unknown** or pr
 | Item | Current value | Status | Action |
 |---|---|---|---|
 | Opening time-standard | `10.000 MHz AM` | Working receiver preset v0.2 | Simulated routine reference signal; not an actual RF reception and not a plot clue. |
-| NR-041 first reception | `7.418 MHz CW` | Working story value v0.2 | Curated simulation frequency; no transmitter identity is implied. |
-| NR-041 recurrence | `7.418 MHz CW` | Working story value v0.2 | Same tuned frequency makes comparison straightforward; recurrence remains a separate event and does not prove a common physical source. |
+| NR-041 first reception | `7.418 MHz CW`, prior monitoring cycle at `17:42` | Working story value v0.2 | Curated simulation frequency; calendar date and transmitter identity are unknown. |
+| NR-041 recurrence | `7.418 MHz CW`, next routine shift at `08:42` | Working story value v0.2 | Same tuned frequency makes comparison straightforward; recurrence remains a separate event and does not prove a common physical source. |
 | Frequency note | `7.418 MHz CW` | Working story value | The former receiver-spec example has been promoted to the NR-041 frequency. Do not treat it as a real-world reception claim. |
 | Opening time-standard frequency | `10.000 MHz AM` | Working value v0.2 | Simulated routine reference signal. |
 | NR-041 first reception frequency | `7.418 MHz CW` | Working value v0.2 | Exact time remains unassigned. |
