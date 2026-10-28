@@ -505,7 +505,19 @@ func _draw_archive() -> void:
 				document_status = "AVAILABLE AFTER REPORT"
 			_add_text("Status: " + document_status + "  •  Version " + str(document.get("version", 1)), 12, MUTED)
 			_add_text(String(document.get("body", "")), 15, TEXT)
-			_add_text("Related records: " + str(document.get("related_ids", [])), 12, MUTED)
+			var related_ids: Array = document.get("related_ids", [])
+			_add_text("Related records: " + str(related_ids), 12, MUTED)
+			var related_row: HBoxContainer = null
+			var related_button_count := 0
+			for related_id_value in related_ids:
+				var related_id := String(related_id_value)
+				if _find_document(related_id).is_empty() and _find_event(related_id).is_empty():
+					continue
+				if related_row == null or related_button_count % 3 == 0:
+					related_row = _row()
+				_button("OPEN " + related_id, _open_related_record.bind(related_id), related_row)
+				related_button_count += 1
+			_add_text("Related-record links are retrieval aids, not proof of a common source or origin.", 11, MUTED)
 			_add_text("Original text is retained as authored. No timestamp normalization is applied.", 12, WARNING)
 
 func _run_archive_search() -> void:
@@ -516,6 +528,24 @@ func _run_archive_search() -> void:
 func _clear_archive_search() -> void:
 	archive_query = ""
 	selected_document_id = ""
+	_refresh()
+
+func _open_related_record(record_id: String) -> void:
+	if not _find_event(record_id).is_empty():
+		game.select_event(record_id)
+		game.data["current_section"] = "Receiver"
+		status_message = "Opened related signal " + record_id + ". The index link does not establish a common source."
+	elif not _find_document(record_id).is_empty():
+		selected_document_id = record_id
+		archive_query = ""
+		game.mark_document_read(record_id)
+		game.data["current_section"] = "Archive"
+		status_message = "Opened related record " + record_id + ". The index link does not establish a common origin."
+	else:
+		status_message = "Related record " + record_id + " is not available in the local catalog."
+		_refresh()
+		return
+	game.save_game()
 	_refresh()
 
 func _select_document(document_id: String) -> void:

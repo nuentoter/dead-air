@@ -77,6 +77,12 @@ func _run() -> void:
 		return
 	if not _expect(game.data.get("documents_read", []).has("M-07"), "Opening a report citation did not mark the document as reviewed."):
 		return
+	instance.call("_select_document", "M-06A")
+	if not _expect(_tree_contains_text(instance, "OPEN M-07"), "Incident cover did not expose its indexed related record as a navigation action."):
+		return
+	instance.call("_open_related_record", "M-07")
+	if not _expect(String(instance.get("selected_document_id")) == "M-07", "Opening an archive relationship did not select the linked record."):
+		return
 	game.add_note("Notebook interpretation: repeated sequence may indicate a shared source; this is not confirmed.", "M-07")
 	instance.call("_on_nav_pressed", "Notebook")
 	await process_frame
