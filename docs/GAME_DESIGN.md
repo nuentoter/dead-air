@@ -108,4 +108,4 @@ No 3D, walkable world, character animation, real RF DSP, actual speech recogniti
 
 ## 12. Implementation Status and Gate
 
-The project owner explicitly requested continued development through implementation on 28 October 2026. A small Godot 4.x workstation prototype is now present in the repository, with a headless CI workflow and integrity test. The prototype is not yet an Android release. Godot parser/startup checks, Android export, device layout, lifecycle behavior, and the under-25-MB target must be verified separately; see IMPLEMENTATION_STATUS.md.
+The project owner explicitly requested continued development through implementation on 28 October 2026. A small Godot 4.x workstation prototype is now present in the repository, with a headless CI workflow and integrity test. The prototype is not yet a physically tested Android release. Godot parser/startup checks, Android export, device layout, lifecycle behavior, and the under-25-MB target must be verified separately; see IMPLEMENTATION_STATUS.md.
