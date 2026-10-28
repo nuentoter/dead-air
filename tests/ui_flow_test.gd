@@ -12,6 +12,13 @@ func _run() -> void:
 	var instance = packed.instantiate()
 	root.add_child(instance)
 	await process_frame
+	instance.call("_on_nav_pressed", "Assignments")
+	instance.call("_select_assignment", "A-006")
+	await process_frame
+	var game = instance.get("game")
+	var initial_report_count: int = game.data.get("reports", []).size()
+	instance.call("_submit_report")
+	assert(game.data.get("reports", []).size() == initial_report_count, "A-006 should block submission until required records are reviewed.")
 	instance.call("_on_nav_pressed", "Archive")
 	for document_id in ["M-02", "M-05", "M-07", "M-08", "M-09"]:
 		instance.call("_select_document", document_id)
@@ -26,7 +33,6 @@ func _run() -> void:
 	editor.text = "UI test: M-07 and M-08 timestamps conflict; source-clock basis remains unknown."
 	instance.call("_submit_report")
 	await process_frame
-	var game = instance.get("game")
 	var reports: Array = game.data.get("reports", [])
 	assert(not reports.is_empty(), "UI submission did not create a report.")
 	assert(String(reports[-1].get("body", "")).begins_with("UI test:"), "UI submission body was not preserved.")
