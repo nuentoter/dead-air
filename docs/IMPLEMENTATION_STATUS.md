@@ -11,7 +11,7 @@
 - Local JSON save/load with schema version, temporary write, backup/restore during save replacement, and recovery-copy attempt for unreadable saves.
 - Persistent text-size controls.
 - Receiver power, frequency and mode state; authored event-match feedback; deterministic SEEK NEXT; manual-record provenance; a data-driven current-shift frequency/time plot.
-- Searchable archive, read-state tracking for required documents, notebook notes/source links, assignment status, report drafts, immutable report submissions/addenda, and unresolved case status.
+- Searchable archive, read-state tracking for required documents, notebook notes/source links, assignment status, report drafts, player-selectable source citations persisted with the draft, immutable report submissions/addenda, and unresolved case status.
 - A-006 submission is blocked until M-02, M-05, M-07, M-08, and M-09 have been opened in the archive. All five are recoverable without live reception.
 - Supervisor review appears after submission; M-10B remains hidden from archive until then.
 - GitHub Actions checks project import, strict script parsing, main-scene startup, UI report flow, chronology consistency, report immutability/addenda, accessibility setting persistence, save/load behavior, Android export, APK size, manifest permissions, and orientation metadata.
@@ -32,15 +32,15 @@
 - Debug and CI-signed release-mode APK exports pass. Godot export success does not validate installation, runtime behavior, or visual usability on a physical phone.
 
 ## Not yet verified
-- Android export, device lifecycle, orientation, touch-target sizing, and package size.
+- Physical-device installation/runtime behavior, touch layout, suspend/resume, and process-death recovery.
 - Visual readability on a physical landscape phone.
 - Save recovery under disk-full or forced process termination.
 - Physical-device installation/runtime behavior, touch layout, suspend/resume, and process-death recovery.
 - Full navigation testing on touch hardware.
 
 ## Next development steps
-1. Review the UI on a real landscape viewport and adjust touch layout.
-2. Review the data-driven current-shift plot on a real landscape viewport and ensure its labels remain readable.
-3. Implement a more coherent simulated tuning/SEEK model, while keeping all core evidence recoverable.
-4. Add content depth and a complete shift loop only after usability is checked.
-5. Finish manifest audit, install the release-mode APK on a device/emulator, test runtime/layout, and record any failures.
+1. Extend automated interaction coverage around report-source selection, draft recovery, and malformed-save handling.
+2. Improve assignment progression so routine work orders have clear, persistent completion states without blocking free investigation.
+3. Improve the receiver plot's explicit axis/time labels and event selection clarity using deterministic authored data.
+4. Add the next main-story content only after the evidence dependencies and recovery paths are implemented.
+5. Keep physical-device validation marked as unverified; continue using CI and static/layout-oriented checks rather than treating owner testing as a prerequisite for development.

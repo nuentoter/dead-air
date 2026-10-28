@@ -36,8 +36,10 @@ func _run() -> void:
 		assert(state.data["retained_event_ids"].has(event_id), "Essential authored event not retained: " + event_id)
 	var report_count_before: int = state.data.get("reports", []).size()
 	state.data["assignments"]["A-006"] = "IN PROGRESS"
-	var report: Dictionary = state.submit_report("Test observation: chronology remains unresolved.", "Retain records and request clock/source documentation.", ["M-07", "M-08", "M-09"])
+	state.data["report_source_ids"] = ["M-07", "M-08", "M-09"]
+	var report: Dictionary = state.submit_report("Test observation: chronology remains unresolved.", "Retain records and request clock/source documentation.", state.data["report_source_ids"])
 	assert(String(report.get("status", "")) == "SUBMITTED", "Report was not submitted.")
+	assert(report.get("source_ids", []) == ["M-07", "M-08", "M-09"], "Submitted report must preserve the selected source links.")
 	assert(String(report.get("case_status", "")) == "UNRESOLVED", "Report must not resolve the case.")
 	assert(String(state.data["assignments"]["A-006"]) == "CLOSED", "A-006 should close after submission.")
 	state.data["settings"]["text_scale"] = 1.1

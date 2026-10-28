@@ -31,6 +31,7 @@ Mark only tests actually performed; “not run” is not a pass.
 - [ ] Notebook note can be added/removed without losing other notes.
 - [ ] Report draft can be edited/submitted.
 - [ ] Submitted report remains immutable.
+- [ ] Report source links can be selected/deselected and are preserved in the submitted report.
 - [ ] Supervisor response appears after submission.
 - [ ] Assignment closes; case thread remains unresolved.
 

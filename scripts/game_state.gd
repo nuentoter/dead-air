@@ -45,7 +45,8 @@ func reset_defaults() -> void:
 		"next_report_id": 1,
 		"note_draft": "",
 		"report_draft": "The retained records establish a repeated identifier and conflicting chronology. The available material does not establish a common transmitter or explain the source-clock difference.",
-		"report_recommendation": "Retain records and request clock/source documentation."
+		"report_recommendation": "Retain records and request clock/source documentation.",
+		"report_source_ids": ["SIG-0004", "SIG-0005", "M-02", "M-05", "M-07", "M-08", "M-09"]
 	}
 	save_game()
 
@@ -73,7 +74,8 @@ func _ensure_defaults() -> void:
 		"assignments": {}, "messages_seen": [], "settings": {"text_scale": 1.0, "audio_enabled": false},
 		"event_log": [], "next_note_id": 1, "next_report_id": 1,
 		"note_draft": "", "report_draft": "The retained records establish a repeated identifier and conflicting chronology. The available material does not establish a common transmitter or explain the source-clock difference.",
-		"report_recommendation": "Retain records and request clock/source documentation."
+		"report_recommendation": "Retain records and request clock/source documentation.",
+		"report_source_ids": ["SIG-0004", "SIG-0005", "M-02", "M-05", "M-07", "M-08", "M-09"]
 	}
 	for key in defaults:
 		if not data.has(key):

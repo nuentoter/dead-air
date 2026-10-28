@@ -4,6 +4,7 @@ const Catalog = preload("res://scripts/content_catalog.gd")
 const GameState = preload("res://scripts/game_state.gd")
 
 const SECTIONS = ["Receiver", "Recordings", "Archive", "Notebook", "Assignments", "Messages"]
+const REPORT_SOURCE_OPTIONS := ["SIG-0004", "SIG-0005", "M-02", "M-05", "M-07", "M-08", "M-09"]
 const BG = Color(0.035, 0.055, 0.065, 1)
 const PANEL = Color(0.065, 0.095, 0.105, 1)
 const PANEL_ALT = Color(0.085, 0.125, 0.135, 1)
@@ -630,6 +631,21 @@ func _draw_assignments() -> void:
 			if recommendation_select.get_item_text(i) == selected_rec:
 				recommendation_select.select(i)
 		body.add_child(recommendation_select)
+		_add_text("REPORT SOURCES", 14, ACCENT)
+		_add_text("Select the records you are citing. Similar identifiers do not establish a common source.", 12, MUTED)
+		var selected_sources: Array = game.data.get("report_source_ids", REPORT_SOURCE_OPTIONS.duplicate())
+		game.data["report_source_ids"] = selected_sources
+		var source_row: HBoxContainer = null
+		for source_index in range(REPORT_SOURCE_OPTIONS.size()):
+			if source_index % 3 == 0:
+				source_row = _row()
+			var source_id: String = REPORT_SOURCE_OPTIONS[source_index]
+			var source_check := CheckBox.new()
+			source_check.text = source_id
+			source_check.custom_minimum_size = Vector2(110, 38)
+			source_check.button_pressed = selected_sources.has(source_id)
+			source_check.toggled.connect(_on_report_source_toggled.bind(source_id))
+			source_row.add_child(source_check)
 		var submit_label := "SUBMIT REPORT" if game.data.get("reports", []).is_empty() else "SUBMIT ADDENDUM"
 		var submit_button := _button(submit_label, _submit_report)
 		submit_button.disabled = not _has_required_documents()
@@ -664,6 +680,19 @@ func _on_report_draft_changed() -> void:
 		game.data["report_draft"] = report_editor.text
 		game.save_game()
 
+func _on_report_source_toggled(checked: bool, source_id: String) -> void:
+	var selected_sources: Array = game.data.get("report_source_ids", [])
+	if checked:
+		if not selected_sources.has(source_id):
+			selected_sources.append(source_id)
+	else:
+		selected_sources.erase(source_id)
+	game.data["report_source_ids"] = selected_sources
+	game.save_game()
+	status_message = "Report source links saved (%d selected)." % selected_sources.size()
+	if status_label != null:
+		status_label.text = status_message
+
 func _submit_report() -> void:
 	if not _has_required_documents():
 		status_message = "Report not submitted: review the required archive records first."
@@ -677,8 +706,13 @@ func _submit_report() -> void:
 	var recommendation := String(game.data.get("report_recommendation", "Retain records and request clock/source documentation."))
 	if recommendation_select != null and recommendation_select.selected >= 0:
 		recommendation = recommendation_select.get_item_text(recommendation_select.selected)
+	var source_ids: Array = game.data.get("report_source_ids", [])
+	if source_ids.is_empty():
+		status_message = "Report not submitted: select at least one source record."
+		_refresh()
+		return
 	game.data["report_recommendation"] = recommendation
-	var report: Dictionary = game.submit_report(report_body, recommendation, ["SIG-0004", "SIG-0005", "M-02", "M-07", "M-08", "M-09"])
+	var report: Dictionary = game.submit_report(report_body, recommendation, source_ids)
 	game.data["report_draft"] = ""
 	game.data["current_section"] = "Messages"
 	game.save_game()
