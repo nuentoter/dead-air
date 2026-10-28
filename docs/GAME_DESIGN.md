@@ -27,7 +27,7 @@ The screen stays stable and reliable. The horror emerges through transcripts, co
 
 ## 3. Role and Premise
 
-The player works for the fictional **National Radio Monitoring Service (NRMS, provisional)** at **Remote Monitoring Site 04**. Their ordinary duties include checking spectrum activity, verifying identifiers, investigating interference, logging unauthorized transmissions, and forwarding reports. They are not a chosen one, secret agent, or physicist.
+The player works for the fictional **National Radio Monitoring Service (NRMS)** at **Remote Monitoring Site 04**. These institutional names are current working canon v0.2. Their ordinary duties include checking spectrum activity, verifying identifiers, investigating interference, logging unauthorized transmissions, and forwarding reports. They are not a chosen one, secret agent, or physicist.
 
 A government research project combined advanced AI with experimental particle-physics research to model phenomena outside conventional understanding. A serious incident occurred, and later government records contradict one another. Low-bandwidth radio networks and numbers-station-like transmissions served as fallback communications when digital networks were considered unreliable or compromised. Site 04 captures structured transmissions associated with a project official records say did not exist.
 
