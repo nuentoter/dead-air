@@ -418,7 +418,10 @@ func _draw_archive() -> void:
 		var searchable := (String(document.get("id", "")) + " " + String(document.get("title", "")) + " " + String(document.get("source", "")) + " " + String(document.get("body", ""))).to_lower()
 		if query.is_empty() or searchable.contains(query):
 			matches.append(document)
-	_add_text("%d record(s) in this collection match the current query." % matches.size(), 12, MUTED)
+	if matches.is_empty():
+		_add_text("No matching record found in this index. This result describes the collection searched only.", 12, WARNING)
+	else:
+		_add_text("%d record(s) in this collection match the current query." % matches.size(), 12, MUTED)
 	for document in matches:
 		var doc_id := String(document.get("id", ""))
 		_button(doc_id + "  —  " + String(document.get("title", "")), _select_document.bind(doc_id))
@@ -550,6 +553,8 @@ func _draw_assignments() -> void:
 		for report in game.data.get("reports", []):
 			_add_text(String(report.get("id", "")) + " — " + String(report.get("status", "")) + " / Case: " + String(report.get("case_status", "")), 13, MUTED)
 			_add_text(String(report.get("body", "")), 14, TEXT)
+			_add_text("Recommended action: " + String(report.get("recommendation", "")), 12, MUTED)
+			_add_text("Source links: " + str(report.get("source_ids", [])), 12, MUTED)
 
 func _find_assignment(assignment_id: String) -> Dictionary:
 	for assignment in Catalog.ASSIGNMENTS:
