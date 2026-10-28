@@ -1,4 +1,5 @@
 name: Godot headless checks
+# CI deliberately loads the main script directly so parse errors fail the job.
 
 on:
   push:
