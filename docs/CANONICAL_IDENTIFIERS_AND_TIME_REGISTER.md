@@ -124,7 +124,7 @@ These are register-level rules for all future documents, UI labels, and reports:
 
 Before the story packet is considered script-ready, complete these actions in order:
 
-1. **Provisional names remain open:** confirm NRMS, Site 04 label, Mara Venn, and the relationship between Regional Operations and the Regional Technical Review Office.
+1. **Names adopted for this pass:** NRMS, Remote Monitoring Site 04, Mara Venn, Regional Operations, and Regional Technical Review Office are working canon v0.2. Keep the two offices distinct; the reporting hierarchy remains unspecified. Rename only by an explicit decision.
 2. **Complete the calendar timeline:** assign dates only after opening-to-incident chronology is designed; use ISO dates and 24-hour time, while preserving the external clock ambiguity.
 3. **Numeric sequence selected:** `731904`; finish propagation and audit all artifacts.
 4. **Signal IDs assigned for opening events:** `SIG-0001` time standard, `SIG-0002` and `SIG-0003` routine traffic, `SIG-0004` first NR-041 reception, `SIG-0005` recurrence.
