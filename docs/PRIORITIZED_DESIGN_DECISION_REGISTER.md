@@ -2,7 +2,7 @@
 
 **Status:** Active working register  
 **Purpose:** Identify which decisions block the next stage, which can be deferred, and which are guardrails rather than choices.  
-**Implementation status:** First-release scope and ending are now documented; project owner explicitly requested continued development through implementation on 28 October 2026. Build and Android export remain unverified.
+**Implementation status:** First-release scope and ending are now documented; project owner explicitly requested continued development through implementation on 28 October 2026. Godot 4.3 headless tests and Android APK export now pass in CI; physical-device behavior remains unverified.
 
 ## How to use this register
 
@@ -49,8 +49,8 @@ Do not settle a decision merely to fill a checklist. When evidence is insufficie
 
 | ID | Decision / test | Current position | Evidence required | Exit condition |
 |---|---|---|---|---|
-| D-022 | Engine choice | Godot 4.x/GDScript proposed, not validated | Build a tiny landscape Android test with navigation, text, and a simple receiver visualization | Engine/export workflow is stable on the target device class |
-| D-023 | Package-size target | Under 25 MB is a target, not a verified result | Measure a clean release export with actual fonts, audio, and assets | Record actual size; reduce scope or revise target only with explicit approval |
+| D-022 | Engine choice | Godot 4.3/GDScript prototype parses, runs headlessly, and exports Android APKs in CI | Install and exercise on the intended Android device class | Touch layout, lifecycle, and runtime are stable on the target device |
+| D-023 | Package-size target | Current CI-signed release-mode prototype APK is 22,966,724 bytes; debug APK is 24,330,645 bytes | Re-measure after adding full content/audio/assets and after any release-template changes; verify final signed build | Final intended release remains below 25 MB or owner explicitly approves a revised target |
 | D-024 | Waterfall readability | Behavior is specified conceptually | Test frequency/time orientation, density, contrast, and touch selection on a phone | Player can interpret signal activity without color-only cues or tiny targets |
 | D-025 | Receiver interaction complexity | Bands, modes, tuning, SEEK, and simplified processing are specified at a high level | Test direct tuning versus simplified controls with a short onboarding | It feels like a receiver without requiring real radio expertise or excessive taps |
 | D-026 | Audio footprint and usefulness | Audio is optional for core comprehension | Measure representative generated audio and compare atmosphere/information value | Audio fits package constraints and contributes without becoming a clue gate |
