@@ -432,7 +432,7 @@ func _draw_notebook() -> void:
 	for note in game.data.get("notes", []):
 		_add_text(String(note.get("id", "")) + (("  /  " + String(note.get("source_id", ""))) if not String(note.get("source_id", "")).is_empty() else ""), 12, MUTED)
 		_add_text(String(note.get("text", "")), 15, TEXT)
-		_button("DELETE " + String(note.get("id", "")), _delete_note.bind(String(note.get("id", "")))
+		_button("DELETE " + String(note.get("id", "")), _delete_note.bind(String(note.get("id", ""))))
 
 func _save_note_from_ui() -> void:
 	var source_id := ""
