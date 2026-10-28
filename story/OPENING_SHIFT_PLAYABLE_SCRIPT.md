@@ -1,6 +1,6 @@
 # DEAD AIR — Opening Shift Playable Script
 
-*Working draft based on the Game Design Document and Master Chronology & Evidence Ledger. This is narrative/UI scripting, not game code. The time standard uses `10.000 MHz AM`. NR-041 uses `7.418 MHz CW`. Calendar dates and exact reception times remain placeholders; see the Canonical Identifiers & Time Register.*
+*Working draft based on the Game Design Document and Master Chronology & Evidence Ledger. This is narrative/UI scripting, not game code. The time standard uses `10.000 MHz AM`. NR-041 uses `7.418 MHz CW`. Calendar dates remain placeholders; shift-relative reception times are assigned in the Canonical Identifiers & Time Register.*
 
 ## Script goals
 
