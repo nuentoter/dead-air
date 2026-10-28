@@ -14,7 +14,7 @@ An offline, landscape-only Android radio-conspiracy horror game about ordinary m
 - [Prioritized Design Decision Register](docs/PRIORITIZED_DESIGN_DECISION_REGISTER.md) — open decisions ranked by priority, dependencies, prototype tests, non-negotiable guardrails, and criteria for design readiness.
 - [Canonical Identifiers & Time Register](docs/CANONICAL_IDENTIFIERS_AND_TIME_REGISTER.md) — source-of-truth inventory for names, record IDs, timestamp conventions, frequencies, the working numeric sequence, Signal IDs, and remaining open questions.
 - [Master Chronology & Evidence Ledger](docs/MASTER_CHRONOLOGY_EVIDENCE_LEDGER.md) — main-story evidence, contradiction rules, optional Silent Site branch, and canon guardrails.
-- [Canon Decisions & Open Questions](docs/CANON_AND_OPEN_QUESTIONS.md) — established working canon, provisional details, unresolved decisions, and guardrails.
+- [Canon Decisions & Open Questions](docs/CANON_AND_OPEN_QUESTIONS.md) — working canon, remaining provisional details, unresolved decisions, and guardrails.
 - [Assignment Evidence Dependency Map](docs/ASSIGNMENT_EVIDENCE_DEPENDENCY_MAP.md) — assignment register, core evidence paths, optional branches, knowledge gates, and recovery rules.
 - [Opening Shift Playable Script](story/OPENING_SHIFT_PLAYABLE_SCRIPT.md) — handover, receiver onboarding, first NR-041 detection, registry conflict, report, and supervisor closure.
 - [Main-Story Document Packet](story/MAIN_STORY_DOCUMENT_PACKET.md) — draft incident summary, post-shutdown appendix, Communications Record 04-C, NR-041 worksheet, and follow-up correspondence.
@@ -22,7 +22,7 @@ An offline, landscape-only Android radio-conspiracy horror game about ordinary m
 
 ## Core premise
 
-The player is a technician at Remote Monitoring Site 04, employed by the fictional National Radio Monitoring Service (NRMS, provisional). They monitor a simulated radio spectrum, record and decode transmissions, complete routine assignments, and investigate a recurring identifier: **NR-041**. That identifier conflicts with official registry records and eventually overlaps with a closed incident file concerning a government research facility.
+The player is a technician at Remote Monitoring Site 04, employed by the fictional National Radio Monitoring Service (NRMS; current working canon). They monitor a simulated radio spectrum, record and decode transmissions, complete routine assignments, and investigate a recurring identifier: **NR-041**. That identifier conflicts with official registry records and eventually overlaps with a closed incident file concerning a government research facility.
 
 The game must never confirm what lies beyond the connection, what it wants, or whether an experimental AI caused the incident.
 
