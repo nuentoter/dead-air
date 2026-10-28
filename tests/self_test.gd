@@ -65,6 +65,7 @@ func _run() -> void:
 	var reloaded := GameState.new()
 	assert(reloaded.data.get("reports", []).size() >= report_count_before + 2, "Submitted reports did not persist.")
 	assert(String(reloaded.data["reports"][-1].get("case_status", "")) == "UNRESOLVED", "Persisted case status changed.")
+	assert(bool(reloaded.data.get("communications_comparison_reviewed", false)), "Explicit A-005 comparison review did not persist.")
 	assert(is_equal_approx(float(reloaded.data["settings"].get("text_scale", 1.0)), 1.1), "Text size setting did not persist.")
 	var save_file := FileAccess.open(GameState.SAVE_PATH, FileAccess.READ)
 	assert(save_file != null, "Could not open valid save before recovery test.")

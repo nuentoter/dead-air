@@ -35,6 +35,7 @@ func reset_defaults() -> void:
 		"documents_read": [],
 		"notes": [],
 		"reports": [],
+		"communications_comparison_reviewed": false,
 		"assignments": {
 			"A-001": "OPEN", "A-002": "OPEN", "A-003": "OPEN",
 			"A-004": "OPEN", "A-005": "OPEN", "A-006": "OPEN"
@@ -75,7 +76,7 @@ func _ensure_defaults() -> void:
 		"inspected_event_ids": [], "recorded_event_ids": [], "documents_read": [], "notes": [], "reports": [],
 		"assignments": {}, "messages_seen": [], "settings": {"text_scale": 1.0, "audio_enabled": false},
 		"event_log": [], "next_note_id": 1, "next_report_id": 1,
-		"note_draft": "", "note_draft_classification": "UNCLASSIFIED", "report_draft": "The retained records establish a repeated identifier and conflicting chronology. The available material does not establish a common transmitter or explain the source-clock difference.",
+		"note_draft": "", "note_draft_classification": "UNCLASSIFIED", "communications_comparison_reviewed": false, "report_draft": "The retained records establish a repeated identifier and conflicting chronology. The available material does not establish a common transmitter or explain the source-clock difference.",
 		"report_recommendation": "Retain records and request clock/source documentation.",
 		"report_source_ids": ["SIG-0004", "SIG-0005", "M-02", "M-05", "M-07", "M-08", "M-09"]
 	}
@@ -153,6 +154,10 @@ func refresh_assignment_progress() -> void:
 		assignments["A-002"] = "COMPLETED"
 	if documents.has("M-06A") and documents.has("M-07") and documents.has("M-08"):
 		assignments["A-004"] = "COMPLETED"
+	if bool(data.get("communications_comparison_reviewed", false)) and documents.has("M-08") and documents.has("M-09"):
+		assignments["A-005"] = "COMPLETED"
+	elif String(assignments.get("A-005", "OPEN")) == "COMPLETED":
+		assignments["A-005"] = "IN PROGRESS" if documents.has("M-08") or documents.has("M-09") else "OPEN"
 
 	data["assignments"] = assignments
 
@@ -160,6 +165,7 @@ func complete_communications_comparison() -> bool:
 	var documents: Array = data.get("documents_read", [])
 	if not documents.has("M-08") or not documents.has("M-09"):
 		return false
+	data["communications_comparison_reviewed"] = true
 	data["assignments"]["A-005"] = "COMPLETED"
 	save_game()
 	return true
