@@ -19,9 +19,14 @@ on:
       - ".github/workflows/godot-check.yml"
   workflow_dispatch:
 
+concurrency:
+  group: godot-check-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   headless:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
