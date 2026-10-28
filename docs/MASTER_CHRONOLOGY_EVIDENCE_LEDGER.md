@@ -11,7 +11,7 @@
 - Administrative closure is a recurring institutional pattern, not proof of a supernatural force.
 - Player-facing documents must each remain individually plausible; contradictions should emerge through comparison.
 - Essential evidence must not be missable because of a short recording, receiver settings, a missed transmission, or one early choice.
-- Calendar dates and exact NR-041 reception times remain placeholders. Current working values: sequence `731904`; opening time standard `10.000 MHz AM`; NR-041 first/recurring receptions `7.418 MHz CW`; Signal IDs are allocated in the Canonical Identifiers & Time Register. External clock basis remains unresolved.
+- Calendar dates remain placeholders; shift-relative Site 04 times are assigned. Current working values: sequence `731904`; opening time standard `10.000 MHz AM`; NR-041 first/recurring receptions `7.418 MHz CW`; Signal IDs are allocated in the Canonical Identifiers & Time Register. External clock basis remains unresolved.
 
 ## 2. Main-Story Chronology Anchors
 
@@ -112,16 +112,16 @@ Mara's statements must reflect administrative criteria and available records; sh
 
 | Item | Working value | Required action |
 |---|---|---|
-| Regulator | National Radio Monitoring Service (NRMS) | Provisional; confirm or replace globally. |
-| Player station | Remote Monitoring Site 04 | Provisional label. |
-| Supervisor | Mara Venn, Regional Operations | Confirm name/title/voice style. |
+| Regulator | National Radio Monitoring Service (NRMS) | Working canon v0.2; keep unless explicitly renamed. |
+| Player station | Remote Monitoring Site 04 | Working canon v0.2; exact geography remains unspecified. |
+| Supervisor | Mara Venn, Regional Operations | Working canon v0.2; preserve uncertainty about her knowledge and motives. |
 | Unregistered identifier | NR-041 | Treat as working canon unless renamed. |
 | NR-041 frequency | 7.418 MHz CW | Working value; simulated event only. |
 | Closed incident file | 01-773 | Working ID; check for collisions. |
 | Communications record | 04-C | Working ID; define timestamp fields. |
 | Coded sequence | `731904` (working canon; meaning unknown) | Use `731904` consistently; its meaning remains unknown. |
 | Call signs | W1KDX / N4HLM | Placeholder; validate realism and avoid accidental real-person association. |
-| Silent Site dates | Not fixed | Set after main chronology; do not invent dates prematurely. |
+| Silent Site dates | Not fixed | Keep as placeholders until the optional branch's calendar placement is designed. |
 | Facility/project name | Not fixed | Decide whether anonymity improves tone. |
 
 ## 10. Chronology Audit Checklist
