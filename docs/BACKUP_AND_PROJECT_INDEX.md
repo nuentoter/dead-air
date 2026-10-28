@@ -1,6 +1,6 @@
 # DEAD AIR — Backup Index and Continuity Policy
 
-This file is the quick recovery index for the DEAD AIR project. The GitHub repository is the canonical durable copy of the working design and narrative documents listed below.
+This file is the quick recovery index for the DEAD AIR project. The GitHub repository is the canonical durable copy of the working design, narrative, and prototype source files listed below.
 
 Repository: https://github.com/nuentoter/dead-air
 
@@ -18,7 +18,14 @@ Repository: https://github.com/nuentoter/dead-air
 - [Canon Decisions & Open Questions](CANON_AND_OPEN_QUESTIONS.md) — established working canon, provisional details, unresolved decisions, and guardrails.
 - [Assignment Evidence Dependency Map](ASSIGNMENT_EVIDENCE_DEPENDENCY_MAP.md) — assignment register, core evidence paths, optional branches, knowledge gates, and recovery rules.
 
-### Release and implementation\n- [First Release Scope & Acceptance](FIRST_RELEASE_SCOPE_AND_ACCEPTANCE.md) — first playable scope and release gates.\n- [Ending & Disclosure Structure](ENDING_AND_DISCLOSURE_STRUCTURE.md) — uncertainty-preserving ending.\n- [Technical Implementation Plan](TECHNICAL_IMPLEMENTATION_PLAN.md) — Godot structure, data model, persistence, and tests.\n- [Implementation Test Checklist](IMPLEMENTATION_TEST_CHECKLIST.md) — repeatable verification checklist.\n\n### Story and player-facing content
+### Release and implementation
+- [First Release Scope & Acceptance](FIRST_RELEASE_SCOPE_AND_ACCEPTANCE.md) — first playable scope and release gates.
+- [Ending & Disclosure Structure](ENDING_AND_DISCLOSURE_STRUCTURE.md) — uncertainty-preserving ending.
+- [Technical Implementation Plan](TECHNICAL_IMPLEMENTATION_PLAN.md) — Godot structure, data model, persistence, and tests.
+- [Implementation Test Checklist](IMPLEMENTATION_TEST_CHECKLIST.md) — repeatable verification checklist.
+- [Implementation Status](IMPLEMENTATION_STATUS.md) — code present, known simplifications, and tests still required.
+
+### Story and player-facing content
 - [Opening Shift Playable Script](../story/OPENING_SHIFT_PLAYABLE_SCRIPT.md) — handover, onboarding, first NR-041 detection, registry lookup, report, and supervisor closure.
 - [Main-Story Document Packet](../story/MAIN_STORY_DOCUMENT_PACKET.md) — draft incident-file documents, post-shutdown appendix, Communications Record 04-C, decoding worksheet, and follow-up correspondence.
 - [Main Story Assignment Scripts](../story/MAIN_STORY_ASSIGNMENT_SCRIPTS.md) — player-facing assignment interactions and report flows for A-003 through A-006.
@@ -32,6 +39,11 @@ Repository: https://github.com/nuentoter/dead-air
 5. Treat Git history as the change trail. Prefer new commits and explicit revisions over silently replacing project history.
 6. This repository currently backs up the working Markdown documents listed above. Original binary attachments (such as DOCX files) are not claimed as repository copies unless separately committed in a supported format.
 
+### Prototype source files
+- [Godot project configuration](../project.godot) and [main scene](../scenes/main.tscn).
+- [Main UI](../scripts/main.gd), [game state and persistence](../scripts/game_state.gd), and [authored content catalog](../scripts/content_catalog.gd).
+- [Headless self-test](../tests/self_test.gd) and [GitHub Actions workflow](../.github/workflows/godot-check.yml).
+
 ## Current implementation status
 
-Design phase. No game code has been started. The proposed Godot 4.x approach and under-25-MB Android package target remain unvalidated.
+The first workstation prototype is present. Godot execution, Android export, and the under-25-MB target remain unvalidated.
