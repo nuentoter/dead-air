@@ -1,0 +1,61 @@
+name: Android debug export
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "export_presets.cfg"
+      - "project.godot"
+      - "scenes/**"
+      - "scripts/**"
+      - ".github/workflows/android-export.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  android-export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Install Android SDK packages
+        run: sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+      - name: Install Godot 4.3
+        shell: bash
+        run: |
+          curl -L --fail --retry 3 -o godot.zip https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_linux.x86_64.zip
+          unzip godot.zip
+          chmod +x Godot_v4.3-stable_linux.x86_64
+          sudo mv Godot_v4.3-stable_linux.x86_64 /usr/local/bin/godot
+      - name: Install matching Godot export templates
+        shell: bash
+        run: |
+          curl -L --fail --retry 3 -o templates.tpz https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_export_templates.tpz
+          mkdir -p "$HOME/.local/share/godot/export_templates/4.3.stable"
+          mkdir -p /tmp/godot-template-package
+          unzip -q templates.tpz -d /tmp/godot-template-package
+          cp /tmp/godot-template-package/templates/* "$HOME/.local/share/godot/export_templates/4.3.stable/"
+      - name: Import project
+        run: godot --headless --path . --editor --quit
+      - name: Export Android debug APK
+        run: |
+          mkdir -p build
+          godot --headless --path . --export-debug "Android" build/dead-air-debug.apk
+          test -s build/dead-air-debug.apk
+          stat -c "APK size: %s bytes" build/dead-air-debug.apk
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: dead-air-android-debug
+          path: build/dead-air-debug.apk
+          if-no-files-found: error
+          retention-days: 14
