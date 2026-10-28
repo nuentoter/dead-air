@@ -31,13 +31,26 @@ func _run() -> void:
 		quit(1)
 		return
 	editor.text = "UI test: M-07 and M-08 timestamps conflict; source-clock basis remains unknown."
+	instance.call("_on_report_draft_changed")
 	instance.call("_submit_report")
 	await process_frame
 	var reports: Array = game.data.get("reports", [])
-	assert(not reports.is_empty(), "UI submission did not create a report.")
-	assert(String(reports[-1].get("body", "")).begins_with("UI test:"), "UI submission body was not preserved.")
-	assert(String(game.data["assignments"]["A-006"]) == "CLOSED", "UI submission did not close A-006.")
-	assert(String(game.data["current_section"]) == "Messages", "UI submission should open Messages.")
-	assert(String(reports[-1].get("case_status", "")) == "UNRESOLVED", "UI submission must leave the case unresolved.")
+	if not _expect(not reports.is_empty(), "UI submission did not create a report."):
+		return
+	if not _expect(String(reports[-1].get("body", "")).begins_with("UI test:"), "UI submission body was not preserved."):
+		return
+	if not _expect(String(game.data["assignments"]["A-006"]) == "CLOSED", "UI submission did not close A-006."):
+		return
+	if not _expect(String(game.data["current_section"]) == "Messages", "UI submission should open Messages."):
+		return
+	if not _expect(String(reports[-1].get("case_status", "")) == "UNRESOLVED", "UI submission must leave the case unresolved."):
+		return
 	print("DEAD AIR UI flow test passed: navigate, compose report, submit, close assignment, preserve unresolved case.")
 	quit(0)
+
+func _expect(condition: bool, message: String) -> bool:
+	if not condition:
+		push_error(message)
+		quit(1)
+		return false
+	return true
