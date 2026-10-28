@@ -6,10 +6,14 @@ const TEMP_PATH = "user://dead_air_save.tmp"
 const SCHEMA_VERSION = 1
 
 var data: Dictionary = {}
+var load_notice := ""
 
 func _init() -> void:
 	if not load_game():
+		var had_save := FileAccess.file_exists(SAVE_PATH)
 		reset_defaults()
+		if had_save:
+			load_notice = "Previous save could not be read. A clean local state was initialized; existing evidence was not loaded."
 
 func reset_defaults() -> void:
 	data = {
@@ -80,10 +84,24 @@ func save_game() -> bool:
 		return false
 	file.store_string(JSON.stringify(data, "\t"))
 	file.close()
-	if FileAccess.file_exists(SAVE_PATH):
-		DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
-	var err := DirAccess.rename_absolute(ProjectSettings.globalize_path(TEMP_PATH), ProjectSettings.globalize_path(SAVE_PATH))
-	return err == OK
+	var save_abs := ProjectSettings.globalize_path(SAVE_PATH)
+	var temp_abs := ProjectSettings.globalize_path(TEMP_PATH)
+	var backup_abs := ProjectSettings.globalize_path("user://dead_air_save.bak")
+	var had_previous := FileAccess.file_exists(SAVE_PATH)
+	if FileAccess.file_exists(backup_abs):
+		DirAccess.remove_absolute(backup_abs)
+	if had_previous:
+		var backup_err := DirAccess.rename_absolute(save_abs, backup_abs)
+		if backup_err != OK:
+			return false
+	var err := DirAccess.rename_absolute(temp_abs, save_abs)
+	if err != OK:
+		if had_previous:
+			DirAccess.rename_absolute(backup_abs, save_abs)
+		return false
+	if had_previous and FileAccess.file_exists(backup_abs):
+		DirAccess.remove_absolute(backup_abs)
+	return true
 
 func log_event(message: String) -> void:
 	data["event_log"].append({"text": message, "sequence": data["event_log"].size() + 1})
