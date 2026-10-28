@@ -1,7 +1,7 @@
 # DEAD AIR — Implementation Status
 
 **Current milestone:** First workstation prototype, v0.1.0  
-**Status:** Godot 4.3 headless CI passes. On commit 2404e3c1ff9de5b02e299649b0dcc7cf66aa31ed, the arm64 debug APK exported at 24,330,645 bytes and the CI-signed release-mode APK at 22,966,724 bytes; both are below 25,000,000 bytes. APK manifest permission/orientation audit and physical-device tests are pending.
+**Status:** Godot 4.3 headless CI passes. On commit 2404e3c1ff9de5b02e299649b0dcc7cf66aa31ed, the arm64 debug APK exported at 24,330,645 bytes and the CI-signed release-mode APK at 22,966,724 bytes; both are below 25,000,000 bytes. APK manifest audit also passed on commit e4f2102934c5d109b8aa1b4761093772c592f0e1: both APKs have an explicit orientation entry and neither requests INTERNET or RECORD_AUDIO. Physical-device tests remain pending.
 
 ## Implemented
 - Godot project configuration and main scene.
@@ -14,7 +14,7 @@
 - Searchable archive, read-state tracking for required documents, notebook notes/source links, assignment status, report drafts, immutable report submissions/addenda, and unresolved case status.
 - A-006 submission is blocked until M-02, M-05, M-07, M-08, and M-09 have been opened in the archive. All five are recoverable without live reception.
 - Supervisor review appears after submission; M-10B remains hidden from archive until then.
-- GitHub Actions checks project import, strict script parsing, main-scene startup, UI report flow, chronology consistency, report immutability/addenda, accessibility setting persistence, and save/load behavior.
+- GitHub Actions checks project import, strict script parsing, main-scene startup, UI report flow, chronology consistency, report immutability/addenda, accessibility setting persistence, save/load behavior, Android export, APK size, manifest permissions, and orientation metadata.
 
 ## Verified on Godot 4.3
 - Project import and script parsing passed.
@@ -35,7 +35,7 @@
 - Android export, device lifecycle, orientation, touch-target sizing, and package size.
 - Visual readability on a physical landscape phone.
 - Save recovery under disk-full or forced process termination.
-- Manifest permission/orientation audit for the latest APKs and physical-device installation/runtime behavior.
+- Physical-device installation/runtime behavior, touch layout, suspend/resume, and process-death recovery.
 - Full navigation testing on touch hardware.
 
 ## Next development steps
