@@ -2,7 +2,7 @@
 
 An offline, landscape-only Android radio-conspiracy horror game about ordinary monitoring work, contradictory records, and the limits of what an institution can account for.
 
-**Development status:** first implementation prototype in progress. Scope and ending contracts are documented; Godot implementation is being added as a small, deterministic vertical slice. Build and Android export are not yet verified.
+**Development status:** first workstation prototype implemented. Godot 4.3 headless parsing, UI-flow, and integrity checks pass; Android export, physical-device layout, and package size remain unverified.
 
 ## Design documents
 
