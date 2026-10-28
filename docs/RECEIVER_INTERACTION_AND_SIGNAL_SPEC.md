@@ -334,3 +334,16 @@ The receiver design is ready for a prototype when the team can demonstrate that:
 12. The UI remains stable and truthful throughout all receiver states.
 
 This specification defines intended behavior. The current prototype implements only a bounded deterministic subset; use the acceptance criteria to guide verification and subsequent increments.
+
+
+## 21. Current prototype mapping
+
+The first implementation deliberately covers only a deterministic subset:
+- Receiver power, frequency, and mode are saved locally.
+- The current tuning displays authored event matches only when frequency is within 0.0005 MHz and mode matches exactly.
+- SEEK NEXT moves to the next authored event in catalog order and tunes to its metadata. It is not a physical scan.
+- All five authored events are automatically retained from the start. Manual recording adds a separate provenance marker.
+- The current waterfall is a clearly labelled placeholder visual, not a data-driven frequency/time plot.
+- Event transcripts and source limitations are always visible as text.
+
+These simplifications must remain honestly labelled until replaced and tested.
