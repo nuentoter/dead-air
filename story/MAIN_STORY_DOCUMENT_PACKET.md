@@ -1,6 +1,6 @@
 # DEAD AIR — Main-Story Document Packet
 
-*Working draft, version 0.1. Dates and times below are fictional placeholders used to establish the internal sequence. They are not locked canon. Frequencies, the canonical numeric sequence, and the global date standard remain open.*
+*Working draft, version 0.1. Calendar dates remain placeholders. Times are shown in 24-hour format; external source clock bases remain as recorded and unresolved. Working values for this pass: numeric sequence `731904`; NR-041 receptions at `7.418 MHz CW`; initial event IDs are allocated in the Canonical Identifiers & Time Register.*
 
 This packet is designed to be read in fragments and compared. No single document proves the cause of the incident. The central contradiction is that the official shutdown summary claims operations ended and equipment was secured, while other records preserve communications after the stated shutdown.
 
@@ -66,7 +66,8 @@ This summary records the responsible unit's submitted status. It is not an indep
 **Prepared by:** Technical Records Group  
 **Document date:** [DATE TBD — NOT YET STANDARDIZED]  
 **Archive ingestion:** [DATE TBD]  
-**Cross-reference:** Communications sequence worksheet, enclosure C-4
+**Cross-reference:** Communications sequence worksheet, enclosure C-4  
+**Sequence field:** `731904`
 
 ### Extract: communications status
 
@@ -107,7 +108,7 @@ The appendix has been retained as supplied. No independent clock comparison was 
 | 18:21 | Route continuation | C-4 repeated without attached origin identifier | ROUTED |
 | 18:23 | Destination acknowledgement | Receipt status entered; operator field blank | ACKNOWLEDGED |
 
-**Sequence field:** [CANONICAL NUMERIC SEQUENCE — TO BE LOCKED]  
+**Sequence field:** `731904`  
 **Origin identifier:** Not present in surviving copy  
 **Operator initials:** Blank  
 **Clock source:** Not stated  
@@ -128,11 +129,11 @@ This record was located through a separate communications-log search, not throug
 ## DOC M-05 — Site 04 Decoding Worksheet
 
 **Station:** Remote Monitoring Site 04  
-**Signal ID:** SIG-[PENDING GLOBAL ID PASS]  
+**Signal ID:** SIG-0005  
 **Mode:** CW  
 **Frequency:** [PENDING FREQUENCY PLAN]  
-**Reception time:** [PENDING CHRONOLOGY PASS]  
-**Decoder output:** [CANONICAL NUMERIC SEQUENCE — TO BE LOCKED]  
+**Reception time:** [DATE TBD], [TIME TBD]  
+**Decoder output:** `731904`  
 **Identifier heard:** NR-041  
 **Decode confidence:** High  
 **Registry check:** No match
@@ -143,7 +144,7 @@ The identifier was decoded consistently on repeat playback. The numeric sequence
 
 **Caution:** A high-confidence identifier decode does not establish the transmitting station's identity. The sequence is an observed pattern; its meaning is not known at this stage.
 
-*Placement rule:* this worksheet is found before or alongside the closed incident file, depending on player discovery. The numeric sequence must match the sequence in M-08 and M-09 exactly after the project locks it.
+*Placement rule:* this worksheet is found before or alongside the closed incident file, depending on player discovery. The numeric sequence `731904` must match M-08 and M-09 exactly.
 
 ---
 
@@ -243,4 +244,4 @@ Two recordings that appear to come from different monitoring stations contain a 
 8. M-10A/M-10B: follow-up report is administratively closed without resolving the chronology.
 9. Optional M-11–M-14: deepen the pattern without solving the cause.
 
-Discovery can vary, but every essential record must have a recovery path in the archive. The sequence itself must remain a placeholder until a single canonical value is selected and propagated through all records.
+Discovery can vary, but every essential record must have a recovery path in the archive. The sequence `731904` is the current working value and must be propagated consistently through all records.
