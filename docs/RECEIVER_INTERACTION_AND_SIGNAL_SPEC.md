@@ -1,6 +1,6 @@
 # DEAD AIR — Receiver Interaction & Signal Behavior Specification
 
-*Working design specification, version 0.1. Design only; not implementation code. It follows GAME_DESIGN.md, OPENING_SHIFT_PLAYABLE_SCRIPT.md, MAIN_STORY_ASSIGNMENT_SCRIPTS.md, and ASSIGNMENT_EVIDENCE_DEPENDENCY_MAP.md.*
+*Working design specification, version 0.1. This remains the behavioral contract for the active prototype; current implementation is deliberately simplified and does not yet implement physical receiver behavior.*
 
 ## 1. Purpose and non-negotiable rules
 
@@ -317,7 +317,7 @@ The following must be tested or locked during design/prototyping: exact curated 
 
 Do not invent precise values for these in story documents before the design decision is made.
 
-## 20. Acceptance criteria before implementation
+## 20. Prototype acceptance criteria
 
 The receiver design is ready for a prototype when the team can demonstrate that:
 1. A signal's event data drives display, audio, transcript, classification, and archive consistently.
@@ -333,4 +333,4 @@ The receiver design is ready for a prototype when the team can demonstrate that:
 11. Comparison views distinguish observations from hypotheses and do not infer source identity from an identifier alone.
 12. The UI remains stable and truthful throughout all receiver states.
 
-This specification settles intended behavior, not implementation details. Coding should begin only after the project owner explicitly authorizes implementation.
+This specification defines intended behavior. The current prototype implements only a bounded deterministic subset; use the acceptance criteria to guide verification and subsequent increments.
