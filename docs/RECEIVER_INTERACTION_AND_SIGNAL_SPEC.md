@@ -343,7 +343,7 @@ The first implementation deliberately covers only a deterministic subset:
 - The current tuning displays authored event matches only when frequency is within 0.0005 MHz and mode matches exactly.
 - SEEK NEXT moves to the next authored event in catalog order and tunes to its metadata. It is not a physical scan.
 - All five authored events are automatically retained from the start. Manual recording adds a separate provenance marker.
-- The current waterfall is a clearly labelled placeholder visual, not a data-driven frequency/time plot.
+- The current plot is data-driven for current-shift events SIG-0001–0003 only, mapped across 0–15 MHz and 08:00–08:30. Prior-cycle and next-shift NR-041 events are excluded because their calendar dates are unknown; the UI explicitly labels this limit.
 - Event transcripts and source limitations are always visible as text.
 
 These simplifications must remain honestly labelled until replaced and tested.
