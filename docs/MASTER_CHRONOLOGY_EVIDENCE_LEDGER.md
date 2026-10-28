@@ -11,7 +11,7 @@
 - Administrative closure is a recurring institutional pattern, not proof of a supernatural force.
 - Player-facing documents must each remain individually plausible; contradictions should emerge through comparison.
 - Essential evidence must not be missable because of a short recording, receiver settings, a missed transmission, or one early choice.
-- Unfixed dates, times, frequencies, call signs, and numeric sequences remain explicit placeholders.
+- Calendar dates and exact NR-041 reception times remain placeholders. Current working values: sequence `731904`; opening time standard `10.000 MHz AM`; NR-041 first/recurring receptions `7.418 MHz CW`; Signal IDs are allocated in the Canonical Identifiers & Time Register. External clock basis remains unresolved.
 
 ## 2. Main-Story Chronology Anchors
 
@@ -34,7 +34,7 @@
 | M-02 | Registry response linked to M-01. | Registry says no station NR-041 has ever existed. | That the transmission did not occur or registry is complete. |
 | M-03 | Mara Venn's written supervisor response. | Regional Operations treats issue as registry discrepancy and closes task. | That signal was a duplicate; player made only one recording. |
 | M-04 | NR-041 recurrence on next routine shift. | Same identifier returns with different pattern/timing and weaker/fading reception. | A common physical transmitter or definitive link to M-01. |
-| M-05 | Decoded transcript of recurring signal. | A routine coded sequence can be recovered. | Meaning before supporting context is found. |
+| M-05 | Decoded transcript of recurring signal. | The coded sequence `731904` can be recovered, with lower confidence than the NR-041 identifier. | Meaning before supporting context is found. |
 | M-06 | Closed incident file 01-773. | Technical appendix references the same sequence as M-05. | That NR-041 caused or originated the incident. |
 | M-07 | Official shutdown summary inside M-06. | Official summary claims operations ended and equipment was secured. | That shutdown occurred exactly as described or all systems were silent afterward. |
 | M-08 | Post-shutdown appendix. | Communications entry appears after the stated shutdown time/date. | Whether genuine, misdated, delayed, or misattributed. |
@@ -116,10 +116,10 @@ Mara's statements must reflect administrative criteria and available records; sh
 | Player station | Remote Monitoring Site 04 | Provisional label. |
 | Supervisor | Mara Venn, Regional Operations | Confirm name/title/voice style. |
 | Unregistered identifier | NR-041 | Treat as working canon unless renamed. |
-| Example frequency | 7.418 MHz CW | Illustrative only; verify band/mode consistency. |
+| NR-041 frequency | 7.418 MHz CW | Working value; simulated event only. |
 | Closed incident file | 01-773 | Working ID; check for collisions. |
 | Communications record | 04-C | Working ID; define timestamp fields. |
-| Coded sequence | Draft numeric sequence | Choose one canonical sequence and use everywhere. |
+| Coded sequence | `731904` (working canon; meaning unknown) | Use `731904` consistently; its meaning remains unknown. |
 | Call signs | W1KDX / N4HLM | Placeholder; validate realism and avoid accidental real-person association. |
 | Silent Site dates | Not fixed | Set after main chronology; do not invent dates prematurely. |
 | Facility/project name | Not fixed | Decide whether anonymity improves tone. |
