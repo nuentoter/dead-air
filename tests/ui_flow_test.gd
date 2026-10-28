@@ -92,6 +92,8 @@ func _run() -> void:
 func _tree_contains_text(node: Node, expected: String) -> bool:
 	if node is Label and String((node as Label).text).contains(expected):
 		return true
+	if node is Button and String((node as Button).text).contains(expected):
+		return true
 	for child in node.get_children():
 		if _tree_contains_text(child, expected):
 			return true
