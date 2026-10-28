@@ -392,7 +392,10 @@ func _draw_archive() -> void:
 			_add_text("Source: " + String(document.get("source", "")), 12, MUTED)
 			_add_text("Claimed event time: " + String(document.get("claimed_event_time", "")), 12, MUTED)
 			_add_text("Clock basis: " + String(document.get("clock_basis", "")), 12, WARNING)
-			_add_text("Status: " + String(document.get("status", "")) + "  •  Version " + str(document.get("version", 1)), 12, MUTED)
+			var document_status := String(document.get("status", ""))
+			if String(document.get("id", "")) == "M-10B" and not game.data.get("reports", []).is_empty():
+				document_status = "AVAILABLE AFTER REPORT"
+			_add_text("Status: " + document_status + "  •  Version " + str(document.get("version", 1)), 12, MUTED)
 			_add_text(String(document.get("body", "")), 15, TEXT)
 			_add_text("Related records: " + str(document.get("related_ids", [])), 12, MUTED)
 			_add_text("Original text is retained as authored. No timestamp normalization is applied.", 12, WARNING)
@@ -446,6 +449,7 @@ func _save_note_from_ui() -> void:
 		return
 	game.add_note(note_editor.text, source_id)
 	game.data["note_draft"] = ""
+	game.save_game()
 	status_message = "Notebook entry saved."
 	_refresh()
 
@@ -500,8 +504,9 @@ func _draw_assignments() -> void:
 			if recommendation_select.get_item_text(i) == selected_rec:
 				recommendation_select.select(i)
 		body.add_child(recommendation_select)
-		_button("SUBMIT REPORT", _submit_report)
-		_add_text("Submission creates a permanent report record. The assignment closes; the case thread remains unresolved.", 12, WARNING)
+		var submit_label := "SUBMIT REPORT" if game.data.get("reports", []).is_empty() else "SUBMIT ADDENDUM"
+		_button(submit_label, _submit_report)
+		_add_text("Submissions are permanent. Later submissions append a separate report; the assignment remains closed and the case thread unresolved.", 12, WARNING)
 	if not game.data.get("reports", []).is_empty():
 		_add_text("SUBMITTED REPORTS", 14, ACCENT)
 		for report in game.data.get("reports", []):
@@ -541,7 +546,9 @@ func _submit_report() -> void:
 		recommendation = recommendation_select.get_item_text(recommendation_select.selected)
 	game.data["report_recommendation"] = recommendation
 	var report := game.submit_report(report_body, recommendation, ["SIG-0004", "SIG-0005", "M-02", "M-07", "M-08", "M-09"])
+	game.data["report_draft"] = ""
 	game.data["current_section"] = "Messages"
+	game.save_game()
 	status_message = String(report.get("id", "REPORT")) + " submitted. Mara's review is now available; source remains unresolved."
 	_refresh()
 
