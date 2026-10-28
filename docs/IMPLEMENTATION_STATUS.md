@@ -1,7 +1,7 @@
 # DEAD AIR — Implementation Status
 
 **Current milestone:** First workstation prototype, v0.1.0  
-**Status:** Godot 4.3 headless CI passed on commit 99bc8edb10c0ba800933e88aab59be1983b5a899. The prototype is not yet an Android release.
+**Status:** Godot 4.3 headless CI passed on commit 99bc8edb10c0ba800933e88aab59be1983b5a899. An arm64 Android debug APK exported successfully on commit 64870ccb41b6a93a731aa734c0816be9d4d97175 at 24,330,645 bytes (under 25,000,000 bytes). The release-mode export and physical-device tests are still pending.
 
 ## Implemented
 - Godot project configuration and main scene.
@@ -29,13 +29,13 @@
 - Frequency/mode are simulated; there is no RF processing, audio playback, SDR, or microphone use.
 - All authored events are retained from the start so essential clues cannot be missed.
 - No full eight-hour clock progression, queued archive retrieval, branch-heavy ending system, or complete Silent Site branch.
-- Godot headless success does not validate Android export or visual usability on a physical phone.
+- Debug APK export now passes, but Godot export success does not validate installation, runtime behavior, or visual usability on a physical phone.
 
 ## Not yet verified
 - Android export, device lifecycle, orientation, touch-target sizing, and package size.
 - Visual readability on a physical landscape phone.
 - Save recovery under disk-full or forced process termination.
-- Actual APK/AAB size against the under-25-MB target.
+- Release-mode APK size against the under-25-MB target; only the debug APK has been measured so far.
 - Full navigation testing on touch hardware.
 
 ## Next development steps
@@ -43,4 +43,4 @@
 2. Review the data-driven current-shift plot on a real landscape viewport and ensure its labels remain readable.
 3. Implement a more coherent simulated tuning/SEEK model, while keeping all core evidence recoverable.
 4. Add content depth and a complete shift loop only after usability is checked.
-5. Configure Android export locally, test on device/emulator, and record actual package size.
+5. Complete release-mode export, test both package installation and runtime on a device/emulator, and record actual package size.
