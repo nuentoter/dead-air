@@ -44,3 +44,7 @@ This file separates working canon from unresolved design choices. Do not silentl
 - Do not treat matching sequences as proof of a shared transmitter, entity, or AI cause.
 - Do not portray Mara as omniscient or definitively villainous.
 - Never let a high decoding-confidence value imply that the source or registry entry is true.
+
+## Decision register
+
+The [Prioritized Design Decision Register](PRIORITIZED_DESIGN_DECISION_REGISTER.md) tracks open choices by priority, dependencies, validation method, and implementation-readiness criteria. Use it alongside this file; it does not replace canon or authorize changes to unresolved story facts.
