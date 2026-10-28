@@ -1,6 +1,6 @@
 # DEAD AIR — Assignment & Evidence Dependency Map
 
-*Working design document, version 0.1. This is a progression/recovery plan, not game code. Assignment IDs beyond A-001 and A-002 are proposed and need a final collision check.*
+*Working design document, version 0.1. This is the assignment/recovery contract for the active prototype. The first-release scope uses A-001 through A-006; future assignment IDs still require a collision check.*
 
 ## 1. Rules
 
