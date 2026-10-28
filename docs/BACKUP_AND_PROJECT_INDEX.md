@@ -10,6 +10,7 @@ Repository: https://github.com/nuentoter/dead-air
 - [README](../README.md) — project entry point, current status, and core guardrails.
 - [Game Design Overview](GAME_DESIGN.md) — core concept, platform, player loop, receiver, archive, UI, audio, and constraints.
 - [Receiver Interaction & Signal Behavior Specification](RECEIVER_INTERACTION_AND_SIGNAL_SPEC.md) — receiver controls, scanning, modes, signal processing, recordings, decode behavior, and recovery rules.
+- [Shift & Assignment Progression Specification](SHIFT_AND_ASSIGNMENT_PROGRESSION_SPEC.md) — shift lifecycle, simulated time, routine duties, assignment/report states, supervisor review, evidence discovery, and save/resume behavior.
 - [Master Chronology & Evidence Ledger](MASTER_CHRONOLOGY_EVIDENCE_LEDGER.md) — evidence ledger, chronology anchors, contradiction matrix, Silent Site evidence chain, ambient threads, and placeholder register.
 - [Canon Decisions & Open Questions](CANON_AND_OPEN_QUESTIONS.md) — established working canon, provisional choices, unresolved decisions, and guardrails.
 - [Assignment Evidence Dependency Map](ASSIGNMENT_EVIDENCE_DEPENDENCY_MAP.md) — assignment register, core evidence paths, optional branches, knowledge gates, and recovery rules.
