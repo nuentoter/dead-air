@@ -8,9 +8,9 @@
 - Script-built landscape workstation UI with Receiver, Recordings, Archive, Notebook, Assignments, and Messages.
 - Five authored opening signal events with stable IDs and readable transcripts.
 - Core archive records M-02, M-05, M-07, M-08, M-09, M-10B.
-- Local JSON save/load with schema version, temporary write, backup/restore during save replacement, and recovery-copy attempt for unreadable saves.
+- Local JSON save/load with schema version, temporary write, backup/restore during save replacement, and recovery-copy attempt for unreadable saves; automated malformed-save preservation is included in the self-test.
 - Persistent text-size controls.
-- Receiver power, frequency and mode state; authored event-match feedback; deterministic SEEK NEXT; manual-record provenance; a data-driven current-shift frequency/time plot.
+- Receiver power, frequency and mode state; authored event-match feedback; deterministic SEEK NEXT; manual-record provenance; a data-driven current-shift frequency/time plot with explicit in-plot time and frequency axis labels.
 - Searchable archive, read-state tracking for required documents, notebook notes/source links, and player-selectable report citations persisted with the draft.
 - Evidence-driven assignment progress: A-001/A-002/A-004/A-005 complete from their defined receiver/document actions; A-003 requires inspection of both NR-041 receptions and a separate comparison confirmation.
 - Immutable report submissions/addenda and unresolved case status.

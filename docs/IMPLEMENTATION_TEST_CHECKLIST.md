@@ -40,6 +40,7 @@ Mark only tests actually performed; “not run” is not a pass.
 ## Persistence and recovery
 - [ ] Fresh install creates usable defaults.
 - [ ] Save/load preserves notes, reports, receiver settings, navigation.
+- [ ] Automated malformed-save test preserves the original bytes in a recovery copy and restores the valid test save afterward.
 - [ ] Invalid save gives clear fallback and does not crash.
 - [ ] Suspend/resume does not advance simulated time.
 - [ ] Missed live events remain in archive.

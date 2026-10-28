@@ -17,18 +17,28 @@ class WaterfallPlot extends Control:
 	var events: Array = []
 
 	func _ready() -> void:
-		custom_minimum_size = Vector2(0, 112)
+		custom_minimum_size = Vector2(0, 150)
 		queue_redraw()
 
 	func _draw() -> void:
-		var plot_size := size
-		draw_rect(Rect2(Vector2.ZERO, plot_size), Color(0.018, 0.035, 0.04, 1), true)
-		for step in range(1, 10):
-			var x := plot_size.x * float(step) / 10.0
-			draw_line(Vector2(x, 0), Vector2(x, plot_size.y), Color(0.12, 0.2, 0.19, 1), 1.0)
+		var font := ThemeDB.fallback_font
+		var label_size := 10
+		var left_gutter := 44.0
+		var bottom_gutter := 18.0
+		var plot_rect := Rect2(Vector2(left_gutter, 4.0), Vector2(maxf(1.0, size.x - left_gutter - 4.0), maxf(1.0, size.y - bottom_gutter - 4.0)))
+		draw_rect(Rect2(Vector2.ZERO, size), Color(0.018, 0.035, 0.04, 1), true)
+		for step in range(0, 5):
+			var x := plot_rect.position.x + plot_rect.size.x * float(step) / 4.0
+			draw_line(Vector2(x, plot_rect.position.y), Vector2(x, plot_rect.end.y), Color(0.12, 0.2, 0.19, 1), 1.0)
+			if step == 0 or step == 2 or step == 4:
+				var frequency_label := ["0", "7.5", "15"][int(step / 2)] + " MHz"
+				draw_string(font, Vector2(x - 18.0, size.y - 3.0), frequency_label, HORIZONTAL_ALIGNMENT_LEFT, 42.0, label_size, Color(0.57, 0.68, 0.67, 1))
 		for minute in [0, 15, 30]:
-			var y := plot_size.y * float(minute) / 30.0
-			draw_line(Vector2(0, y), Vector2(plot_size.x, y), Color(0.16, 0.25, 0.23, 1), 1.0)
+			var y := plot_rect.position.y + plot_rect.size.y * float(minute) / 30.0
+			draw_line(Vector2(plot_rect.position.x, y), Vector2(plot_rect.end.x, y), Color(0.16, 0.25, 0.23, 1), 1.0)
+			var time_label := "08:%02d" % minute
+			var label_y := clampf(y + 4.0, 12.0, size.y - bottom_gutter)
+			draw_string(font, Vector2(2.0, label_y), time_label, HORIZONTAL_ALIGNMENT_LEFT, left_gutter - 5.0, label_size, Color(0.57, 0.68, 0.67, 1))
 		for event in events:
 			var event_id := String(event.get("id", ""))
 			if not ["SIG-0001", "SIG-0002", "SIG-0003"].has(event_id):
@@ -38,14 +48,14 @@ class WaterfallPlot extends Control:
 				continue
 			var minutes := int(parts[0]) * 60 + int(parts[1])
 			var relative_minutes := clampf(float(minutes - 480), 0.0, 30.0)
-			var y := plot_size.y * relative_minutes / 30.0
+			var y := plot_rect.position.y + plot_rect.size.y * relative_minutes / 30.0
 			var frequency := clampf(float(event.get("frequency_mhz", 0.0)), 0.0, 15.0)
-			var x := plot_size.x * frequency / 15.0
+			var x := plot_rect.position.x + plot_rect.size.x * frequency / 15.0
 			var strength := clampf(float(event.get("strength", 0.5)), 0.0, 1.0)
 			var half_width := 5.0 + strength * 18.0
 			var trace_color := Color(0.22, 0.48, 0.39, 1).lerp(Color(0.5, 0.88, 0.68, 1), strength)
-			draw_line(Vector2(maxf(0.0, x - half_width), y), Vector2(minf(plot_size.x, x + half_width), y), trace_color, 3.0)
-			draw_line(Vector2(x, maxf(0.0, y - 4.0)), Vector2(x, minf(plot_size.y, y + 4.0)), trace_color, 2.0)
+			draw_line(Vector2(maxf(plot_rect.position.x, x - half_width), y), Vector2(minf(plot_rect.end.x, x + half_width), y), trace_color, 3.0)
+			draw_line(Vector2(x, maxf(plot_rect.position.y, y - 4.0)), Vector2(x, minf(plot_rect.end.y, y + 4.0)), trace_color, 2.0)
 
 var game
 var root_column: VBoxContainer
@@ -372,11 +382,7 @@ func _draw_waterfall() -> void:
 	plot.events = Catalog.EVENTS
 	plot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	visual.add_child(plot)
-	var axis_row := _row(visual)
-	_add_text("0 MHz", 10, MUTED, axis_row)
-	_add_text("7.5 MHz", 10, MUTED, axis_row)
-	_add_text("15 MHz", 10, MUTED, axis_row)
-	_add_text("Vertical scale: current-shift event time, 08:00–08:30.", 11, MUTED, visual)
+	_add_text("Axes: frequency in MHz (horizontal); Site 04 displayed event time, 08:00–08:30 (vertical).", 11, MUTED, visual)
 	_add_text("Only SIG-0001–0003 are plotted. Prior-cycle and next-shift receptions are excluded because their dates are unknown; their records remain accessible.", 11, WARNING, visual)
 
 func _toggle_receiver() -> void:
@@ -600,8 +606,9 @@ func _draw_assignments() -> void:
 	_add_text(String(assignment.get("title", "")), 19, TEXT)
 	_add_text(String(assignment.get("description", "")), 15, TEXT)
 	var action_row := _row()
+	var selected_status := String(game.data.get("assignments", {}).get(selected_assignment_id, "OPEN"))
 	var progress_button := _button("MARK IN PROGRESS", _mark_selected_assignment_in_progress, action_row)
-	progress_button.disabled = current_status == "COMPLETED" or current_status == "CLOSED"
+	progress_button.disabled = selected_status == "COMPLETED" or selected_status == "CLOSED"
 	if selected_assignment_id == "A-003":
 		var inspected_events: Array = game.data.get("inspected_event_ids", [])
 		if inspected_events.has("SIG-0004") and inspected_events.has("SIG-0005"):
