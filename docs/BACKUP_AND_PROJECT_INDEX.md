@@ -23,7 +23,8 @@ Repository: https://github.com/nuentoter/dead-air
 - [Ending & Disclosure Structure](ENDING_AND_DISCLOSURE_STRUCTURE.md) — uncertainty-preserving ending.
 - [Technical Implementation Plan](TECHNICAL_IMPLEMENTATION_PLAN.md) — Godot structure, data model, persistence, and tests.
 - [Implementation Test Checklist](IMPLEMENTATION_TEST_CHECKLIST.md) — repeatable verification checklist.
-- [Implementation Status](IMPLEMENTATION_STATUS.md) — code present, known simplifications, and tests still required.
+- [Implementation Status](IMPLEMENTATION_STATUS.md) — implemented prototype features, verified headless checks, and unverified items.
+- [Build & Run Guide](BUILD_AND_RUN.md) — local Godot run, headless checks, and Android export prerequisites.
 
 ### Story and player-facing content
 - [Opening Shift Playable Script](../story/OPENING_SHIFT_PLAYABLE_SCRIPT.md) — handover, onboarding, first NR-041 detection, registry lookup, report, and supervisor closure.
