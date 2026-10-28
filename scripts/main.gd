@@ -19,6 +19,8 @@ var status_label: Label
 var selected_document_id := ""
 var selected_assignment_id := "A-001"
 var archive_query := ""
+var archive_search_input: LineEdit
+var note_source_select: OptionButton
 var report_editor: TextEdit
 var note_editor: TextEdit
 var recommendation_select: OptionButton
@@ -361,21 +363,13 @@ func _select_event_from_recordings(event_id: String) -> void:
 func _draw_archive() -> void:
 	_heading("ARCHIVE", "Searchable institutional records. A missing result describes the index searched—not reality.")
 	var search_row := _row()
-	var search := LineEdit.new()
-	search.placeholder_text = "Search ID, title, source, or text"
-	search.text = archive_query
-	search.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	search_row.add_child(search)
-	_button("SEARCH", func():
-		archive_query = search.text.strip_edges()
-		selected_document_id = ""
-		_refresh()
-	, search_row)
-	_button("CLEAR", func():
-		archive_query = ""
-		selected_document_id = ""
-		_refresh()
-	, search_row)
+	archive_search_input = LineEdit.new()
+	archive_search_input.placeholder_text = "Search ID, title, source, or text"
+	archive_search_input.text = archive_query
+	archive_search_input.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	search_row.add_child(archive_search_input)
+	_button("SEARCH", _run_archive_search, search_row)
+	_button("CLEAR", _clear_archive_search, search_row)
 	var matches: Array = []
 	var query := archive_query.to_lower()
 	for document in Catalog.DOCUMENTS:
@@ -399,6 +393,16 @@ func _draw_archive() -> void:
 			_add_text("Related records: " + str(document.get("related_ids", [])), 12, MUTED)
 			_add_text("Original text is retained as authored. No timestamp normalization is applied.", 12, WARNING)
 
+func _run_archive_search() -> void:
+	archive_query = archive_search_input.text.strip_edges() if archive_search_input != null else ""
+	selected_document_id = ""
+	_refresh()
+
+func _clear_archive_search() -> void:
+	archive_query = ""
+	selected_document_id = ""
+	_refresh()
+
 func _select_document(document_id: String) -> void:
 	selected_document_id = document_id
 	status_message = "Opened " + document_id + ". Original record text is unchanged."
@@ -415,21 +419,13 @@ func _draw_notebook() -> void:
 	body.add_child(note_editor)
 	var source_row := _row()
 	_add_text("SOURCE LINK", 12, MUTED, source_row)
-	var source_select := OptionButton.new()
-	source_select.add_item("No source link")
+	note_source_select = OptionButton.new()
+	note_source_select.add_item("No source link")
 	for item in ["SIG-0004", "SIG-0005", "M-02", "M-05", "M-07", "M-08", "M-09"]:
-		source_select.add_item(item)
-	source_select.custom_minimum_size = Vector2(170, 38)
-	source_row.add_child(source_select)
-	_button("SAVE NOTE", func():
-		var source_id := ""
-		if source_select.selected > 0:
-			source_id = source_select.get_item_text(source_select.selected)
-		game.add_note(note_editor.text, source_id)
-		game.data["note_draft"] = ""
-		status_message = "Notebook entry saved."
-		_refresh()
-	, source_row)
+		note_source_select.add_item(item)
+	note_source_select.custom_minimum_size = Vector2(170, 38)
+	source_row.add_child(note_source_select)
+	_button("SAVE NOTE", _save_note_from_ui, source_row)
 	_add_text("SAVED NOTES", 14, ACCENT)
 	if game.data.get("notes", []).is_empty():
 		_add_text("No saved notes yet.", 13, MUTED)
@@ -437,6 +433,17 @@ func _draw_notebook() -> void:
 		_add_text(String(note.get("id", "")) + (("  /  " + String(note.get("source_id", ""))) if not String(note.get("source_id", "")).is_empty() else ""), 12, MUTED)
 		_add_text(String(note.get("text", "")), 15, TEXT)
 		_button("DELETE " + String(note.get("id", "")), _delete_note.bind(String(note.get("id", "")))
+
+func _save_note_from_ui() -> void:
+	var source_id := ""
+	if note_source_select != null and note_source_select.selected > 0:
+		source_id = note_source_select.get_item_text(note_source_select.selected)
+	if note_editor == null:
+		return
+	game.add_note(note_editor.text, source_id)
+	game.data["note_draft"] = ""
+	status_message = "Notebook entry saved."
+	_refresh()
 
 func _on_note_draft_changed() -> void:
 	if note_editor != null:
@@ -466,12 +473,7 @@ func _draw_assignments() -> void:
 	_add_text(String(assignment.get("title", "")), 19, TEXT)
 	_add_text(String(assignment.get("description", "")), 15, TEXT)
 	var action_row := _row()
-	_button("MARK IN PROGRESS", func():
-		game.data["assignments"][selected_assignment_id] = "IN PROGRESS"
-		game.save_game()
-		status_message = selected_assignment_id + " marked in progress."
-		_refresh()
-	, action_row)
+	_button("MARK IN PROGRESS", _mark_selected_assignment_in_progress, action_row)
 	if selected_assignment_id == "A-006":
 		_add_text("REPORT DRAFT", 14, ACCENT)
 		report_editor = TextEdit.new()
@@ -507,6 +509,12 @@ func _find_assignment(assignment_id: String) -> Dictionary:
 		if String(assignment.get("id", "")) == assignment_id:
 			return assignment
 	return {}
+
+func _mark_selected_assignment_in_progress() -> void:
+	game.data["assignments"][selected_assignment_id] = "IN PROGRESS"
+	game.save_game()
+	status_message = selected_assignment_id + " marked in progress."
+	_refresh()
 
 func _select_assignment(assignment_id: String) -> void:
 	selected_assignment_id = assignment_id
@@ -546,13 +554,14 @@ func _draw_messages() -> void:
 		var response := _find_document("M-10B")
 		_add_text(String(response.get("body", "")), 15, TEXT)
 		_add_text("Administrative status: accepted for filing. Case status: unresolved.", 12, WARNING)
-		_button("OPEN A-006 REPORT", func():
-			selected_assignment_id = "A-006"
-			game.data["current_section"] = "Assignments"
-			game.save_game()
-			_refresh()
-		)
+		_button("OPEN A-006 REPORT", _open_report_assignment)
 		_add_text("SHIFT CLOSED — RECORDS RETAINED — SOURCE UNRESOLVED", 17, ACCENT)
+
+func _open_report_assignment() -> void:
+	selected_assignment_id = "A-006"
+	game.data["current_section"] = "Assignments"
+	game.save_game()
+	_refresh()
 
 func _mark_message_read(message_id: String) -> void:
 	game.mark_message_seen(message_id)
