@@ -12,6 +12,40 @@ const MUTED = Color(0.57, 0.68, 0.67, 1)
 const ACCENT = Color(0.45, 0.79, 0.65, 1)
 const WARNING = Color(0.91, 0.72, 0.43, 1)
 
+class WaterfallPlot extends Control:
+	var events: Array = []
+
+	func _ready() -> void:
+		custom_minimum_size = Vector2(0, 112)
+		queue_redraw()
+
+	func _draw() -> void:
+		var plot_size := size
+		draw_rect(Rect2(Vector2.ZERO, plot_size), Color(0.018, 0.035, 0.04, 1), true)
+		for step in range(1, 10):
+			var x := plot_size.x * float(step) / 10.0
+			draw_line(Vector2(x, 0), Vector2(x, plot_size.y), Color(0.12, 0.2, 0.19, 1), 1.0)
+		for minute in [0, 15, 30]:
+			var y := plot_size.y * float(minute) / 30.0
+			draw_line(Vector2(0, y), Vector2(plot_size.x, y), Color(0.16, 0.25, 0.23, 1), 1.0)
+		for event in events:
+			var event_id := String(event.get("id", ""))
+			if not ["SIG-0001", "SIG-0002", "SIG-0003"].has(event_id):
+				continue
+			var parts: PackedStringArray = String(event.get("time_label", "08:00")).split(":")
+			if parts.size() != 2:
+				continue
+			var minutes := int(parts[0]) * 60 + int(parts[1])
+			var relative_minutes := clampf(float(minutes - 480), 0.0, 30.0)
+			var y := plot_size.y * relative_minutes / 30.0
+			var frequency := clampf(float(event.get("frequency_mhz", 0.0)), 0.0, 15.0)
+			var x := plot_size.x * frequency / 15.0
+			var strength := clampf(float(event.get("strength", 0.5)), 0.0, 1.0)
+			var half_width := 5.0 + strength * 18.0
+			var trace_color := Color(0.22, 0.48, 0.39, 1).lerp(Color(0.5, 0.88, 0.68, 1), strength)
+			draw_line(Vector2(maxf(0.0, x - half_width), y), Vector2(minf(plot_size.x, x + half_width), y), trace_color, 3.0)
+			draw_line(Vector2(x, maxf(0.0, y - 4.0)), Vector2(x, minf(plot_size.y, y + 4.0)), trace_color, 2.0)
+
 var game
 var root_column: VBoxContainer
 var body: VBoxContainer
@@ -333,10 +367,16 @@ func _draw_waterfall() -> void:
 	var visual := VBoxContainer.new()
 	frame.add_child(visual)
 	_add_text("WATERFALL  /  FREQUENCY →     TIME ↓", 11, MUTED, visual)
-	var bands := ["················································", "····· ░░ ·················· ░ ··················", "················ ░░░ ···························", "·································· ░░ ··········", "·········· ░ ···································"]
-	for i in range(bands.size()):
-		_add_text(bands[i], 14, ACCENT if i == 2 else Color(0.32, 0.55, 0.48, 1), visual)
-	_add_text("Illustrative display only. No live RF, hidden imagery, or random corruption.", 11, MUTED, visual)
+	var plot := WaterfallPlot.new()
+	plot.events = Catalog.EVENTS
+	plot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	visual.add_child(plot)
+	var axis_row := _row(visual)
+	_add_text("0 MHz", 10, MUTED, axis_row)
+	_add_text("7.5 MHz", 10, MUTED, axis_row)
+	_add_text("15 MHz", 10, MUTED, axis_row)
+	_add_text("Vertical scale: current-shift event time, 08:00–08:30.", 11, MUTED, visual)
+	_add_text("Only SIG-0001–0003 are plotted. Prior-cycle and next-shift receptions are excluded because their dates are unknown; their records remain accessible.", 11, WARNING, visual)
 
 func _toggle_receiver() -> void:
 	var next_power := not bool(game.data.get("receiver_power", false))
