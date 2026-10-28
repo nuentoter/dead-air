@@ -14,11 +14,11 @@
 - Searchable archive, read-state tracking for required documents, notebook notes/source links, and player-selectable report citations persisted with the draft.
 - Evidence-driven assignment progress: A-001/A-002/A-004/A-005 complete from their defined receiver/document actions (A-004 requires the M-06A cover, M-07 summary, and M-08 appendix); A-003 requires inspection of both NR-041 receptions and a separate comparison confirmation. Each assignment displays a persistent progress checklist based on the actual reviewed evidence and recorded state.
 - Immutable report submissions/addenda and unresolved case status, displayed in a read-only report history with cited source IDs in Messages; each citation can open its retained signal event or archive document.
-- Notebook entries display a readable title/metadata for each linked source and provide a direct open-source action; opening evidence never rewrites the note's interpretation.
+- Notebook entries persist a player-selected classification (UNCLASSIFIED, OBSERVED FACT, WORKING HYPOTHESIS, OPEN QUESTION), display linked-source titles, and provide a direct open-source action; opening evidence never rewrites the note's interpretation.
 - Archive records expose direct navigation buttons for related signal/document IDs present in the local catalog; unsupported references remain visible as text only, and links explicitly do not prove common origin.
 - A-006 submission is blocked until M-02, M-05, M-07, M-08, and M-09 have been opened in the archive. All five are recoverable without live reception.
 - Supervisor review appears after submission; M-10B remains hidden from archive until then.
-- GitHub Actions checks project import, strict script parsing, main-scene startup, UI report flow, notebook source navigation, related-record navigation, assignment checklist state, chronology consistency, report immutability/addenda, accessibility setting persistence, save/load behavior, Android export, APK size, manifest permissions, and orientation metadata.
+- GitHub Actions checks project import, strict script parsing, main-scene startup, UI report flow, notebook classification persistence, source navigation, related-record navigation, assignment checklist state, chronology consistency, report immutability/addenda, accessibility setting persistence, save/load behavior, Android export, APK size, manifest permissions, and orientation metadata.
 
 ## Verified on Godot 4.3
 - Project import and script parsing passed.

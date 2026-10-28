@@ -67,6 +67,7 @@ var selected_assignment_id := "A-001"
 var archive_query := ""
 var archive_search_input: LineEdit
 var note_source_select: OptionButton
+var note_class_select: OptionButton
 var report_editor: TextEdit
 var note_editor: TextEdit
 var recommendation_select: OptionButton
@@ -571,7 +572,7 @@ func _has_required_documents() -> bool:
 	return true
 
 func _draw_notebook() -> void:
-	_heading("NOTEBOOK", "Private working notes. Notes are interpretations, not automatic facts.")
+	_heading("NOTEBOOK", "Private working notes. Classification is your assessment, not a system verdict.")
 	note_editor = TextEdit.new()
 	note_editor.placeholder_text = "Write a note. Link a source if useful."
 	note_editor.text = String(game.data.get("note_draft", ""))
@@ -579,6 +580,18 @@ func _draw_notebook() -> void:
 	note_editor.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	note_editor.text_changed.connect(_on_note_draft_changed)
 	body.add_child(note_editor)
+	var classification_row := _row()
+	_add_text("NOTE CLASSIFICATION", 12, MUTED, classification_row)
+	note_class_select = OptionButton.new()
+	for classification in ["UNCLASSIFIED", "OBSERVED FACT", "WORKING HYPOTHESIS", "OPEN QUESTION"]:
+		note_class_select.add_item(classification)
+	var saved_classification := String(game.data.get("note_draft_classification", "UNCLASSIFIED"))
+	for class_index in range(note_class_select.item_count):
+		if note_class_select.get_item_text(class_index) == saved_classification:
+			note_class_select.select(class_index)
+	note_class_select.item_selected.connect(_on_note_classification_selected)
+	note_class_select.custom_minimum_size = Vector2(220, 38)
+	classification_row.add_child(note_class_select)
 	var source_row := _row()
 	_add_text("SOURCE LINK", 12, MUTED, source_row)
 	note_source_select = OptionButton.new()
@@ -594,7 +607,7 @@ func _draw_notebook() -> void:
 	for note in game.data.get("notes", []):
 		var note_id := String(note.get("id", ""))
 		var source_id := String(note.get("source_id", ""))
-		_add_text(note_id + (("  /  SOURCE: " + source_id) if not source_id.is_empty() else "  /  NO SOURCE LINK"), 12, MUTED)
+		_add_text(note_id + "  /  " + String(note.get("classification", "UNCLASSIFIED")) + (("  /  SOURCE: " + source_id) if not source_id.is_empty() else "  /  NO SOURCE LINK"), 12, MUTED)
 		_add_text(String(note.get("text", "")), 15, TEXT)
 		if not source_id.is_empty():
 			var source_title := _source_display_title(source_id)
@@ -608,11 +621,18 @@ func _save_note_from_ui() -> void:
 		source_id = note_source_select.get_item_text(note_source_select.selected)
 	if note_editor == null:
 		return
-	game.add_note(note_editor.text, source_id)
+	game.add_note(note_editor.text, source_id, String(game.data.get("note_draft_classification", "UNCLASSIFIED")))
 	game.data["note_draft"] = ""
+	game.data["note_draft_classification"] = "UNCLASSIFIED"
 	game.save_game()
 	status_message = "Notebook entry saved."
 	_refresh()
+
+func _on_note_classification_selected(index: int) -> void:
+	if note_class_select == null:
+		return
+	game.data["note_draft_classification"] = note_class_select.get_item_text(index)
+	game.save_game()
 
 func _on_note_draft_changed() -> void:
 	if note_editor != null:

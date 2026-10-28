@@ -83,8 +83,19 @@ func _run() -> void:
 	instance.call("_open_related_record", "M-07")
 	if not _expect(String(instance.get("selected_document_id")) == "M-07", "Opening an archive relationship did not select the linked record."):
 		return
-	game.add_note("Notebook interpretation: repeated sequence may indicate a shared source; this is not confirmed.", "M-07")
 	instance.call("_on_nav_pressed", "Notebook")
+	await process_frame
+	var note_editor = instance.get("note_editor") as TextEdit
+	var note_source_select = instance.get("note_source_select") as OptionButton
+	var note_class_select = instance.get("note_class_select") as OptionButton
+	if not _expect(note_editor != null and note_source_select != null and note_class_select != null, "Notebook note editor, source selector, or classification selector was not built."):
+		return
+	note_editor.text = "Notebook interpretation: repeated sequence may indicate a shared source; this is not confirmed."
+	note_source_select.select(6)
+	note_class_select.select(2)
+	instance.call("_on_note_classification_selected", 2)
+	instance.call("_on_note_draft_changed")
+	instance.call("_save_note_from_ui")
 	await process_frame
 	if not _expect(_tree_contains_text(instance, "Evidence reference: " + String(instance.call("_source_display_title", "M-07"))), "Notebook did not show a readable title for the linked source."):
 		return
@@ -96,6 +107,10 @@ func _run() -> void:
 	if not _expect(String(instance.get("selected_document_id")) == "M-07", "Opening a notebook source did not select its linked document."):
 		return
 	if not _expect(String(game.data["notes"][-1].get("text", "")).contains("not confirmed"), "Opening a source altered the notebook interpretation."):
+		return
+	if not _expect(String(game.data["notes"][-1].get("classification", "")) == "WORKING HYPOTHESIS", "Notebook classification was not persisted with the note."):
+		return
+	if not _expect(_tree_contains_text(instance, "WORKING HYPOTHESIS"), "Saved note did not display its selected classification."):
 		return
 	print("DEAD AIR UI flow test passed: report submission/history/citations and notebook source labels/navigation with interpretation preserved.")
 	quit(0)

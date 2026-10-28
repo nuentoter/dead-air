@@ -45,6 +45,7 @@ func reset_defaults() -> void:
 		"next_note_id": 1,
 		"next_report_id": 1,
 		"note_draft": "",
+		"note_draft_classification": "UNCLASSIFIED",
 		"report_draft": "The retained records establish a repeated identifier and conflicting chronology. The available material does not establish a common transmitter or explain the source-clock difference.",
 		"report_recommendation": "Retain records and request clock/source documentation.",
 		"report_source_ids": ["SIG-0004", "SIG-0005", "M-02", "M-05", "M-07", "M-08", "M-09"]
@@ -74,7 +75,7 @@ func _ensure_defaults() -> void:
 		"inspected_event_ids": [], "recorded_event_ids": [], "documents_read": [], "notes": [], "reports": [],
 		"assignments": {}, "messages_seen": [], "settings": {"text_scale": 1.0, "audio_enabled": false},
 		"event_log": [], "next_note_id": 1, "next_report_id": 1,
-		"note_draft": "", "report_draft": "The retained records establish a repeated identifier and conflicting chronology. The available material does not establish a common transmitter or explain the source-clock difference.",
+		"note_draft": "", "note_draft_classification": "UNCLASSIFIED", "report_draft": "The retained records establish a repeated identifier and conflicting chronology. The available material does not establish a common transmitter or explain the source-clock difference.",
 		"report_recommendation": "Retain records and request clock/source documentation.",
 		"report_source_ids": ["SIG-0004", "SIG-0005", "M-02", "M-05", "M-07", "M-08", "M-09"]
 	}
@@ -162,13 +163,13 @@ func record_event(event_id: String) -> void:
 		log_event("Manual recording created for " + event_id + ". Automatic retention remains a separate provenance state.")
 	save_game()
 
-func add_note(text_value: String, source_id: String = "") -> void:
+func add_note(text_value: String, source_id: String = "", classification: String = "UNCLASSIFIED") -> void:
 	var trimmed := text_value.strip_edges()
 	if trimmed.is_empty():
 		return
 	var note_id := "NOTE-%04d" % int(data["next_note_id"])
 	data["next_note_id"] = int(data["next_note_id"]) + 1
-	data["notes"].append({"id": note_id, "text": trimmed, "source_id": source_id, "created_order": data["notes"].size() + 1})
+	data["notes"].append({"id": note_id, "text": trimmed, "source_id": source_id, "classification": classification, "created_order": data["notes"].size() + 1})
 	log_event("Notebook entry added: " + note_id)
 	save_game()
 
