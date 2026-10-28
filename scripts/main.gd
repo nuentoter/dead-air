@@ -12,7 +12,7 @@ const MUTED = Color(0.57, 0.68, 0.67, 1)
 const ACCENT = Color(0.45, 0.79, 0.65, 1)
 const WARNING = Color(0.91, 0.72, 0.43, 1)
 
-var game: RefCounted
+var game
 var root_column: VBoxContainer
 var body: VBoxContainer
 var status_label: Label
@@ -396,7 +396,7 @@ func _draw_archive() -> void:
 			_add_text("Clock basis: " + String(document.get("clock_basis", "")), 12, WARNING)
 			_add_text("Status: " + String(document.get("status", "")) + "  •  Version " + str(document.get("version", 1)), 12, MUTED)
 			_add_text(String(document.get("body", "")), 15, TEXT)
-			_add_text("Related records: " + ", ".join(document.get("related_ids", [])), 12, MUTED)
+			_add_text("Related records: " + str(document.get("related_ids", [])), 12, MUTED)
 			_add_text("Original text is retained as authored. No timestamp normalization is applied.", 12, WARNING)
 
 func _select_document(document_id: String) -> void:
