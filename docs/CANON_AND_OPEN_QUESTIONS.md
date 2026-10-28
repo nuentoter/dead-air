@@ -4,7 +4,7 @@ This file separates working canon from unresolved design choices. Do not silentl
 
 ## Working canon
 
-- Offline, landscape-only Android radio-conspiracy horror; design-first, with no game code until explicitly authorized.
+- Offline, landscape-only Android radio-conspiracy horror. The project owner explicitly authorized continued development through implementation on 28 October 2026; first playable scope is documented and a Godot prototype is in progress.
 - The player is a technician at Remote Monitoring Site 04, a remote civilian monitoring station.
 - The fictional regulator is the National Radio Monitoring Service (NRMS), adopted as working canon v0.2.
 - Mara Venn is the Regional Operations supervisor, adopted as working canon v0.2.
