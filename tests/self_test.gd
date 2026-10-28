@@ -34,15 +34,23 @@ func _run() -> void:
 	var state := GameState.new()
 	for event_id in ids:
 		assert(state.data["retained_event_ids"].has(event_id), "Essential authored event not retained: " + event_id)
+	var report_count_before: int = state.data.get("reports", []).size()
 	state.data["assignments"]["A-006"] = "IN PROGRESS"
-	var report := state.submit_report("Test observation: chronology remains unresolved.", "Retain records and request clock/source documentation.", ["M-07", "M-08", "M-09"])
+	var report: Dictionary = state.submit_report("Test observation: chronology remains unresolved.", "Retain records and request clock/source documentation.", ["M-07", "M-08", "M-09"])
 	assert(String(report.get("status", "")) == "SUBMITTED", "Report was not submitted.")
 	assert(String(report.get("case_status", "")) == "UNRESOLVED", "Report must not resolve the case.")
 	assert(String(state.data["assignments"]["A-006"]) == "CLOSED", "A-006 should close after submission.")
+	state.data["settings"]["text_scale"] = 1.1
+	state.save_game()
+	var addendum: Dictionary = state.submit_report("Addendum: source attribution remains unverified.", "Request independent technical review.", ["M-07", "M-08", "M-09"])
+	assert(String(addendum.get("kind", "")) == "ADDENDUM", "Second submission must be labeled addendum.")
+	assert(String(state.data["reports"][report_count_before].get("body", "")) == "Test observation: chronology remains unresolved.", "Submitted report was silently rewritten.")
+	assert(state.data["reports"].size() == report_count_before + 2, "Both report records must remain in history.")
 	var reloaded := GameState.new()
-	assert(reloaded.data.get("reports", []).size() >= 1, "Submitted report did not persist.")
+	assert(reloaded.data.get("reports", []).size() >= report_count_before + 2, "Submitted reports did not persist.")
 	assert(String(reloaded.data["reports"][-1].get("case_status", "")) == "UNRESOLVED", "Persisted case status changed.")
-	print("DEAD AIR self-test passed: catalog, chronology, retention, report, unresolved case, persistence.")
+	assert(is_equal_approx(float(reloaded.data["settings"].get("text_scale", 1.0)), 1.1), "Text size setting did not persist.")
+	print("DEAD AIR self-test passed: catalog, chronology, retention, immutable reports, addendum, accessibility setting, persistence.")
 	quit(0)
 
 func _event(event_id: String) -> Dictionary:
