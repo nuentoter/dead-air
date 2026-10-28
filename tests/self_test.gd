@@ -80,7 +80,7 @@ func _run() -> void:
 	legacy_data["assignments"]["A-005"] = "COMPLETED"
 	var legacy_file := FileAccess.open(GameState.SAVE_PATH, FileAccess.WRITE)
 	assert(legacy_file != null, "Could not open save for legacy A-005 migration test.")
-	legacy_file.store_string(JSON.stringify(legacy_data, "\\t"))
+	legacy_file.store_string(JSON.stringify(legacy_data, "\t"))
 	legacy_file.close()
 	var migrated := GameState.new()
 	assert(not bool(migrated.data.get("communications_comparison_reviewed", false)), "Legacy save should not invent an explicit comparison review.")
