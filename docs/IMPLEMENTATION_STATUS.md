@@ -1,7 +1,7 @@
 # DEAD AIR — Implementation Status
 
 **Current milestone:** First workstation prototype, v0.1.0  
-**Status:** Godot 4.3 headless CI passes. On commit 2404e3c1ff9de5b02e299649b0dcc7cf66aa31ed, the arm64 debug APK exported at 24,330,645 bytes and the CI-signed release-mode APK at 22,966,724 bytes; both are below 25,000,000 bytes. APK manifest audit also passed on commit e4f2102934c5d109b8aa1b4761093772c592f0e1: both APKs have an explicit orientation entry and neither requests INTERNET or RECORD_AUDIO. Physical-device tests remain pending.
+**Status:** Godot 4.3 headless CI passes. On gameplay commit 56d9e5f75907e84c83f7f05cdbbc80fb1e2c3116, the arm64 debug APK exported at 24,347,029 bytes and the CI-signed release-mode APK at 22,983,108 bytes; both are below 25,000,000 bytes. The same export workflow passed the manifest audit: both APKs have an explicit orientation entry and neither requests INTERNET or RECORD_AUDIO. Later commits in this development sequence changed automated test coverage or documentation only; physical-device behavior remains unverified. Physical-device tests remain pending.
 
 ## Implemented
 - Godot project configuration and main scene.
