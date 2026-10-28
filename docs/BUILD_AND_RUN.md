@@ -30,7 +30,7 @@ The UI-flow and self-tests write test reports into Godot's user:// save for that
 2. Install matching Godot export templates.
 3. Configure Android SDK/JDK paths in Godot Editor Settings.
 4. The repository includes a debug Android preset. For a local export, verify SDK paths in Editor Settings and adjust the preset if your device/API requirements differ.
-5. Export a debug APK and test it in landscape on a device/emulator. The Android Actions workflow will publish a temporary downloadable artifact when it succeeds. The Android Actions workflow will publish a temporary downloadable artifact when it succeeds.
+5. Export a debug APK and test it in landscape on a device/emulator. The Android Actions workflow builds a debug APK and a CI-signed release APK, measures both, and publishes them as a temporary downloadable artifact when the workflow succeeds. The CI release key is disposable and must never be used for a public store release. The Android Actions workflow will publish a temporary downloadable artifact when it succeeds.
 6. Test suspend/resume, process death, offline launch, readable text, and touch targets.
 7. Measure the actual package size. Do not claim the under-25-MB goal is met until measured.
 
