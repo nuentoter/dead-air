@@ -36,7 +36,7 @@
 - Mode: CW
 - Frequency: `7.418 MHz`  
 - Mode: `CW`
-- Reception time: [TIME PLACEHOLDER]
+- Reception time: Prior monitoring cycle, `17:42` Site 04 simulated local time; calendar date unknown.
 - Classification: IDENTIFIER — provisional
 - Decoded identifier: NR-041
 - Reception quality: weaker / fading relative to the first retained event
