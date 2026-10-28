@@ -1,6 +1,6 @@
 # DEAD AIR — Main Story Assignment Scripts
 
-*Working narrative/UI specification, version 0.1. This is not game code. It continues the Opening Shift Playable Script and follows the Main-Story Document Packet and Assignment & Evidence Dependency Map. Calendar dates remain placeholders. Working values: numeric sequence `731904`; NR-041 at `7.418 MHz CW`; Signal IDs per the Canonical Identifiers & Time Register.*
+*Working narrative/UI specification, version 0.1. This is not game code. It continues the Opening Shift Playable Script and follows the Main-Story Document Packet and Assignment & Evidence Dependency Map. Calendar dates and exact reception times remain placeholders. Working values: numeric sequence `731904`; NR-041 at `7.418 MHz CW`; first reception `SIG-0004`, recurrence `SIG-0005`; see the Canonical Identifiers & Time Register.*
 
 ## Script principles
 
@@ -34,7 +34,8 @@
 
 - Signal ID: SIG-0004
 - Mode: CW
-- Frequency: [FREQUENCY PLACEHOLDER]
+- Frequency: `7.418 MHz`  
+- Mode: `CW`
 - Reception time: [TIME PLACEHOLDER]
 - Classification: IDENTIFIER — provisional
 - Decoded identifier: NR-041
@@ -45,7 +46,7 @@
 **Transcript**
 
 > NR-041  
-> [SEQUENCE FIELD — CANONICAL NUMERIC SEQUENCE TBD]
+> Sequence: `731904` *(lower confidence than the NR-041 identifier)*
 
 **Panel note**
 
@@ -255,7 +256,7 @@ Unlock A-005, but do not block other archive exploration.
 >
 > Record the origin, clock source, and receipt fields exactly as they appear. Leave incomplete fields unresolved.
 
-Suggested search terms: 04-C, C-4, [canonical sequence TBD], internal relay, receipt status. Exact syntax is not required.
+Suggested search terms: 04-C, C-4, `731904`, internal relay, receipt status. Exact syntax is not required.
 
 ## Search result
 
@@ -295,7 +296,7 @@ Suggested search terms: 04-C, C-4, [canonical sequence TBD], internal relay, rec
 
 | Comparison point | M-08 appendix | M-09 record 04-C |
 |---|---|---|
-| Sequence reference | C-4 / `731904` | C-4 / [sequence TBD] |
+| Sequence reference | C-4 / `731904` | C-4 / `731904` |
 | Later timestamps | 18:17, 18:19, 18:23 | 18:19, 18:21, 18:23 |
 | Routing information | Present, partly incomplete | Present, partly incomplete |
 | Receipt / acknowledgement | Present | Present |
