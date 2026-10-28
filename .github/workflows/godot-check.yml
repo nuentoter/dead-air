@@ -1,0 +1,38 @@
+name: Godot headless checks
+
+on:
+  push:
+    paths:
+      - "project.godot"
+      - "scenes/**"
+      - "scripts/**"
+      - "tests/**"
+      - ".github/workflows/godot-check.yml"
+  pull_request:
+    paths:
+      - "project.godot"
+      - "scenes/**"
+      - "scripts/**"
+      - "tests/**"
+      - ".github/workflows/godot-check.yml"
+  workflow_dispatch:
+
+jobs:
+  headless:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Install Godot 4.3
+        shell: bash
+        run: |
+          curl -L --fail --retry 3 -o godot.zip https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_linux.x86_64.zip
+          unzip godot.zip
+          chmod +x Godot_v4.3-stable_linux.x86_64
+          sudo mv Godot_v4.3-stable_linux.x86_64 /usr/local/bin/godot
+      - name: Import and parse project
+        run: godot --headless --path . --editor --quit
+      - name: Run integrity self-test
+        run: godot --headless --path . -s res://tests/self_test.gd
+      - name: Check main scene startup
+        run: godot --headless --path . --quit-after 3
