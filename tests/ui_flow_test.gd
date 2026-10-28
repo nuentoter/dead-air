@@ -34,6 +34,9 @@ func _run() -> void:
 	instance.call("_select_assignment", "A-006")
 	await process_frame
 	instance.call("_on_report_source_toggled", false, "SIG-0004")
+	instance.call("_on_report_source_toggled", false, "SIG-0005")
+	instance.call("_on_report_source_toggled", false, "M-02")
+	instance.call("_on_report_source_toggled", false, "M-05")
 	var editor = instance.get("report_editor") as TextEdit
 	if editor == null:
 		push_error("A-006 report editor was not constructed.")
