@@ -6,9 +6,11 @@ An offline, landscape-only Android radio-conspiracy horror game about ordinary m
 
 ## Design documents
 
+- [Backup Index & Continuity Policy](docs/BACKUP_AND_PROJECT_INDEX.md) — recovery index for project documents and the policy for keeping future work backed up.
 - [Game Design Overview](docs/GAME_DESIGN.md) — pillars, player role, receiver simulation, UI, time, evidence, and opening experience.
 - [Master Chronology & Evidence Ledger](docs/MASTER_CHRONOLOGY_EVIDENCE_LEDGER.md) — main-story evidence, contradiction rules, optional Silent Site branch, and canon guardrails.
 - [Canon Decisions & Open Questions](docs/CANON_AND_OPEN_QUESTIONS.md) — established working canon, provisional details, and decisions still to lock.
+- [Assignment Evidence Dependency Map](docs/ASSIGNMENT_EVIDENCE_DEPENDENCY_MAP.md) — assignment register, core evidence paths, optional branches, knowledge gates, and recovery rules.
 - [Opening Shift Playable Script](story/OPENING_SHIFT_PLAYABLE_SCRIPT.md) — handover, receiver onboarding, first NR-041 detection, registry conflict, report, and supervisor closure.
 - [Main-Story Document Packet](story/MAIN_STORY_DOCUMENT_PACKET.md) — draft incident summary, post-shutdown appendix, Communications Record 04-C, NR-041 worksheet, and follow-up correspondence.
 - [Main Story Assignment Scripts](story/MAIN_STORY_ASSIGNMENT_SCRIPTS.md) — player-facing interactions and report flows for A-003 through A-006, including archive discovery, comparisons, recovery paths, and Mara's review response.
