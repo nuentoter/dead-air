@@ -15,7 +15,8 @@ An offline, landscape-only Android radio-conspiracy horror game about ordinary m
 - [Ending & Disclosure Structure](docs/ENDING_AND_DISCLOSURE_STRUCTURE.md) — first-release closure that preserves the central uncertainty.
 - [Technical Implementation Plan](docs/TECHNICAL_IMPLEMENTATION_PLAN.md) — project structure, state model, persistence, receiver simulation, and tests.
 - [Implementation Test Checklist](docs/IMPLEMENTATION_TEST_CHECKLIST.md) — repeatable verification checklist.
-- [Implementation Status](docs/IMPLEMENTATION_STATUS.md) — implemented prototype features, known simplifications, and unverified items.
+- [Implementation Status](docs/IMPLEMENTATION_STATUS.md) — implemented prototype features, verified headless checks, known simplifications, and unverified items.
+- [Build & Run Guide](docs/BUILD_AND_RUN.md) — local Godot run, headless checks, and Android export prerequisites.
 - [Prioritized Design Decision Register](docs/PRIORITIZED_DESIGN_DECISION_REGISTER.md) — open decisions ranked by priority, dependencies, prototype tests, non-negotiable guardrails, and criteria for design readiness.
 - [Canonical Identifiers & Time Register](docs/CANONICAL_IDENTIFIERS_AND_TIME_REGISTER.md) — source-of-truth inventory for names, record IDs, timestamp conventions, frequencies, the working numeric sequence, Signal IDs, and remaining open questions.
 - [Master Chronology & Evidence Ledger](docs/MASTER_CHRONOLOGY_EVIDENCE_LEDGER.md) — main-story evidence, contradiction rules, optional Silent Site branch, and canon guardrails.
