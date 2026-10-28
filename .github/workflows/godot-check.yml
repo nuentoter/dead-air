@@ -32,6 +32,8 @@ jobs:
           sudo mv Godot_v4.3-stable_linux.x86_64 /usr/local/bin/godot
       - name: Import and parse project
         run: godot --headless --path . --editor --quit
+      - name: Strict script parse and main-scene smoke test
+        run: godot --headless --path . -s res://tests/parse_project.gd
       - name: Run integrity self-test
         run: godot --headless --path . -s res://tests/self_test.gd
       - name: Check main scene startup
