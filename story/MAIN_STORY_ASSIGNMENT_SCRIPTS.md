@@ -1,6 +1,6 @@
 # DEAD AIR — Main Story Assignment Scripts
 
-*Working narrative/UI specification, version 0.1. This is not game code. It continues the Opening Shift Playable Script and follows the Main-Story Document Packet and Assignment & Evidence Dependency Map. Exact dates, frequencies, Signal IDs, and the numeric sequence remain placeholders.*
+*Working narrative/UI specification, version 0.1. This is not game code. It continues the Opening Shift Playable Script and follows the Main-Story Document Packet and Assignment & Evidence Dependency Map. Calendar dates remain placeholders. Working values: numeric sequence `731904`; NR-041 at `7.418 MHz CW`; Signal IDs per the Canonical Identifiers & Time Register.*
 
 ## Script principles
 
@@ -32,7 +32,7 @@
 
 ## Retained event panel
 
-- Signal ID: SIG-[GLOBAL ID PLACEHOLDER]
+- Signal ID: SIG-0004
 - Mode: CW
 - Frequency: [FREQUENCY PLACEHOLDER]
 - Reception time: [TIME PLACEHOLDER]
@@ -62,7 +62,7 @@ If missed live, add:
 | Identifier | NR-041 | NR-041 |
 | Mode | CW | CW |
 | Frequency | [pending] | [pending] |
-| Reception time | [pending] | [pending] |
+| Reception time | [DATE/TIME TBD] | [DATE/TIME TBD] |
 | Signal quality | [earlier reading] | Weaker / fading |
 | Pattern / timing | [first pattern summary] | Different pattern/timing |
 | Sequence decode | [canonical value TBD] | [canonical value TBD] |
@@ -131,7 +131,7 @@ On submission, save the comparison as a new report linked to both event records 
 >
 > Search the incident index and technical enclosures for a matching reference. Record document IDs and timestamps as printed. Do not correct a timestamp without a source record supporting the correction.
 
-Suggested search terms: [canonical sequence TBD], 01-773, communications worksheet, enclosure C-4, operations discontinuation. These are not exact-syntax requirements.
+Suggested search terms: `731904`, 01-773, communications worksheet, enclosure C-4, operations discontinuation. These are not exact-syntax requirements.
 
 ## Search result: incident file
 
@@ -281,7 +281,7 @@ Suggested search terms: 04-C, C-4, [canonical sequence TBD], internal relay, rec
 | 18:23 | Destination acknowledgement | Receipt status entered; operator field blank | ACKNOWLEDGED |
 
 **Record fields**
-- Sequence: [canonical numeric sequence — TBD]
+- Sequence: `731904`
 - Origin identifier: not present in surviving copy
 - Operator initials: blank
 - Clock source: not stated
@@ -295,7 +295,7 @@ Suggested search terms: 04-C, C-4, [canonical sequence TBD], internal relay, rec
 
 | Comparison point | M-08 appendix | M-09 record 04-C |
 |---|---|---|
-| Sequence reference | C-4 / [sequence TBD] | C-4 / [sequence TBD] |
+| Sequence reference | C-4 / `731904` | C-4 / [sequence TBD] |
 | Later timestamps | 18:17, 18:19, 18:23 | 18:19, 18:21, 18:23 |
 | Routing information | Present, partly incomplete | Present, partly incomplete |
 | Receipt / acknowledgement | Present | Present |
@@ -496,6 +496,6 @@ Optional deep-archive leads appear only when the player finds relevant cross-ref
 - [ ] M-10B closes the assignment without resolving chronology.
 - [ ] Original reports, source records, and transcripts remain immutable.
 - [ ] Every discovery has an archive/recovery route.
-- [ ] Exact dates, frequencies, Signal IDs, and the numeric sequence remain placeholders until standardized.
+- [ ] Calendar dates remain placeholders; frequencies, Signal IDs, and sequence use the current working register.
 - [ ] Optional deep documents do not gate the main narrative.
 - [ ] This document is narrative/UI specification only; no game code is started.
