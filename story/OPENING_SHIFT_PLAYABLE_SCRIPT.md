@@ -1,6 +1,6 @@
 # DEAD AIR — Opening Shift Playable Script
 
-*Working draft based on the Game Design Document and Master Chronology & Evidence Ledger. This is narrative/UI scripting, not game code. Frequencies and exact timestamps remain placeholders until standardized.*
+*Working draft based on the Game Design Document and Master Chronology & Evidence Ledger. This is narrative/UI scripting, not game code. The time standard uses `10.000 MHz AM`. NR-041 uses `7.418 MHz CW`. Calendar dates and exact reception times remain placeholders; see the Canonical Identifiers & Time Register.*
 
 ## Script goals
 
@@ -48,7 +48,7 @@ The receiver must behave consistently. No fake glitches, impossible controls, or
 > Archive connection: LOCAL  
 > RX: ON
 
-The receiver tunes to the regulatory time standard. Use a final frequency only after the frequency plan is standardized.
+The receiver tunes to the simulated time-standard signal at `10.000 MHz AM`.
 
 **Tutorial prompts (contextual, dismissible)**
 1. “The waterfall shows signal activity over time. New activity appears at the top; older rows move down.”
@@ -56,13 +56,16 @@ The receiver tunes to the regulatory time standard. Use a final frequency only a
 3. “Recording preserves the reception you captured. The transcript may contain less detail than the underlying authored transmission.”
 4. “The archive stores the record and its current interpretation. Later corrections are linked records; the original is not silently rewritten.”
 
-**Routine time-standard event**
+**Routine time-standard event**  
+Signal ID: `SIG-0001`; frequency/mode: `10.000 MHz AM`.
 
 The time standard is clean and ordinary. The player can tune, view signal strength, and optionally record it. Recording this event is not required to proceed.
 
 **Completion condition:** Player has powered on the receiver and opened the time-standard signal panel. No minimum score or perfect tuning requirement.
 
 ## Sequence 2 — Routine traffic and calibration
+
+Signal IDs: `SIG-0002` and `SIG-0003` for the two authored routine events, in story order.
 
 **Receiver behavior:** Present two or three ordinary signals across the available tuning range. Keep content short and technically legible. The player may explore, but the story progression must not depend on finding one exact live event.
 
@@ -82,13 +85,15 @@ This establishes the recovery rule: the player is not punished for missing a tra
 
 ## Sequence 3 — NR-041 first detection
 
+Signal ID: `SIG-0004`; frequency/mode: `7.418 MHz CW`; numeric sequence: `731904` (lower decode confidence than NR-041).
+
 **Trigger:** The player opens `A-002` or selects the retained identifier event. If they are actively scanning, the event may appear in the waterfall; otherwise it is available through the assignment's event reference.
 
-**Event parameters:** Frequency, timestamp, signal strength, and exact CW timing are placeholders pending the global frequency/time pass. Identifier content is working canon: `NR-041`.
+**Event parameters:** `7.418 MHz CW`; calendar date and exact reception time remain placeholders. Identifier content is working canon: `NR-041`. The recovered sequence is `731904`, with lower confidence than the identifier.
 
 **Receiver panel**
 
-> Signal ID: `SIG-[placeholder]`  
+> Signal ID: `SIG-0004`  
 > Mode: CW  
 > Classification: IDENTIFIER — provisional  
 > Decode: `NR-041`  
