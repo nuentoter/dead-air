@@ -42,7 +42,7 @@ This register is the single place to check names, identifiers, timestamps, frequ
 | Numeric sequence `731904` | Repeated sequence decoded at Site 04 and referenced in M-05, M-08, and M-09 | **Working canon v0.2** | Sequence meaning is unknown. High confidence in NR-041 does not require equal confidence in the numeric sequence. Do not infer origin, cause, or a relationship beyond the repeated pattern. |
 | `SIG-0001`–`SIG-0005` | Initial authored signal events | **Working allocation v0.2** | `SIG-0001` time standard; `SIG-0002` routine traffic A; `SIG-0003` routine traffic B; `SIG-0004` first NR-041 reception; `SIG-0005` NR-041 recurrence. IDs follow story-event order, not discovery order. `SIG-0042` remains an unrelated example and is not allocated. |
 | `A-001`, `A-002` | Opening-shift assignments | Draft assignment IDs | Used in opening script. |
-| `A-003`–`A-006` | Main-story comparison and review assignments | Working assignment IDs | Scripts exist; release-scope decisions remain open. |
+| `A-003`–`A-006` | Main-story comparison and review assignments | Core first-release assignments | Scripts and a recoverable evidence path exist; later assignments are deferred. |
 | `M-01`–`M-14` | Main-story evidence/document ledger IDs | Working ledger IDs | Some entries are drafted, some optional or outlined. M-06 is a grouped reference; M-06A is the cover sheet. |
 | `M-06A` | Closed Incident File Cover Sheet | Draft artifact ID | File number is 01-773. |
 | `M-07` | Operations Discontinuation Summary | Draft artifact ID | Claims operations discontinued at 18:00 and equipment was reported secured. |
@@ -100,7 +100,7 @@ If the source does not identify the type or clock basis, write **unknown** or pr
 | NR-041 recurrence | `7.418 MHz CW`, next routine shift at `08:42` | Working story value v0.2 | Same tuned frequency makes comparison straightforward; recurrence remains a separate event and does not prove a common physical source. |
 | Frequency note | `7.418 MHz CW` | Working story value | The former receiver-spec example has been promoted to the NR-041 frequency. Do not treat it as a real-world reception claim. |
 | Opening time-standard frequency | `10.000 MHz AM` | Working value v0.2 | Simulated routine reference signal. |
-| NR-041 first reception frequency | `7.418 MHz CW` | Working value v0.2 | Exact time remains unassigned. |
+| NR-041 first reception frequency | `7.418 MHz CW` | Working value v0.2 | Prior monitoring cycle at 17:42 Site 04 simulated local time; calendar date unknown. |
 | NR-041 recurrence frequency | `7.418 MHz CW` | Working value v0.2 | Separate Signal ID; do not imply source identity from frequency alone. |
 | M-08/M-09 frequencies | Not specified | Unknown | Do not invent them for archival documents unless a source artifact needs one. |
 | Receiver bands/modes | Simplified HF/VHF/UHF; AM/FM/NFM/USB/LSB/CW | Proposed system design | These are simulated receiver capabilities, not evidence that a story event has been assigned a frequency. |
@@ -122,7 +122,7 @@ These are register-level rules for all future documents, UI labels, and reports:
 
 ## 6. Required normalization pass
 
-Before the story packet is considered script-ready, complete these actions in order:
+Use this remaining normalization checklist before the story packet is considered fully script-ready:
 
 1. **Names adopted for this pass:** NRMS, Remote Monitoring Site 04, Mara Venn, Regional Operations, and Regional Technical Review Office are working canon v0.2. Keep the two offices distinct; the reporting hierarchy remains unspecified. Rename only by an explicit decision.
 2. **Complete the calendar timeline:** assign dates only after opening-to-incident chronology is designed; use ISO dates and 24-hour time, while preserving the external clock ambiguity.
