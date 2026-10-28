@@ -11,6 +11,7 @@ An offline, landscape-only Android radio-conspiracy horror game about ordinary m
 - [Canon Decisions & Open Questions](docs/CANON_AND_OPEN_QUESTIONS.md) — established working canon, provisional details, and decisions still to lock.
 - [Opening Shift Playable Script](story/OPENING_SHIFT_PLAYABLE_SCRIPT.md) — handover, receiver onboarding, first NR-041 detection, registry conflict, report, and supervisor closure.
 - [Main-Story Document Packet](story/MAIN_STORY_DOCUMENT_PACKET.md) — draft incident summary, post-shutdown appendix, Communications Record 04-C, NR-041 worksheet, and follow-up correspondence.
+- [Main Story Assignment Scripts](story/MAIN_STORY_ASSIGNMENT_SCRIPTS.md) — player-facing interactions and report flows for A-003 through A-006, including archive discovery, comparisons, recovery paths, and Mara's review response.
 
 ## Core premise
 
