@@ -10,6 +10,8 @@ This file separates working canon from unresolved design choices. Do not silentl
 - Mara Venn is the provisional Regional Operations supervisor.
 - The recurring unregistered identifier is NR-041.
 - The first major record set uses working IDs 01-773 (closed incident file) and 04-C (interstation communications record).
+- Current working sequence is `731904` (meaning unknown); opening time standard is simulated at `10.000 MHz AM`; NR-041 first and recurring receptions use `7.418 MHz CW`.
+- Initial Signal IDs are allocated centrally: SIG-0001 time standard, SIG-0002/SIG-0003 routine traffic, SIG-0004 first NR-041 reception, SIG-0005 recurrence. Calendar dates remain placeholders; external clock basis remains unresolved.
 - Official records claim the research facility shut down, while appendices and communications records contain activity afterward. The real chronology remains unresolved.
 - The main phenomenon, its intentions, and any causal role for experimental AI must remain unconfirmed.
 - Silent Site is an optional, independent records-discrepancy branch. Its package trail ends with ordinary retention handling, while the missing operational logs' fate remains unknown.
@@ -29,8 +31,8 @@ This file separates working canon from unresolved design choices. Do not silentl
 
 1. Confirm or rename NRMS, Remote Monitoring Site 04, and Mara Venn.
 2. Lock the main chronology only where a specific record requires it; preserve the underlying contradiction.
-3. Select one canonical numeric sequence and propagate it consistently through every linked record.
-4. Standardize frequencies, call signs, record IDs, and all dates/times; label unfixed values as placeholders until then.
+3. Audit propagation of the working numeric sequence `731904`; its meaning remains unknown.
+4. Complete the calendar date/shift timeline and audit all timestamps against the register; preserve the unresolved external clock basis.
 5. Decide whether the government facility/research project should remain unnamed.
 6. Define final recording and capture behavior: rolling buffer, manual recording, and whether/how auto-archive behaves.
 7. Finalize ending branches and their conditions without explaining the central phenomenon.
