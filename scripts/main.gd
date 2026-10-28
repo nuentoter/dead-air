@@ -252,7 +252,7 @@ func _draw_receiver() -> void:
 		_add_text(String(selected.get("transcript", "")), 15, TEXT)
 		_add_text("Provenance: " + String(selected.get("provenance", "")), 12, MUTED)
 		var action_row := _row()
-		var recorded := game.data.get("recorded_event_ids", []).has(String(selected.get("id", "")))
+		var recorded: bool = game.data.get("recorded_event_ids", []).has(String(selected.get("id", "")))
 		_button("RECORDED" if recorded else "MANUAL RECORD", _record_selected_event.bind(String(selected.get("id", ""))), action_row)
 		_button("OPEN IN RECORDINGS", _open_recordings.bind(String(selected.get("id", ""))), action_row)
 
@@ -545,7 +545,7 @@ func _submit_report() -> void:
 	if recommendation_select != null and recommendation_select.selected >= 0:
 		recommendation = recommendation_select.get_item_text(recommendation_select.selected)
 	game.data["report_recommendation"] = recommendation
-	var report := game.submit_report(report_body, recommendation, ["SIG-0004", "SIG-0005", "M-02", "M-07", "M-08", "M-09"])
+	var report: Dictionary = game.submit_report(report_body, recommendation, ["SIG-0004", "SIG-0005", "M-02", "M-07", "M-08", "M-09"])
 	game.data["report_draft"] = ""
 	game.data["current_section"] = "Messages"
 	game.save_game()
@@ -556,7 +556,7 @@ func _draw_messages() -> void:
 	_heading("MESSAGES", "Operational correspondence and review notices.")
 	for message in Catalog.MESSAGES:
 		_add_text(String(message.get("sender", "")) + "  /  " + String(message.get("subject", "")), 16, ACCENT)
-		var unread := not game.data.get("messages_seen", []).has(String(message.get("id", "")))
+		var unread: bool = not game.data.get("messages_seen", []).has(String(message.get("id", "")))
 		_add_text("UNREAD" if unread else "READ", 11, WARNING if unread else MUTED)
 		_add_text(String(message.get("body", "")), 15, TEXT)
 		_button("MARK READ", _mark_message_read.bind(String(message.get("id", ""))))
