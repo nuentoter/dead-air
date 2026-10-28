@@ -110,7 +110,8 @@ func _run() -> void:
 		return
 	if not _expect(String(game.data["notes"][-1].get("classification", "")) == "WORKING HYPOTHESIS", "Notebook classification was not persisted with the note."):
 		return
-	if not _expect(_tree_contains_text(instance, "WORKING HYPOTHESIS"), "Saved note did not display its selected classification."):
+	instance.call("_on_nav_pressed", "Notebook")
+	if not _expect(_tree_contains_text(instance, "WORKING HYPOTHESIS"), "Saved note did not display its selected classification when revisiting the Notebook."):
 		return
 	print("DEAD AIR UI flow test passed: report submission/history/citations and notebook source labels/navigation with interpretation preserved.")
 	quit(0)
