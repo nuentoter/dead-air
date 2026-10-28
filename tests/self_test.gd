@@ -8,7 +8,7 @@ func _initialize() -> void:
 
 func _run() -> void:
 	assert(Catalog.EVENTS.size() == 5, "Expected five canonical opening signal events.")
-	assert(Catalog.DOCUMENTS.size() >= 5, "Expected core archive documents.")
+	assert(Catalog.DOCUMENTS.size() >= 6, "Expected core archive documents including the closed incident-file cover.")
 	var ids: Array[String] = []
 	for event in Catalog.EVENTS:
 		ids.append(String(event.get("id", "")))
@@ -40,9 +40,10 @@ func _run() -> void:
 	state.select_event("SIG-0004")
 	state.mark_document_read("M-02")
 	assert(String(state.data["assignments"]["A-002"]) == "COMPLETED", "A-002 should complete after NR-041 inspection and registry lookup.")
+	state.mark_document_read("M-06A")
 	state.mark_document_read("M-07")
 	state.mark_document_read("M-08")
-	assert(String(state.data["assignments"]["A-004"]) == "COMPLETED", "A-004 should complete after reviewing M-07 and M-08.")
+	assert(String(state.data["assignments"]["A-004"]) == "COMPLETED", "A-004 should complete after reviewing the incident-file cover, M-07, and M-08.")
 	state.mark_document_read("M-09")
 	assert(String(state.data["assignments"]["A-005"]) == "COMPLETED", "A-005 should complete after reviewing M-08 and M-09.")
 	var report_count_before: int = state.data.get("reports", []).size()

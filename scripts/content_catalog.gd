@@ -67,6 +67,19 @@ Sequence confidence: MODERATE
 Notes: Identifier read is more reliable than the numeric sequence. The worksheet does not establish a transmitting station, source, or relationship to another record."""
 	},
 	{
+		"id": "M-06A", "title": "Closed Incident File 01-773 — Cover Sheet", "source": "Regional Technical Review Office",
+		"claimed_event_time": "Administrative file status; incident dates not reproduced on this cover", "clock_basis": "Not applicable to this index cover",
+		"status": "AVAILABLE", "version": 1, "essential": true, "related_ids": ["M-07", "M-08", "M-09"],
+		"body": """REGIONAL TECHNICAL REVIEW OFFICE
+CLOSED INCIDENT FILE — COVER SHEET
+
+File reference: 01-773
+Administrative status: CLOSED
+Index status: COMPLETE
+
+This cover records the file's administrative status only. It does not certify that every referenced attachment is present, that the source records share a clock basis, or that the underlying chronology has been reconciled."""
+	},
+	{
 		"id": "M-07", "title": "Operations Discontinuation Summary", "source": "Regional Technical Review Office",
 		"claimed_event_time": "Operations discontinued at 18:00", "clock_basis": "Source clock basis not stated",
 		"status": "AVAILABLE", "version": 1, "essential": true, "related_ids": ["M-08", "M-09"],

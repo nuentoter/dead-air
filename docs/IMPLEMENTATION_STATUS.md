@@ -7,12 +7,12 @@
 - Godot project configuration and main scene.
 - Script-built landscape workstation UI with Receiver, Recordings, Archive, Notebook, Assignments, and Messages.
 - Five authored opening signal events with stable IDs and readable transcripts.
-- Core archive records M-02, M-05, M-07, M-08, M-09, M-10B.
+- Core archive records M-02, M-05, M-06A (closed incident file 01-773 cover), M-07, M-08, M-09, M-10B.
 - Local JSON save/load with schema version, temporary write, backup/restore during save replacement, and recovery-copy attempt for unreadable saves; automated malformed-save preservation is included in the self-test.
 - Persistent text-size controls.
 - Receiver power, frequency and mode state; authored event-match feedback; deterministic SEEK NEXT; manual-record provenance; a data-driven current-shift frequency/time plot with explicit in-plot time and frequency axis labels.
 - Searchable archive, read-state tracking for required documents, notebook notes/source links, and player-selectable report citations persisted with the draft.
-- Evidence-driven assignment progress: A-001/A-002/A-004/A-005 complete from their defined receiver/document actions; A-003 requires inspection of both NR-041 receptions and a separate comparison confirmation. Each assignment displays a persistent progress checklist based on the actual reviewed evidence and recorded state.
+- Evidence-driven assignment progress: A-001/A-002/A-004/A-005 complete from their defined receiver/document actions (A-004 requires the M-06A cover, M-07 summary, and M-08 appendix); A-003 requires inspection of both NR-041 receptions and a separate comparison confirmation. Each assignment displays a persistent progress checklist based on the actual reviewed evidence and recorded state.
 - Immutable report submissions/addenda and unresolved case status, displayed in a read-only report history with cited source IDs in Messages; each citation can open its retained signal event or archive document.
 - Notebook entries display a readable title/metadata for each linked source and provide a direct open-source action; opening evidence never rewrites the note's interpretation.
 - A-006 submission is blocked until M-02, M-05, M-07, M-08, and M-09 have been opened in the archive. All five are recoverable without live reception.

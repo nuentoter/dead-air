@@ -30,7 +30,7 @@ func _run() -> void:
 	if not _expect(String(game.data["assignments"]["A-003"]) == "COMPLETED", "A-003 comparison did not complete after both events were inspected."):
 		return
 	instance.call("_on_nav_pressed", "Archive")
-	for document_id in ["M-02", "M-05", "M-07", "M-08", "M-09"]:
+	for document_id in ["M-02", "M-05", "M-06A", "M-07", "M-08", "M-09"]:
 		instance.call("_select_document", document_id)
 	instance.call("_on_nav_pressed", "Assignments")
 	instance.call("_select_assignment", "A-006")
@@ -41,6 +41,7 @@ func _run() -> void:
 	instance.call("_on_report_source_toggled", false, "SIG-0005")
 	instance.call("_on_report_source_toggled", false, "M-02")
 	instance.call("_on_report_source_toggled", false, "M-05")
+	instance.call("_on_report_source_toggled", false, "M-06A")
 	var editor = instance.get("report_editor") as TextEdit
 	if editor == null:
 		push_error("A-006 report editor was not constructed.")

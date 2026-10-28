@@ -150,7 +150,7 @@ func refresh_assignment_progress() -> void:
 		assignments["A-001"] = "COMPLETED"
 	if (inspected.has("SIG-0004") or inspected.has("SIG-0005")) and documents.has("M-02"):
 		assignments["A-002"] = "COMPLETED"
-	if documents.has("M-07") and documents.has("M-08"):
+	if documents.has("M-06A") and documents.has("M-07") and documents.has("M-08"):
 		assignments["A-004"] = "COMPLETED"
 	if documents.has("M-08") and documents.has("M-09"):
 		assignments["A-005"] = "COMPLETED"

@@ -4,7 +4,7 @@ const Catalog = preload("res://scripts/content_catalog.gd")
 const GameState = preload("res://scripts/game_state.gd")
 
 const SECTIONS = ["Receiver", "Recordings", "Archive", "Notebook", "Assignments", "Messages"]
-const REPORT_SOURCE_OPTIONS := ["SIG-0004", "SIG-0005", "M-02", "M-05", "M-07", "M-08", "M-09"]
+const REPORT_SOURCE_OPTIONS := ["SIG-0004", "SIG-0005", "M-02", "M-05", "M-06A", "M-07", "M-08", "M-09"]
 const BG = Color(0.035, 0.055, 0.065, 1)
 const PANEL = Color(0.065, 0.095, 0.105, 1)
 const PANEL_ALT = Color(0.085, 0.125, 0.135, 1)
@@ -553,7 +553,7 @@ func _draw_notebook() -> void:
 	_add_text("SOURCE LINK", 12, MUTED, source_row)
 	note_source_select = OptionButton.new()
 	note_source_select.add_item("No source link")
-	for item in ["SIG-0004", "SIG-0005", "M-02", "M-05", "M-07", "M-08", "M-09"]:
+	for item in ["SIG-0004", "SIG-0005", "M-02", "M-05", "M-06A", "M-07", "M-08", "M-09"]:
 		note_source_select.add_item(item)
 	note_source_select.custom_minimum_size = Vector2(170, 38)
 	source_row.add_child(note_source_select)
@@ -723,6 +723,7 @@ func _draw_assignment_checklist(assignment_id: String) -> void:
 			_checklist_item("Next-shift reception SIG-0005 inspected", inspected.has("SIG-0005"))
 			_checklist_item("Comparison explicitly reviewed", String(assignments.get("A-003", "OPEN")) == "COMPLETED")
 		"A-004":
+			_checklist_item("Incident file cover M-06A opened", documents.has("M-06A"))
 			_checklist_item("Operations summary M-07 opened", documents.has("M-07"))
 			_checklist_item("Technical appendix M-08 opened", documents.has("M-08"))
 		"A-005":
