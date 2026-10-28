@@ -3,6 +3,7 @@ class_name DeadAirGameState
 
 const SAVE_PATH = "user://dead_air_save.json"
 const TEMP_PATH = "user://dead_air_save.tmp"
+const RECOVERY_PATH = "user://dead_air_save.recovery.json"
 const SCHEMA_VERSION = 1
 
 var data: Dictionary = {}
@@ -11,9 +12,14 @@ var load_notice := ""
 func _init() -> void:
 	if not load_game():
 		var had_save := FileAccess.file_exists(SAVE_PATH)
-		reset_defaults()
+		var recovery_saved := false
 		if had_save:
-			load_notice = "Previous save could not be read. A clean local state was initialized; existing evidence was not loaded."
+			recovery_saved = FileAccess.copy(SAVE_PATH, RECOVERY_PATH) == OK
+		reset_defaults()
+		if had_save and recovery_saved:
+			load_notice = "Previous save could not be read. A recovery copy was preserved at user://dead_air_save.recovery.json; a clean local state was initialized."
+		elif had_save:
+			load_notice = "Previous save could not be read and a recovery copy could not be created. A clean local state was initialized."
 
 func reset_defaults() -> void:
 	data = {
