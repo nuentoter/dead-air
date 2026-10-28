@@ -2,7 +2,7 @@
 
 **Status:** Active working register  
 **Purpose:** Identify which decisions block the next stage, which can be deferred, and which are guardrails rather than choices.  
-**Implementation status:** Design only. This register does not authorize coding.
+**Implementation status:** First-release scope and ending are now documented; project owner explicitly requested continued development through implementation on 28 October 2026. Build and Android export remain unverified.
 
 ## How to use this register
 
@@ -22,9 +22,9 @@ Do not settle a decision merely to fill a checklist. When evidence is insufficie
 | D-002 | Canonical identifiers and numeric sequence | `NR-041`, `01-773`, `04-C`, sequence `731904`, and Signal IDs `SIG-0001`–`SIG-0005` are working canon v0.2 | Finish propagation/audit; preserve lower sequence confidence and unknown meaning | Evidence ledger, document packet, receiver events, assignments, and notebook examples agree |
 | D-003 | Date/time and frequency register | ISO dates/24-hour display, `10.000 MHz AM` time standard, and `7.418 MHz CW` NR-041 frequency are working conventions; calendar dates and external clock basis remain open | Complete the event calendar and verify every artifact against the canonical register | Every authored record matches the register or explicitly marks its value as unknown/placeholder |
 | D-004 | Main-story evidence chain | Core chain is drafted through A-006; later materials are candidates | Confirm which documents and assignments are mandatory, optional, or merely outlined | Dependency map identifies a recoverable path to every essential finding |
-| D-005 | Opening-to-midgame scope | Opening and A-003 to A-006 have scripts; total campaign length is open | Choose a bounded campaign scope: minimum core shifts/assignments and what counts as a complete first release | A complete beginning, middle, and ending scope exists without requiring every optional branch |
-| D-006 | Ending structure | Ending branches and conditions are not locked | Decide how many endings exist, what player actions may affect them, and which facts remain unresolved in all endings | Ending outlines obey the uncertainty guardrails and do not hide essential evidence behind a branch |
-| D-007 | Implementation start gate | Design-first policy; no code has been authorized | Explicitly decide when design is sufficiently settled and authorize coding separately | No implementation begins from an inferred “go ahead” to design work alone |
+| D-005 | Opening-to-midgame scope | First-release contract defines a compact arc through A-006 | Preserve the bounded scope in FIRST_RELEASE_SCOPE_AND_ACCEPTANCE.md | A complete first playable covers the main evidence chain and administrative closure |
+| D-006 | Ending structure | First-release ending “No Verified Link” is defined; future variations deferred | Implement report acceptance while leaving source and chronology unresolved | Ending preserves core uncertainty and does not gate essential evidence |
+| D-007 | Implementation start gate | **Authorized:** user explicitly requested continued development through implementation on 2026-10-28 | Proceed with bounded vertical slice; do not overclaim validation | Code is added incrementally with test checklist and honest verification status |
 
 ## 2. P1 — Resolve before the relevant content is frozen
 
@@ -62,7 +62,7 @@ Do not settle a decision merely to fill a checklist. When evidence is insufficie
 
 These rules are considered active working constraints, not questions to solve during routine design.
 
-1. **No premature coding.** Design work, a plan, or a “do it” referring to a design task is not authorization to start implementation. Coding requires explicit approval to begin.
+1. **Implementation authorization:** project owner explicitly authorized continued development through implementation on 2026-10-28. This does not waive testing, scope, offline, or narrative guardrails.
 2. **The main phenomenon remains unknown.** Do not confirm what lies beyond the connection, its intentions, or whether experimental AI caused the incident.
 3. **Contradictions stay visible.** The official 18:00 discontinuation claim and appendix entries at 18:17, 18:19, and 18:23 remain in conflict; origin and clock basis are unresolved. M-09's 18:19, 18:21, and 18:23 rows match in the packet and assignment script.
 4. **No unsupported source attribution.** Matching NR-041 identifiers, sequences, or routing details do not alone prove a common transmitter, independent original, entity, or cause.
