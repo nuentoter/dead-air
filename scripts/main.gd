@@ -277,6 +277,7 @@ func _draw_receiver() -> void:
 	var live_state := "RX ON" if bool(game.data.get("receiver_power", false)) else "RX OFF — retained events remain available"
 	_add_text(live_state, 13, ACCENT if bool(game.data.get("receiver_power", false)) else WARNING)
 	_draw_waterfall()
+	_draw_tuned_event_matches()
 
 	var selected := _find_event(String(game.data.get("selected_event_id", "SIG-0001")))
 	if not selected.is_empty():
@@ -298,6 +299,25 @@ func _draw_receiver() -> void:
 	for event in Catalog.EVENTS:
 		var label := "%s   %.3f MHz %s   %s" % [String(event.get("id", "")), float(event.get("frequency_mhz", 0.0)), String(event.get("mode", "")), String(event.get("kind", ""))]
 		_button(label, _select_event.bind(String(event.get("id", ""))))
+
+func _draw_tuned_event_matches() -> void:
+	_add_text("TUNED EVENT CHECK", 13, ACCENT)
+	if not bool(game.data.get("receiver_power", false)):
+		_add_text("Receiver is off. Retained events remain available below and in Recordings.", 12, MUTED)
+		return
+	var frequency := float(game.data.get("frequency_mhz", 10.0))
+	var mode := String(game.data.get("mode", "AM"))
+	var match_count := 0
+	for event in Catalog.EVENTS:
+		var event_frequency := float(event.get("frequency_mhz", 0.0))
+		var event_mode := String(event.get("mode", ""))
+		if absf(event_frequency - frequency) <= 0.0005 and event_mode == mode:
+			match_count += 1
+			_button("OPEN MATCH  /  " + String(event.get("id", "")), _select_event.bind(String(event.get("id", ""))))
+	if match_count == 0:
+		_add_text("No authored event matches this exact frequency/mode. This is not evidence that no transmission exists; retained events are still accessible.", 12, WARNING)
+	else:
+		_add_text("%d authored event(s) match the current tuning. This is a curated simulation, not a live receiver." % match_count, 12, MUTED)
 
 func _draw_waterfall() -> void:
 	var frame := PanelContainer.new()
