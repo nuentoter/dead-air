@@ -18,7 +18,7 @@ Repository: https://github.com/nuentoter/dead-air
 - [Canon Decisions & Open Questions](CANON_AND_OPEN_QUESTIONS.md) — established working canon, provisional details, unresolved decisions, and guardrails.
 - [Assignment Evidence Dependency Map](ASSIGNMENT_EVIDENCE_DEPENDENCY_MAP.md) — assignment register, core evidence paths, optional branches, knowledge gates, and recovery rules.
 
-### Story and player-facing content
+### Release and implementation\n- [First Release Scope & Acceptance](FIRST_RELEASE_SCOPE_AND_ACCEPTANCE.md) — first playable scope and release gates.\n- [Ending & Disclosure Structure](ENDING_AND_DISCLOSURE_STRUCTURE.md) — uncertainty-preserving ending.\n- [Technical Implementation Plan](TECHNICAL_IMPLEMENTATION_PLAN.md) — Godot structure, data model, persistence, and tests.\n- [Implementation Test Checklist](IMPLEMENTATION_TEST_CHECKLIST.md) — repeatable verification checklist.\n\n### Story and player-facing content
 - [Opening Shift Playable Script](../story/OPENING_SHIFT_PLAYABLE_SCRIPT.md) — handover, onboarding, first NR-041 detection, registry lookup, report, and supervisor closure.
 - [Main-Story Document Packet](../story/MAIN_STORY_DOCUMENT_PACKET.md) — draft incident-file documents, post-shutdown appendix, Communications Record 04-C, decoding worksheet, and follow-up correspondence.
 - [Main Story Assignment Scripts](../story/MAIN_STORY_ASSIGNMENT_SCRIPTS.md) — player-facing assignment interactions and report flows for A-003 through A-006.
@@ -28,7 +28,7 @@ Repository: https://github.com/nuentoter/dead-air
 1. Any substantial design, canon, chronology, evidence, assignment, receiver, interface, or narrative work created for DEAD AIR should be committed to this repository during the same work session whenever practical.
 2. Update the README and this index when adding a major project document, so the latest work remains discoverable.
 3. Preserve contradictions, unresolved questions, provisional labels, and placeholders unless the project owner explicitly approves a canon change.
-4. Do not start game implementation until the design is sufficiently settled and the project owner explicitly asks to begin coding.
+4. The project owner has now explicitly requested continued development through implementation. Keep code small, testable, and tied to the release contract; never claim a build is verified unless it has actually been run.
 5. Treat Git history as the change trail. Prefer new commits and explicit revisions over silently replacing project history.
 6. This repository currently backs up the working Markdown documents listed above. Original binary attachments (such as DOCX files) are not claimed as repository copies unless separately committed in a supported format.
 
