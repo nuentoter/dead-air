@@ -12,17 +12,17 @@
 - Persistent text-size controls.
 - Receiver power, frequency and mode state; authored event-match feedback; deterministic SEEK NEXT; manual-record provenance; a data-driven current-shift frequency/time plot with explicit in-plot time and frequency axis labels.
 - Searchable archive, read-state tracking for required documents, notebook notes/source links, and player-selectable report citations persisted with the draft.
-- Evidence-driven assignment progress: A-001/A-002/A-004/A-005 complete from their defined receiver/document actions; A-003 requires inspection of both NR-041 receptions and a separate comparison confirmation.
+- Evidence-driven assignment progress: A-001/A-002/A-004/A-005 complete from their defined receiver/document actions; A-003 requires inspection of both NR-041 receptions and a separate comparison confirmation. Each assignment displays a persistent progress checklist based on the actual reviewed evidence and recorded state.
 - Immutable report submissions/addenda and unresolved case status, displayed in a read-only report history with cited source IDs in Messages; each citation can open its retained signal event or archive document.
 - Notebook entries display a readable title/metadata for each linked source and provide a direct open-source action; opening evidence never rewrites the note's interpretation.
 - A-006 submission is blocked until M-02, M-05, M-07, M-08, and M-09 have been opened in the archive. All five are recoverable without live reception.
 - Supervisor review appears after submission; M-10B remains hidden from archive until then.
-- GitHub Actions checks project import, strict script parsing, main-scene startup, UI report flow, notebook source navigation, chronology consistency, report immutability/addenda, accessibility setting persistence, save/load behavior, Android export, APK size, manifest permissions, and orientation metadata.
+- GitHub Actions checks project import, strict script parsing, main-scene startup, UI report flow, notebook source navigation, assignment checklist state, chronology consistency, report immutability/addenda, accessibility setting persistence, save/load behavior, Android export, APK size, manifest permissions, and orientation metadata.
 
 ## Verified on Godot 4.3
 - Project import and script parsing passed.
 - Main scene loaded and built the workstation shell in a headless smoke test.
-- UI flow passed: navigate to A-006, verify early submission is blocked, open required records, submit a report, close A-006, and keep the case unresolved; read-only report citations and notebook evidence links open the expected source while preserving submitted text and note interpretation.
+- UI flow passed: navigate to A-006, verify early submission is blocked, open required records, submit a report, close A-006, and keep the case unresolved; read-only report citations and notebook evidence links open the expected source while preserving submitted text and note interpretation; assignment checklists update from OPEN to DONE as required records are reviewed.
 - Integrity self-test passed: opening Signal IDs, NR-041, sequence 731904, 7.418 MHz consistency, M-07/M-08/M-09 timestamps, event retention, report immutability/addenda, text-size persistence, and save/load round trip.
 - Successful workflow logs contained no parser/runtime error lines.
 

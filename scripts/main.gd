@@ -638,6 +638,7 @@ func _draw_assignments() -> void:
 	_add_text("SELECTED WORK ORDER  /  " + selected_assignment_id, 16, ACCENT)
 	_add_text(String(assignment.get("title", "")), 19, TEXT)
 	_add_text(String(assignment.get("description", "")), 15, TEXT)
+	_draw_assignment_checklist(selected_assignment_id)
 	var action_row := _row()
 	var selected_status := String(game.data.get("assignments", {}).get(selected_assignment_id, "OPEN"))
 	var progress_button := _button("MARK IN PROGRESS", _mark_selected_assignment_in_progress, action_row)
@@ -704,6 +705,36 @@ func _draw_assignments() -> void:
 			_add_text(String(report.get("body", "")), 14, TEXT)
 			_add_text("Recommended action: " + String(report.get("recommendation", "")), 12, MUTED)
 			_add_text("Source links: " + str(report.get("source_ids", [])), 12, MUTED)
+
+func _draw_assignment_checklist(assignment_id: String) -> void:
+	_add_text("PROGRESS CHECKLIST", 13, ACCENT)
+	var inspected: Array = game.data.get("inspected_event_ids", [])
+	var documents: Array = game.data.get("documents_read", [])
+	var assignments: Dictionary = game.data.get("assignments", {})
+	match assignment_id:
+		"A-001":
+			_checklist_item("Receiver powered on", bool(game.data.get("receiver_power", false)))
+			_checklist_item("Routine reference SIG-0001 inspected", inspected.has("SIG-0001"))
+		"A-002":
+			_checklist_item("An NR-041 reception inspected", inspected.has("SIG-0004") or inspected.has("SIG-0005"))
+			_checklist_item("Registry record M-02 opened", documents.has("M-02"))
+		"A-003":
+			_checklist_item("Prior-cycle reception SIG-0004 inspected", inspected.has("SIG-0004"))
+			_checklist_item("Next-shift reception SIG-0005 inspected", inspected.has("SIG-0005"))
+			_checklist_item("Comparison explicitly reviewed", String(assignments.get("A-003", "OPEN")) == "COMPLETED")
+		"A-004":
+			_checklist_item("Operations summary M-07 opened", documents.has("M-07"))
+			_checklist_item("Technical appendix M-08 opened", documents.has("M-08"))
+		"A-005":
+			_checklist_item("Technical appendix M-08 opened", documents.has("M-08"))
+			_checklist_item("Communications Record 04-C / M-09 opened", documents.has("M-09"))
+		"A-006":
+			for required_id in ["M-02", "M-05", "M-07", "M-08", "M-09"]:
+				_checklist_item(required_id + " opened", documents.has(required_id))
+			_checklist_item("Chronology review report submitted", not game.data.get("reports", []).is_empty())
+
+func _checklist_item(label: String, complete: bool) -> void:
+	_add_text(("DONE  /  " if complete else "OPEN  /  ") + label, 12, ACCENT if complete else MUTED)
 
 func _find_assignment(assignment_id: String) -> Dictionary:
 	for assignment in Catalog.ASSIGNMENTS:

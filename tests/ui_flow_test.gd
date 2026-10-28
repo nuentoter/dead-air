@@ -17,6 +17,8 @@ func _run() -> void:
 	await process_frame
 	var game = instance.get("game")
 	var initial_report_count: int = game.data.get("reports", []).size()
+	if not _expect(_tree_contains_text(instance, "OPEN  /  M-02 opened"), "A-006 progress checklist should show unopened evidence before review."):
+		return
 	instance.call("_submit_report")
 	assert(game.data.get("reports", []).size() == initial_report_count, "A-006 should block submission until required records are reviewed.")
 	instance.call("_on_nav_pressed", "Receiver")
@@ -33,6 +35,8 @@ func _run() -> void:
 	instance.call("_on_nav_pressed", "Assignments")
 	instance.call("_select_assignment", "A-006")
 	await process_frame
+	if not _expect(_tree_contains_text(instance, "DONE  /  M-02 opened"), "A-006 checklist did not reflect reviewed evidence."):
+		return
 	instance.call("_on_report_source_toggled", false, "SIG-0004")
 	instance.call("_on_report_source_toggled", false, "SIG-0005")
 	instance.call("_on_report_source_toggled", false, "M-02")
