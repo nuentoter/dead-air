@@ -153,9 +153,16 @@ func refresh_assignment_progress() -> void:
 		assignments["A-002"] = "COMPLETED"
 	if documents.has("M-06A") and documents.has("M-07") and documents.has("M-08"):
 		assignments["A-004"] = "COMPLETED"
-	if documents.has("M-08") and documents.has("M-09"):
-		assignments["A-005"] = "COMPLETED"
+
 	data["assignments"] = assignments
+
+func complete_communications_comparison() -> bool:
+	var documents: Array = data.get("documents_read", [])
+	if not documents.has("M-08") or not documents.has("M-09"):
+		return false
+	data["assignments"]["A-005"] = "COMPLETED"
+	save_game()
+	return true
 
 func record_event(event_id: String) -> void:
 	if not data["recorded_event_ids"].has(event_id):

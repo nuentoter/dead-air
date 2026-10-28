@@ -33,6 +33,10 @@ func _run() -> void:
 	for document_id in ["M-02", "M-05", "M-06A", "M-07", "M-08", "M-09"]:
 		instance.call("_select_document", document_id)
 	instance.call("_on_nav_pressed", "Assignments")
+	instance.call("_select_assignment", "A-005")
+	instance.call("_complete_communications_comparison")
+	if not _expect(String(game.data["assignments"]["A-005"]) == "COMPLETED", "A-005 should complete only after explicit comparison review."):
+		return
 	instance.call("_select_assignment", "A-006")
 	await process_frame
 	if not _expect(_tree_contains_text(instance, "DONE  /  M-02 opened"), "A-006 checklist did not reflect reviewed evidence."):

@@ -699,6 +699,12 @@ func _draw_assignments() -> void:
 			_button("MARK COMPARISON REVIEWED", _complete_comparison_assignment, action_row)
 		else:
 			_add_text("Inspect both retained NR-041 receptions before marking this comparison reviewed.", 12, MUTED)
+	if selected_assignment_id == "A-005":
+		var communications_documents: Array = game.data.get("documents_read", [])
+		if communications_documents.has("M-08") and communications_documents.has("M-09") and selected_status != "COMPLETED":
+			_button("MARK COMMUNICATIONS COMPARISON REVIEWED", _complete_communications_comparison, action_row)
+		else:
+			_add_text("Open M-08 and M-09, then explicitly review their timestamps and routing details.", 12, MUTED)
 	if selected_assignment_id == "A-006":
 		_add_text("REQUIRED RECORD REVIEW", 14, ACCENT)
 		for required_id in ["M-02", "M-05", "M-07", "M-08", "M-09"]:
@@ -779,6 +785,7 @@ func _draw_assignment_checklist(assignment_id: String) -> void:
 		"A-005":
 			_checklist_item("Technical appendix M-08 opened", documents.has("M-08"))
 			_checklist_item("Communications Record 04-C / M-09 opened", documents.has("M-09"))
+			_checklist_item("Timestamp and routing comparison reviewed", String(assignments.get("A-005", "OPEN")) == "COMPLETED")
 		"A-006":
 			for required_id in ["M-02", "M-05", "M-07", "M-08", "M-09"]:
 				_checklist_item(required_id + " opened", documents.has(required_id))
@@ -802,6 +809,14 @@ func _mark_selected_assignment_in_progress() -> void:
 	game.data["assignments"][selected_assignment_id] = "IN PROGRESS"
 	game.save_game()
 	status_message = selected_assignment_id + " marked in progress."
+	_refresh()
+
+func _complete_communications_comparison() -> void:
+	if not game.complete_communications_comparison():
+		status_message = "Comparison remains open until both M-08 and M-09 have been opened."
+	else:
+		status_message = "A-005 comparison recorded. Similar timestamps and routing entries do not establish an independent original or common source."
+	game.save_game()
 	_refresh()
 
 func _complete_comparison_assignment() -> void:

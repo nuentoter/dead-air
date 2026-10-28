@@ -45,7 +45,9 @@ func _run() -> void:
 	state.mark_document_read("M-08")
 	assert(String(state.data["assignments"]["A-004"]) == "COMPLETED", "A-004 should complete after reviewing the incident-file cover, M-07, and M-08.")
 	state.mark_document_read("M-09")
-	assert(String(state.data["assignments"]["A-005"]) == "COMPLETED", "A-005 should complete after reviewing M-08 and M-09.")
+	assert(String(state.data["assignments"]["A-005"]) != "COMPLETED", "A-005 must require an explicit comparison review.")
+	assert(state.complete_communications_comparison(), "A-005 comparison should complete after both M-08 and M-09 are reviewed.")
+	assert(String(state.data["assignments"]["A-005"]) == "COMPLETED", "A-005 should complete after explicit comparison review.")
 	var report_count_before: int = state.data.get("reports", []).size()
 	state.data["assignments"]["A-006"] = "IN PROGRESS"
 	state.data["report_source_ids"] = ["M-07", "M-08", "M-09"]
