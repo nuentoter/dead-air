@@ -21,6 +21,7 @@ Mark only tests actually performed; “not run” is not a pass.
 - [ ] Navigate all six sections.
 - [ ] Power receiver on/off.
 - [ ] Change frequency and mode.
+- [ ] Waterfall maps current-shift event frequencies horizontally and time vertically; it excludes prior/next-shift records with unknown dates.
 - [ ] SEEK selects only authored events.
 - [ ] No-match SEEK gives truthful message.
 - [ ] Event details/transcript match catalog.
