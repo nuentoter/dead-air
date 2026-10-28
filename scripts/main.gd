@@ -30,6 +30,8 @@ var status_message := "LOCAL SIMULATION — no network or microphone access."
 
 func _ready() -> void:
 	game = GameState.new()
+	if not String(game.load_notice).is_empty():
+		status_message = String(game.load_notice)
 	_build_shell()
 	_refresh()
 
@@ -373,6 +375,8 @@ func _draw_archive() -> void:
 	var matches: Array = []
 	var query := archive_query.to_lower()
 	for document in Catalog.DOCUMENTS:
+		if String(document.get("status", "")) == "LOCKED UNTIL REPORT" and game.data.get("reports", []).is_empty():
+			continue
 		var searchable := (String(document.get("id", "")) + " " + String(document.get("title", "")) + " " + String(document.get("source", "")) + " " + String(document.get("body", ""))).to_lower()
 		if query.is_empty() or searchable.contains(query):
 			matches.append(document)
