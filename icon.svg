@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <rect width="128" height="128" rx="18" fill="#071114"/>
+  <rect x="7" y="7" width="114" height="114" rx="13" fill="#102326" stroke="#5ab891" stroke-width="2"/>
+  <path d="M18 43 H34 L42 29 L51 58 L61 37 L70 49 H110" fill="none" stroke="#73d5ac" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M18 67 H30 L36 60 L43 75 L52 62 L59 67 H110" fill="none" stroke="#3b8f76" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="99" cy="27" r="4" fill="#f0bf70"/>
+  <text x="64" y="98" fill="#e4eee8" font-family="sans-serif" font-size="17" font-weight="700" text-anchor="middle" letter-spacing="1">DEAD AIR</text>
+</svg>
