@@ -238,3 +238,264 @@ Unlock A-005, but do not block other archive exploration.
 - Searching only 01-773 shows the cover and a technical-enclosure link.
 - Searching by sequence can return M-08 even if M-06A has not been opened.
 - Never auto-correct the later times or decide which clock is right.
+
+
+# A-005 — Find Communications Record 04-C
+
+**Status:** Core. **Purpose:** Add a separately discovered record with matching sequence and routing/receipt fields while keeping its source and origin unresolved.
+
+## Assignment card
+
+**Title:** Search communications records  
+**Category:** Archive / interstation logs  
+**Priority:** Follow-up  
+**Status:** OPEN
+
+> A technical enclosure references communications worksheet C-4. Search retained interstation logs for the worksheet reference, sequence field, or related route labels.
+>
+> Record the origin, clock source, and receipt fields exactly as they appear. Leave incomplete fields unresolved.
+
+Suggested search terms: 04-C, C-4, [canonical sequence TBD], internal relay, receipt status. Exact syntax is not required.
+
+## Search result
+
+> **04-C — Interstation Communications Log**  
+> Record type: Scanned worksheet  
+> Origin station: Field incomplete  
+> Receiving route: Regional Operations relay  
+> Archive status: Retained  
+> Source medium: Original carrier not held in this archive
+
+**Search provenance**
+
+> This record was found through a separate communications-log search. It was not returned as an attachment to file 01-773.
+
+“Separate search” describes the discovery route; it does not prove the records derive from independent originals.
+
+## M-09 — Player-facing document
+
+| Time shown | Route / field | Content | Receipt state |
+|---|---|---|---|
+| 18:19 | Internal relay | Sequence worksheet C-4 | RECEIVED |
+| 18:21 | Route continuation | C-4 repeated without attached origin identifier | ROUTED |
+| 18:23 | Destination acknowledgement | Receipt status entered; operator field blank | ACKNOWLEDGED |
+
+**Record fields**
+- Sequence: [canonical numeric sequence — TBD]
+- Origin identifier: not present in surviving copy
+- Operator initials: blank
+- Clock source: not stated
+- Correction history: no correction notice attached
+
+**Archive annotation**
+
+> Route labels and sequence reference are consistent with the surviving appendix extract. The archive has not established whether the two records derive from the same original worksheet or from independent copies.
+
+## Compare M-08 and M-09
+
+| Comparison point | M-08 appendix | M-09 record 04-C |
+|---|---|---|
+| Sequence reference | C-4 / [sequence TBD] | C-4 / [sequence TBD] |
+| Later timestamps | 18:17, 18:19, 18:23 | 18:19, 18:21, 18:23 |
+| Routing information | Present, partly incomplete | Present, partly incomplete |
+| Receipt / acknowledgement | Present | Present |
+| Origin | Incomplete | Absent from surviving copy |
+| Clock source | “Local”; exact clock undefined | Not stated |
+| Source relationship | Not independently established | Not independently established |
+
+**Player prompt**
+
+> Which statement best describes the comparison?
+
+**A — Supported**
+
+> Both surviving records contain the same sequence reference and later-timestamped routing/receipt entries. The origin and clock basis remain incomplete.
+
+**B — Stronger hypothesis**
+
+> The records may share a worksheet or communications path, but the archive does not establish whether they are independent copies.
+
+**C — Unsupported certainty**
+
+> Both records prove that NR-041 transmitted from the research facility after shutdown.
+
+Feedback for C:
+
+> The records do not identify NR-041 as the origin station, and the origin and clock fields are incomplete. You can save this as a hypothesis, but it cannot be entered as a verified finding.
+
+All choices preserve progression.
+
+## Completion response
+
+**System message**
+
+> Comparison saved. The two records remain separate. Their shared sequence reference is searchable, but no source relationship has been verified.
+
+**Status:** CLOSED — COMMUNICATIONS RECORD RETAINED  
+**Unlock:** A-006, Request chronology and record-relationship review.
+
+## Recovery and out-of-order rules
+
+- A search for 04-C, C-4, or the sequence can find M-09 without opening M-08 first.
+- If M-09 is found first, opening M-08 later triggers the comparison prompt.
+- If the player does not compare manually, A-006's report form can offer both records as suggested attachments.
+- Never label M-09 “independent evidence” as a fact. It is independently discovered, but source independence is unverified.
+
+# A-006 — Request chronology and record-relationship review
+
+**Status:** Core. **Purpose:** Let the player submit a carefully bounded report and receive an administratively plausible closure that does not resolve the chronology.
+
+## Assignment card
+
+**Title:** Request chronology and record-relationship review  
+**Category:** Technical report / Regional Operations  
+**Priority:** Follow-up  
+**Status:** OPEN
+
+> Compare the Site 04 receptions with the retained technical records. Request review of the sequence reference, timestamps, and available source fields.
+>
+> Distinguish direct observations from inferences. If a source or clock basis is not established, state that limitation rather than filling the field by assumption.
+
+## Report composition screen
+
+Prepopulate links where available:
+- M-01 — first NR-041 reception
+- M-02 — registry response
+- M-04 — recurring NR-041 reception
+- M-05 — decoding worksheet
+- M-07 — operations discontinuation summary
+- M-08 — technical appendix
+- M-09 — communications record 04-C, if discovered
+
+The player may remove optional links or add notebook notes. Evidence remains available regardless of attachment choices.
+
+### Observation field
+
+Offer three starting templates.
+
+**A — Concise**
+
+> NR-041 was decoded during two Site 04 receptions. The registry returned no matching station. A matching sequence reference appears in file 01-773 technical records and, where available, Communications Record 04-C. The official summary states discontinuation at 18:00; later entries are timestamped 18:17–18:23. Origin and clock basis are not established.
+
+**B — Detailed**
+
+> The Site 04 records preserve two receptions decoded as NR-041 under different reception conditions. The registry response contains no matching station record. The numeric sequence recovered from the reception appears in the technical appendix associated with file 01-773 and in Communications Record 04-C. The discontinuation summary records an event time of 18:00, while the appendix and 04-C show later timestamps. The available records do not establish a shared clock basis, an origin station, or whether the two external records derive from independent originals.
+
+**C — Write my own**
+
+Allow free text. Show this reminder:
+
+> Separate observations, institutional claims, and hypotheses. A report may request review without claiming a source or cause.
+
+### Requested action field
+
+Default:
+
+> Verify the relationship between the cited records, identify the origin station if supported by surviving source data, and advise whether an independently verified clock comparison or chronology correction is available.
+
+Alternative: retain for technical review without requesting a conclusion.
+
+### Technical limitations field
+
+Default:
+
+> Site 04 recordings establish the received content and local receiver metadata. They do not independently establish the transmission origin. External records contain incomplete origin fields and do not specify a common clock source.
+
+### Player stance selector
+
+- Strictly factual
+- Factual plus explicit hypotheses
+- Hold report as draft
+
+The first two submit to the same review path. The third saves a draft and leaves the assignment open. An assertive stance does not unlock more story content.
+
+## Validation feedback
+
+If the player writes “The research facility transmitted NR-041 after shutdown,” show:
+
+> This statement goes beyond the linked records. None of the attached origin fields identifies NR-041 as the source, and the clock basis is not established.
+>
+> You can submit it as a hypothesis with that label, revise it to a factual observation, or save the report as a draft.
+
+Buttons: Mark as hypothesis and continue; Revise wording; Save draft. All remain available.
+
+## Submission receipt
+
+> **REPORT RECEIVED**  
+> Report ID: [GENERATED REPORT ID]  
+> Status: AWAITING REVIEW  
+> Linked records: [COUNT]  
+> Original evidence: Retained  
+> Corrections made to source records: None
+
+**Queue note**
+
+> Regional Operations will review this during active work time. The report will not expire if you leave the shift or close the application.
+
+No real-world countdown. Simulated queue time advances only during active play.
+
+## M-10B — Mara Venn response
+
+**From:** Mara Venn, Regional Operations  
+**To:** Remote Monitoring Site 04  
+**Subject:** Follow-up review — NR-041 / incident-file cross-reference  
+**Status:** CLOSED — NO VERIFIED REGISTERED-STATION LINK  
+**Response date:** [DATE TBD]
+
+> Your comparison has been added to the records package.
+>
+> The registry does not identify NR-041 as a registered station, and the available copy of Communications Record 04-C does not provide a complete origin field. The incident file's appendix is associated with the discontinuation summary, but association within an archive is not proof of a shared clock or a verified source.
+>
+> We have not established a registered-station link between the Site 04 reception and the records in file 01-773. The material also falls outside the scope of the current identifier-verification assignment. The request is therefore closed without a finding on the underlying chronology.
+>
+> Retain the original recording, transcript, registry response, and cited records. If a source record or independently verified clock comparison becomes available, submit it as a new linked report. Do not amend the existing report to imply a source or chronology that has not been established.
+
+**System receipt**
+
+> **REVIEW CLOSED**  
+> Finding: No verified registered-station link  
+> Chronology: Unresolved  
+> Original report: Retained  
+> Linked evidence: Retained  
+> Source records modified: No
+
+**Assignment state:** CLOSED — NO VERIFIED REGISTERED-STATION LINK
+
+## Post-response actions
+
+Offer quiet, ordinary actions:
+- Open the submitted report
+- Review linked evidence
+- Add a private notebook interpretation
+- Search the archive
+- Return to routine monitoring
+
+Do not force a dramatic cutscene. Further story depth should come from player curiosity, not a sudden alert.
+
+**Notebook prompt**
+
+> Regional Operations has closed the review without resolving the chronology. The submitted report and its evidence remain available. You may continue searching for source records, clock comparisons, or related archive material.
+
+Optional deep-archive leads appear only when the player finds relevant cross-references. Do not reveal M-11 through M-14 as a mandatory checklist.
+
+## A-006 recovery and alternate paths
+
+- **M-09 not found yet:** allow submission with M-08 and Site 04 evidence. The response must reflect only the records attached. After M-09 is found, enable “Create linked supplement” rather than rewriting the submitted report.
+- **Minimal report:** use the same core response, accurately reflecting the attached records.
+- **Draft retained:** assignment remains open; archive search continues to work.
+- **Player rejects Mara's conclusion:** preserve the message and allow further searches. No trust penalty may prevent evidence.
+- **Deep archive material found first:** preserve it. Optional artifacts can be attached, but cannot resolve the core chronology.
+- **App closed:** save report and queue state. No time passes while closed; no evidence expires.
+
+## Cross-assignment continuity checklist
+
+- [ ] A-003 preserves both receptions without establishing a common transmitter.
+- [ ] A-004 presents the official 18:00 shutdown claim and later appendix entries without deciding which is wrong.
+- [ ] A-005 makes clear that separate discovery does not prove independent origin.
+- [ ] A-006 distinguishes observations, institutional claims, and hypotheses.
+- [ ] M-10B closes the assignment without resolving chronology.
+- [ ] Original reports, source records, and transcripts remain immutable.
+- [ ] Every discovery has an archive/recovery route.
+- [ ] Exact dates, frequencies, Signal IDs, and the numeric sequence remain placeholders until standardized.
+- [ ] Optional deep documents do not gate the main narrative.
+- [ ] This document is narrative/UI specification only; no game code is started.
