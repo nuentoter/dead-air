@@ -9,6 +9,7 @@ An offline, landscape-only Android radio-conspiracy horror game about ordinary m
 - [Game Design Overview](docs/GAME_DESIGN.md) — pillars, player role, receiver simulation, UI, time, evidence, and opening experience.
 - [Master Chronology & Evidence Ledger](docs/MASTER_CHRONOLOGY_EVIDENCE_LEDGER.md) — main-story evidence, contradiction rules, optional Silent Site branch, and canon guardrails.
 - [Canon Decisions & Open Questions](docs/CANON_AND_OPEN_QUESTIONS.md) — established working canon, provisional details, and decisions still to lock.
+- [Opening Shift Playable Script](story/OPENING_SHIFT_PLAYABLE_SCRIPT.md) — handover, receiver onboarding, first NR-041 detection, registry conflict, report, and supervisor closure.
 
 ## Core premise
 
