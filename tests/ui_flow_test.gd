@@ -34,6 +34,10 @@ func _run() -> void:
 		instance.call("_select_document", document_id)
 	instance.call("_on_nav_pressed", "Assignments")
 	instance.call("_select_assignment", "A-005")
+	if not _expect(_tree_contains_text(instance, "Shared printed times: 18:19 and 18:23"), "A-005 did not show the side-by-side timestamp comparison."):
+		return
+	if not _expect(_tree_contains_text(instance, "do not establish an independent original"), "A-005 comparison omitted the source-attribution limit."):
+		return
 	instance.call("_complete_communications_comparison")
 	if not _expect(String(game.data["assignments"]["A-005"]) == "COMPLETED", "A-005 should complete only after explicit comparison review."):
 		return

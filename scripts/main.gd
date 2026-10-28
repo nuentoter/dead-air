@@ -701,7 +701,14 @@ func _draw_assignments() -> void:
 			_add_text("Inspect both retained NR-041 receptions before marking this comparison reviewed.", 12, MUTED)
 	if selected_assignment_id == "A-005":
 		var communications_documents: Array = game.data.get("documents_read", [])
-		if communications_documents.has("M-08") and communications_documents.has("M-09") and selected_status != "COMPLETED":
+		if selected_status == "COMPLETED":
+			_add_text("COMPARISON REVIEWED. Shared printed times do not establish a common source.", 12, ACCENT)
+		elif communications_documents.has("M-08") and communications_documents.has("M-09"):
+			_add_text("COMPARISON REVIEW  /  SOURCE TEXT SUMMARY", 14, ACCENT)
+			_add_text("M-08 — 18:17 activity entry; 18:19 routing activity; 18:23 further activity.", 13, TEXT)
+			_add_text("M-09 — 18:19 internal relay receipt; 18:21 route-continuation entry; 18:23 destination acknowledgement.", 13, TEXT)
+			_add_text("Shared printed times: 18:19 and 18:23. M-09 also lists 18:21.", 12, MUTED)
+			_add_text("Origin and clock basis remain unstated or incomplete. These similarities do not establish an independent original or common source.", 12, WARNING)
 			_button("MARK COMMUNICATIONS COMPARISON REVIEWED", _complete_communications_comparison, action_row)
 		else:
 			_add_text("Open M-08 and M-09, then explicitly review their timestamps and routing details.", 12, MUTED)
