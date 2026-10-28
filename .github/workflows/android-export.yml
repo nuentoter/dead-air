@@ -80,12 +80,30 @@ jobs:
           godot --headless --verbose --path . --export-release "Android" build/dead-air-ci-release.apk
           test -s build/dead-air-ci-release.apk
           stat -c "CI-signed release APK size: %s bytes" build/dead-air-ci-release.apk
+      - name: Audit Android manifest permissions and orientation
+        shell: bash
+        run: |
+          AAPT="$ANDROID_HOME/build-tools/34.0.0/aapt"
+          for apk in build/dead-air-debug.apk build/dead-air-ci-release.apk; do
+            "$AAPT" dump permissions "$apk" > "$apk.permissions.txt"
+            cat "$apk.permissions.txt"
+            if grep -Eq 'android\.permission\.(INTERNET|RECORD_AUDIO)' "$apk.permissions.txt"; then
+              echo "Unexpected network or microphone permission in $apk"
+              exit 1
+            fi
+            "$AAPT" dump xmltree "$apk" AndroidManifest.xml > "$apk.manifest.txt"
+            if ! grep -qi 'screenOrientation' "$apk.manifest.txt"; then
+              echo "No explicit screen orientation found in $apk"
+              exit 1
+            fi
+          done
       - name: Upload Android APKs
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: dead-air-android-apks
           path: |
             build/dead-air-debug.apk
             build/dead-air-ci-release.apk
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 14
