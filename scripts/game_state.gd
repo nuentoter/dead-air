@@ -136,11 +136,15 @@ func add_note(text_value: String, source_id: String = "") -> void:
 	save_game()
 
 func submit_report(body: String, recommendation: String, source_ids: Array) -> Dictionary:
+	if body.strip_edges().is_empty():
+		return {}
+	var is_addendum: bool = not data.get("reports", []).is_empty()
 	var report_id := "REPORT-%04d" % int(data["next_report_id"])
 	data["next_report_id"] = int(data["next_report_id"]) + 1
 	var report := {
 		"id": report_id, "body": body.strip_edges(), "recommendation": recommendation,
 		"source_ids": source_ids.duplicate(), "status": "SUBMITTED", "version": 1,
+		"kind": "ADDENDUM" if is_addendum else "INITIAL",
 		"case_status": "UNRESOLVED"
 	}
 	data["reports"].append(report)
