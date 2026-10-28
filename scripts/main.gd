@@ -763,7 +763,14 @@ func _draw_messages() -> void:
 			_add_text(String(report.get("id", "REPORT-UNKNOWN")) + "  /  " + String(report.get("kind", "INITIAL")) + "  /  " + String(report.get("status", "SUBMITTED")), 14, ACCENT)
 			_add_text(String(report.get("body", "")), 15, TEXT)
 			_add_text("Recommended action: " + String(report.get("recommendation", "")), 13, TEXT)
-			_add_text("Cited source IDs: " + ", ".join(PackedStringArray(report.get("source_ids", []))), 12, MUTED)
+			var report_sources: Array = report.get("source_ids", [])
+			_add_text("Cited source IDs: " + ", ".join(PackedStringArray(report_sources)), 12, MUTED)
+			var source_row: HBoxContainer = null
+			for source_index in range(report_sources.size()):
+				if source_index % 3 == 0:
+					source_row = _row()
+				var source_id := String(report_sources[source_index])
+				_button("OPEN " + source_id, _open_report_source.bind(source_id), source_row)
 			_add_text("Case status: " + String(report.get("case_status", "UNRESOLVED")) + "  •  Version " + str(report.get("version", 1)), 12, WARNING)
 		_add_text("MARA VENN  /  REGIONAL OPERATIONS REVIEW", 16, ACCENT)
 		var response := _find_document("M-10B")
@@ -776,6 +783,23 @@ func _open_report_assignment() -> void:
 	selected_assignment_id = "A-006"
 	game.data["current_section"] = "Assignments"
 	game.save_game()
+	_refresh()
+
+func _open_report_source(source_id: String) -> void:
+	if source_id.begins_with("SIG-"):
+		game.select_event(source_id)
+		game.data["current_section"] = "Receiver"
+	elif not _find_document(source_id).is_empty():
+		selected_document_id = source_id
+		archive_query = ""
+		game.mark_document_read(source_id)
+		game.data["current_section"] = "Archive"
+	else:
+		status_message = "Cited source " + source_id + " is not available in the local catalog."
+		_refresh()
+		return
+	game.save_game()
+	status_message = "Opened cited source " + source_id + ". Original report remains unchanged."
 	_refresh()
 
 func _mark_message_read(message_id: String) -> void:

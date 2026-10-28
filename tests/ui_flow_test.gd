@@ -65,7 +65,14 @@ func _run() -> void:
 		return
 	if not _expect(_tree_contains_text(instance, "Cited source IDs: M-07, M-08, M-09"), "Read-only report history does not display its citations."):
 		return
-	print("DEAD AIR UI flow test passed: navigate, compose report, submit, close assignment, preserve unresolved case, show immutable report history.")
+	instance.call("_open_report_source", "M-07")
+	if not _expect(String(game.data["current_section"]) == "Archive", "Opening a report citation did not navigate to Archive."):
+		return
+	if not _expect(String(instance.get("selected_document_id")) == "M-07", "Opening a report citation did not select the cited document."):
+		return
+	if not _expect(game.data.get("documents_read", []).has("M-07"), "Opening a report citation did not mark the document as reviewed."):
+		return
+	print("DEAD AIR UI flow test passed: navigate, compose report, submit, close assignment, preserve unresolved case, show immutable report history, open cited sources.")
 	quit(0)
 
 func _tree_contains_text(node: Node, expected: String) -> bool:
