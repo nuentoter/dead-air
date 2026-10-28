@@ -36,6 +36,8 @@ jobs:
         run: godot --headless --path . --editor --quit
       - name: Strict script parse and main-scene smoke test
         run: godot --headless --path . -s res://tests/parse_project.gd
+      - name: Run UI flow test
+        run: godot --headless --path . -s res://tests/ui_flow_test.gd
       - name: Run integrity self-test
         run: godot --headless --path . -s res://tests/self_test.gd
       - name: Check main scene startup
