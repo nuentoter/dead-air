@@ -45,6 +45,10 @@ This file separates working canon from unresolved design choices. Do not silentl
 - Do not portray Mara as omniscient or definitively villainous.
 - Never let a high decoding-confidence value imply that the source or registry entry is true.
 
+## Identifier and chronology register
+
+The [Canonical Identifiers & Time Register](CANONICAL_IDENTIFIERS_AND_TIME_REGISTER.md) inventories current names, IDs, timestamps, frequencies, and placeholders. It also records cross-document inconsistencies without silently resolving them. Consult it before adding or revising story records.
+
 ## Decision register
 
 The [Prioritized Design Decision Register](PRIORITIZED_DESIGN_DECISION_REGISTER.md) tracks open choices by priority, dependencies, validation method, and implementation-readiness criteria. Use it alongside this file; it does not replace canon or authorize changes to unresolved story facts.
