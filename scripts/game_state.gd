@@ -14,7 +14,7 @@ func _init() -> void:
 		var had_save := FileAccess.file_exists(SAVE_PATH)
 		var recovery_saved := false
 		if had_save:
-			recovery_saved = FileAccess.copy(SAVE_PATH, RECOVERY_PATH) == OK
+			recovery_saved = DirAccess.copy_absolute(ProjectSettings.globalize_path(SAVE_PATH), ProjectSettings.globalize_path(RECOVERY_PATH)) == OK
 		reset_defaults()
 		if had_save and recovery_saved:
 			load_notice = "Previous save could not be read. A recovery copy was preserved at user://dead_air_save.recovery.json; a clean local state was initialized."
