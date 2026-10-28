@@ -1,6 +1,6 @@
 # DEAD AIR — Main Story Assignment Scripts
 
-*Working narrative/UI specification, version 0.1. This is not game code. It continues the Opening Shift Playable Script and follows the Main-Story Document Packet and Assignment & Evidence Dependency Map. Calendar dates and exact reception times remain placeholders. Working values: numeric sequence `731904`; NR-041 at `7.418 MHz CW`; first reception `SIG-0004`, recurrence `SIG-0005`; see the Canonical Identifiers & Time Register.*
+*Working narrative/UI specification, version 0.1. This is not game code. It continues the Opening Shift Playable Script and follows the Main-Story Document Packet and Assignment & Evidence Dependency Map. Calendar dates remain placeholders. Working values: numeric sequence `731904`; NR-041 at `7.418 MHz CW`; first reception `SIG-0004` at prior-cycle 17:42, recurrence `SIG-0005` at next-shift 08:42; see the Canonical Identifiers & Time Register.*
 
 ## Script principles
 
@@ -63,7 +63,7 @@ If missed live, add:
 | Identifier | NR-041 | NR-041 |
 | Mode | CW | CW |
 | Frequency | [pending] | [pending] |
-| Reception time | [DATE/TIME TBD] | [DATE/TIME TBD] |
+| Reception time | Prior monitoring cycle, 17:42 (date unknown) | Next routine shift, 08:42 (date unknown) |
 | Signal quality | [earlier reading] | Weaker / fading |
 | Pattern / timing | [first pattern summary] | Different pattern/timing |
 | Sequence decode | [canonical value TBD] | [canonical value TBD] |
