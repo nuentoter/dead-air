@@ -31,6 +31,7 @@ func reset_defaults() -> void:
 		"selected_event_id": "SIG-0001",
 		"retained_event_ids": ["SIG-0001", "SIG-0002", "SIG-0003", "SIG-0004", "SIG-0005"],
 		"recorded_event_ids": [],
+		"documents_read": [],
 		"notes": [],
 		"reports": [],
 		"assignments": {
@@ -68,7 +69,7 @@ func _ensure_defaults() -> void:
 	var defaults := {
 		"current_section": "Receiver", "receiver_power": false, "frequency_mhz": 10.0,
 		"mode": "AM", "selected_event_id": "SIG-0001", "retained_event_ids": [],
-		"recorded_event_ids": [], "notes": [], "reports": [],
+		"recorded_event_ids": [], "documents_read": [], "notes": [], "reports": [],
 		"assignments": {}, "messages_seen": [], "settings": {"text_scale": 1.0, "audio_enabled": false},
 		"event_log": [], "next_note_id": 1, "next_report_id": 1,
 		"note_draft": "", "report_draft": "The retained records establish a repeated identifier and conflicting chronology. The available material does not establish a common transmitter or explain the source-clock difference.",
@@ -123,6 +124,11 @@ func select_event(event_id: String) -> void:
 	data["selected_event_id"] = event_id
 	if not data["retained_event_ids"].has(event_id):
 		data["retained_event_ids"].append(event_id)
+	save_game()
+
+func mark_document_read(document_id: String) -> void:
+	if not data["documents_read"].has(document_id):
+		data["documents_read"].append(document_id)
 	save_game()
 
 func record_event(event_id: String) -> void:
