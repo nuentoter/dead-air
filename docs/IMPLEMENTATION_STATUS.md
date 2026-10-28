@@ -1,7 +1,7 @@
 # DEAD AIR — Implementation Status
 
 **Current milestone:** First workstation prototype, v0.1.0  
-**Status:** Godot 4.3 headless CI passed on commit cba3629f1651df293cc3dbe317c26897d58711a0. The prototype is not yet an Android release.
+**Status:** Godot 4.3 headless CI passed on commit 99bc8edb10c0ba800933e88aab59be1983b5a899. The prototype is not yet an Android release.
 
 ## Implemented
 - Godot project configuration and main scene.
@@ -10,7 +10,7 @@
 - Core archive records M-02, M-05, M-07, M-08, M-09, M-10B.
 - Local JSON save/load with schema version, temporary write, backup/restore during save replacement, and recovery-copy attempt for unreadable saves.
 - Persistent text-size controls.
-- Receiver power, frequency and mode state; authored event-match feedback; deterministic SEEK NEXT; manual-record provenance.
+- Receiver power, frequency and mode state; authored event-match feedback; deterministic SEEK NEXT; manual-record provenance; a data-driven current-shift frequency/time plot.
 - Searchable archive, read-state tracking for required documents, notebook notes/source links, assignment status, report drafts, immutable report submissions/addenda, and unresolved case status.
 - A-006 submission is blocked until M-02, M-05, M-07, M-08, and M-09 have been opened in the archive. All five are recoverable without live reception.
 - Supervisor review appears after submission; M-10B remains hidden from archive until then.
@@ -24,7 +24,7 @@
 - Successful workflow logs contained no parser/runtime error lines.
 
 ## Known simplifications
-- Waterfall is a labelled placeholder, not a real frequency/time visualization.
+- Waterfall plot currently includes only SIG-0001–0003 from 08:00–08:30. Prior-cycle and next-shift NR-041 events are excluded because their calendar dates are unknown; this avoids implying a shared chronology.
 - SEEK NEXT cycles through authored events; it is not a physical band scan.
 - Frequency/mode are simulated; there is no RF processing, audio playback, SDR, or microphone use.
 - All authored events are retained from the start so essential clues cannot be missed.
@@ -40,7 +40,7 @@
 
 ## Next development steps
 1. Review the UI on a real landscape viewport and adjust touch layout.
-2. Replace the waterfall placeholder with a deterministic data-driven view, without implying a shared chronology where timestamps are unknown.
+2. Review the data-driven current-shift plot on a real landscape viewport and ensure its labels remain readable.
 3. Implement a more coherent simulated tuning/SEEK model, while keeping all core evidence recoverable.
 4. Add content depth and a complete shift loop only after usability is checked.
 5. Configure Android export locally, test on device/emulator, and record actual package size.
