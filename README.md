@@ -9,6 +9,7 @@ An offline, landscape-only Android radio-conspiracy horror game about ordinary m
 - [Backup Index & Continuity Policy](docs/BACKUP_AND_PROJECT_INDEX.md) — recovery index for project documents and the policy for keeping future work backed up.
 - [Game Design Overview](docs/GAME_DESIGN.md) — pillars, player role, receiver simulation, UI, time, evidence, and opening experience.
 - [Receiver Interaction & Signal Behavior Specification](docs/RECEIVER_INTERACTION_AND_SIGNAL_SPEC.md) — tuning, SEEK, modes, gain/bandwidth, recording, decoding, signal consistency, and evidence recovery.
+- [Shift & Assignment Progression Specification](docs/SHIFT_AND_ASSIGNMENT_PROGRESSION_SPEC.md) — shift lifecycle, simulated time, routine duties, assignment/report states, supervisor review, evidence discovery, and save/resume behavior.
 - [Master Chronology & Evidence Ledger](docs/MASTER_CHRONOLOGY_EVIDENCE_LEDGER.md) — main-story evidence, contradiction rules, optional Silent Site branch, and canon guardrails.
 - [Canon Decisions & Open Questions](docs/CANON_AND_OPEN_QUESTIONS.md) — established working canon, provisional details, and decisions still to lock.
 - [Assignment Evidence Dependency Map](docs/ASSIGNMENT_EVIDENCE_DEPENDENCY_MAP.md) — assignment register, core evidence paths, optional branches, knowledge gates, and recovery rules.
