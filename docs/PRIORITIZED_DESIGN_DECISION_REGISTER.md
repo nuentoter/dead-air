@@ -18,8 +18,8 @@ Do not settle a decision merely to fill a checklist. When evidence is insufficie
 
 | ID | Decision | Current position | What must be decided | Dependency / exit condition |
 |---|---|---|---|---|
-| D-001 | Canonical institutional names | NRMS, Remote Monitoring Site 04, and Mara Venn are provisional | Keep or rename each; confirm spelling and institutional role | Update every design/story document and record template consistently |
-| D-002 | Canonical identifiers and numeric sequence | `NR-041`, `01-773`, and `04-C` are working IDs; numeric sequence `731904` and initial Signal IDs are assigned as working canon | Finish propagation/audit; preserve lower sequence confidence and unknown meaning | Evidence ledger, document packet, receiver events, assignments, and notebook examples agree |
+| D-001 | Canonical institutional names | NRMS, Remote Monitoring Site 04, Mara Venn, Regional Operations, and Regional Technical Review Office are working canon v0.2 | Keep for the current release design or explicitly rename; maintain the distinction between the two offices | Update every design/story document and record template consistently |
+| D-002 | Canonical identifiers and numeric sequence | `NR-041`, `01-773`, `04-C`, sequence `731904`, and Signal IDs `SIG-0001`–`SIG-0005` are working canon v0.2 | Finish propagation/audit; preserve lower sequence confidence and unknown meaning | Evidence ledger, document packet, receiver events, assignments, and notebook examples agree |
 | D-003 | Date/time and frequency register | ISO dates/24-hour display, `10.000 MHz AM` time standard, and `7.418 MHz CW` NR-041 frequency are working conventions; calendar dates and external clock basis remain open | Complete the event calendar and verify every artifact against the canonical register | Every authored record matches the register or explicitly marks its value as unknown/placeholder |
 | D-004 | Main-story evidence chain | Core chain is drafted through A-006; later materials are candidates | Confirm which documents and assignments are mandatory, optional, or merely outlined | Dependency map identifies a recoverable path to every essential finding |
 | D-005 | Opening-to-midgame scope | Opening and A-003 to A-006 have scripts; total campaign length is open | Choose a bounded campaign scope: minimum core shifts/assignments and what counts as a complete first release | A complete beginning, middle, and ending scope exists without requiring every optional branch |
@@ -79,7 +79,7 @@ These rules are considered active working constraints, not questions to solve du
 
 To avoid rework, resolve decisions in this order:
 
-1. **Story consistency:** D-001 to D-004. Names, identifiers, time/frequency register, and evidence-chain status.
+1. **Story consistency:** D-001 to D-004. Working names/IDs are adopted for this pass; calendar dates, external clock basis, and evidence-chain status still need review.
 2. **Release scope:** D-005 to D-007 and D-012. Define what the first complete game contains and what constitutes an ending before implementation is authorized.
 3. **Player interaction contract:** D-009 to D-021, using the receiver, progression, and interface specifications as the starting point.
 4. **Narrative completion:** D-008, D-013, D-017, and D-021 as needed to finish the core and optional content.
