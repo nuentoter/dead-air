@@ -9,6 +9,7 @@ Repository: https://github.com/nuentoter/dead-air
 ### Core design and canon
 - [README](../README.md) — project entry point, current status, and core guardrails.
 - [Game Design Overview](GAME_DESIGN.md) — core concept, platform, player loop, receiver, archive, UI, audio, and constraints.
+- [Player Interface & Navigation Specification](PLAYER_INTERFACE_AND_NAVIGATION_SPEC.md) — landscape layout, navigation, receiver/recordings/archive/notebook/assignments/messages screens, provenance, accessibility, and UI acceptance criteria.
 - [Receiver Interaction & Signal Behavior Specification](RECEIVER_INTERACTION_AND_SIGNAL_SPEC.md) — receiver controls, scanning, modes, signal processing, recordings, decode behavior, and recovery rules.
 - [Shift & Assignment Progression Specification](SHIFT_AND_ASSIGNMENT_PROGRESSION_SPEC.md) — shift lifecycle, simulated time, routine duties, assignment/report states, supervisor review, evidence discovery, and save/resume behavior.
 - [Master Chronology & Evidence Ledger](MASTER_CHRONOLOGY_EVIDENCE_LEDGER.md) — evidence ledger, chronology anchors, contradiction matrix, Silent Site evidence chain, ambient threads, and placeholder register.
@@ -22,7 +23,7 @@ Repository: https://github.com/nuentoter/dead-air
 
 ## Backup and change policy
 
-1. Any substantial design, canon, chronology, evidence, assignment, receiver, or narrative work created for DEAD AIR should be committed to this repository during the same work session whenever practical.
+1. Any substantial design, canon, chronology, evidence, assignment, receiver, interface, or narrative work created for DEAD AIR should be committed to this repository during the same work session whenever practical.
 2. Update the README and this index when adding a major project document, so the latest work remains discoverable.
 3. Preserve contradictions, unresolved questions, provisional labels, and placeholders unless the project owner explicitly approves a canon change.
 4. Do not start game implementation until the design is sufficiently settled and the project owner explicitly asks to begin coding.
