@@ -47,4 +47,4 @@ Repository: https://github.com/nuentoter/dead-air
 
 ## Current implementation status
 
-The first workstation prototype is present. Godot execution, Android export, and the under-25-MB target remain unvalidated.
+The first workstation prototype is present. Godot 4.3 headless parse/startup, UI-flow, and integrity checks pass on commit cba3629f1651df293cc3dbe317c26897d58711a0. Android export, physical-device layout, and the under-25-MB target remain unvalidated.
