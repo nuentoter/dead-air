@@ -12,6 +12,9 @@ func _run() -> void:
 	var instance = packed.instantiate()
 	root.add_child(instance)
 	await process_frame
+	instance.call("_on_nav_pressed", "Archive")
+	for document_id in ["M-02", "M-05", "M-07", "M-08", "M-09"]:
+		instance.call("_select_document", document_id)
 	instance.call("_on_nav_pressed", "Assignments")
 	instance.call("_select_assignment", "A-006")
 	await process_frame
