@@ -3,7 +3,7 @@
 ## Current baseline
 The repository's first workstation prototype is configured for Godot 4.x. The headless CI workflow uses Godot 4.3 and currently checks script parsing, main-scene startup, core chronology, retained event IDs, report submission, unresolved case status, and save/load persistence.
 
-This is a desktop-testable prototype, not yet an Android release. A minimal arm64 Android debug export preset and a GitHub Actions APK-export workflow are committed. SDK paths and release signing credentials remain machine-specific; the workflow uses debug signing and is still being validated.
+This is a desktop-testable prototype, not yet an Android release. A minimal arm64 Android debug export preset and a GitHub Actions APK-export workflow are committed. SDK paths and release signing credentials remain machine-specific; CI exports a debug APK and a release-mode APK signed with a disposable test key. Manifest audit and device testing are still pending.
 
 ## Run locally
 1. Install Godot 4.3 or a compatible later Godot 4 release.
