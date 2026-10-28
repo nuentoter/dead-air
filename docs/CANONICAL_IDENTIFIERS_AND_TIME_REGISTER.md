@@ -95,13 +95,13 @@ If the source does not identify the type or clock basis, write **unknown** or pr
 | Opening time-standard | `10.000 MHz AM` | Working receiver preset v0.2 | Simulated routine reference signal; not an actual RF reception and not a plot clue. |
 | NR-041 first reception | `7.418 MHz CW` | Working story value v0.2 | Curated simulation frequency; no transmitter identity is implied. |
 | NR-041 recurrence | `7.418 MHz CW` | Working story value v0.2 | Same tuned frequency makes comparison straightforward; recurrence remains a separate event and does not prove a common physical source. |
-| Example frequency | `7.418 MHz CW` | Promoted from illustrative example to working story value | Any receiver-spec occurrence now refers to the NR-041 frequency unless explicitly marked as a separate example. |
+| Frequency note | `7.418 MHz CW` | Working story value | The former receiver-spec example has been promoted to the NR-041 frequency. Do not treat it as a real-world reception claim. |
 | Opening time-standard frequency | `10.000 MHz AM` | Working value v0.2 | Simulated routine reference signal. |
 | NR-041 first reception frequency | `7.418 MHz CW` | Working value v0.2 | Exact time remains unassigned. |
 | NR-041 recurrence frequency | `7.418 MHz CW` | Working value v0.2 | Separate Signal ID; do not imply source identity from frequency alone. |
 | M-08/M-09 frequencies | Not specified | Unknown | Do not invent them for archival documents unless a source artifact needs one. |
 | Receiver bands/modes | Simplified HF/VHF/UHF; AM/FM/NFM/USB/LSB/CW | Proposed system design | These are simulated receiver capabilities, not evidence that a story event has been assigned a frequency. |
-| CW timing / numeric sequence decode | Pending global pass | Placeholder | Identifier confidence can remain higher than numeric-sequence confidence. |
+| Exact CW keying cadence / decoder timing | Not set | Open technical detail | The decoded numeric sequence is `731904`; its confidence remains lower than the NR-041 identifier. Exact keying cadence may be specified later without changing the canonical decoded text. |
 
 ## 5. Evidence and interpretation limits
 
