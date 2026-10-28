@@ -12,8 +12,9 @@ Repository: https://github.com/nuentoter/dead-air
 - [Player Interface & Navigation Specification](PLAYER_INTERFACE_AND_NAVIGATION_SPEC.md) — landscape layout, navigation, receiver/recordings/archive/notebook/assignments/messages screens, provenance, accessibility, and UI acceptance criteria.
 - [Receiver Interaction & Signal Behavior Specification](RECEIVER_INTERACTION_AND_SIGNAL_SPEC.md) — receiver controls, scanning, modes, signal processing, recordings, decode behavior, and recovery rules.
 - [Shift & Assignment Progression Specification](SHIFT_AND_ASSIGNMENT_PROGRESSION_SPEC.md) — shift lifecycle, simulated time, routine duties, assignment/report states, supervisor review, evidence discovery, and save/resume behavior.
+- [Prioritized Design Decision Register](PRIORITIZED_DESIGN_DECISION_REGISTER.md) — decision priorities, dependencies, prototype tests, guardrails, and design-ready criteria.
 - [Master Chronology & Evidence Ledger](MASTER_CHRONOLOGY_EVIDENCE_LEDGER.md) — evidence ledger, chronology anchors, contradiction matrix, Silent Site evidence chain, ambient threads, and placeholder register.
-- [Canon Decisions & Open Questions](CANON_AND_OPEN_QUESTIONS.md) — established working canon, provisional choices, unresolved decisions, and guardrails.
+- [Canon Decisions & Open Questions](CANON_AND_OPEN_QUESTIONS.md) — established working canon, provisional details, unresolved decisions, and guardrails.
 - [Assignment Evidence Dependency Map](ASSIGNMENT_EVIDENCE_DEPENDENCY_MAP.md) — assignment register, core evidence paths, optional branches, knowledge gates, and recovery rules.
 
 ### Story and player-facing content
