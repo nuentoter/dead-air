@@ -1,44 +1,46 @@
 # DEAD AIR — Implementation Status
 
 **Current milestone:** First workstation prototype, v0.1.0  
-**Status:** Godot 4.3 headless checks passed on commit 5527dabad85d2bc8112762b76ca2b9e9d170ed8a. Documentation/index changes followed; Android remains untested.
+**Status:** Godot 4.3 headless CI passed on commit cba3629f1651df293cc3dbe317c26897d58711a0. The prototype is not yet an Android release.
 
-## Implemented in repository
+## Implemented
 - Godot project configuration and main scene.
 - Script-built landscape workstation UI with Receiver, Recordings, Archive, Notebook, Assignments, and Messages.
-- Five authored opening signal events with stable IDs and text transcripts.
+- Five authored opening signal events with stable IDs and readable transcripts.
 - Core archive records M-02, M-05, M-07, M-08, M-09, M-10B.
-- Local JSON save/load with schema version, temporary-file write, and backup/restore during save replacement.
-- Invalid-save fallback notice.
-- Receiver state, tuning/mode controls, deterministic SEEK across authored events, manual-record provenance, notes, assignment states, report submission/addenda, and unresolved-case status.
-- Archive search and a supervisor response that appears only after report submission.
-- Headless parse/startup test, content-integrity test, and GitHub Actions workflow.
+- Local JSON save/load with schema version, temporary write, backup/restore during save replacement, and recovery-copy attempt for unreadable saves.
+- Persistent text-size controls.
+- Receiver power, frequency and mode state; authored event-match feedback; deterministic SEEK NEXT; manual-record provenance.
+- Searchable archive, read-state tracking for required documents, notebook notes/source links, assignment status, report drafts, immutable report submissions/addenda, and unresolved case status.
+- A-006 submission is blocked until M-02, M-05, M-07, M-08, and M-09 have been opened in the archive. All five are recoverable without live reception.
+- Supervisor review appears after submission; M-10B remains hidden from archive until then.
+- GitHub Actions checks project import, strict script parsing, main-scene startup, UI report flow, chronology consistency, report immutability/addenda, accessibility setting persistence, and save/load behavior.
 
-## Verified
-- Godot 4.3 headless editor/import check passed.
-- Strict script-load check passed.
-- Main scene instantiated and built the workstation shell in headless test.
-- Integrity self-test passed: event IDs, NR-041, sequence 731904, frequency consistency, M-07/M-08/M-09 chronology, retained events, report submission, unresolved case status, and persistence round trip.
-- Successful workflow log showed no parser/runtime error lines on the tested commit.
+## Verified on Godot 4.3
+- Project import and script parsing passed.
+- Main scene loaded and built the workstation shell in a headless smoke test.
+- UI flow passed: navigate to A-006, verify early submission is blocked, open required records, submit a report, close A-006, and keep the case unresolved.
+- Integrity self-test passed: opening Signal IDs, NR-041, sequence 731904, 7.418 MHz consistency, M-07/M-08/M-09 timestamps, event retention, report immutability/addenda, text-size persistence, and save/load round trip.
+- Successful workflow logs contained no parser/runtime error lines.
+
+## Known simplifications
+- Waterfall is a labelled placeholder, not a real frequency/time visualization.
+- SEEK NEXT cycles through authored events; it is not a physical band scan.
+- Frequency/mode are simulated; there is no RF processing, audio playback, SDR, or microphone use.
+- All authored events are retained from the start so essential clues cannot be missed.
+- No full eight-hour clock progression, queued archive retrieval, branch-heavy ending system, or complete Silent Site branch.
+- Godot headless success does not validate Android export or visual usability on a physical phone.
 
 ## Not yet verified
 - Android export, device lifecycle, orientation, touch-target sizing, and package size.
 - Visual readability on a physical landscape phone.
-- Save failure recovery under disk-full/process-kill conditions.
-- Audio playback; current prototype intentionally has no audio and keeps essential content in text.
-- Exact runtime behavior after every possible navigation sequence.
-- Latest code commits after the successful CI run must be rechecked by CI before considering the current head verified.
+- Save recovery under disk-full or forced process termination.
+- Actual APK/AAB size against the under-25-MB target.
+- Full navigation testing on touch hardware.
 
-## Known prototype simplifications
-- Waterfall is a deterministic placeholder display, not a true frequency/time plot.
-- SEEK advances among authored events; it is not a physical band scan.
-- Frequency/mode controls display and store receiver state but do not perform RF processing.
-- All authored evidence is retained from the start to guarantee recovery.
-- First release ends with administrative acceptance; future branching and Silent Site content are deferred.
-
-## Next verification steps
-1. Re-run CI after any code changes.
-2. Inspect UI at 1280×720 and a landscape Android viewport.
-3. Test fresh save, reload, malformed save, and report immutability.
-4. Add frequency/mode matching behavior and a genuinely data-driven waterfall only after UI usability is reviewed.
-5. Export Android only after headless checks pass; measure package size and record actual result.
+## Next development steps
+1. Review the UI on a real landscape viewport and adjust touch layout.
+2. Replace the waterfall placeholder with a deterministic data-driven view, without implying a shared chronology where timestamps are unknown.
+3. Implement a more coherent simulated tuning/SEEK model, while keeping all core evidence recoverable.
+4. Add content depth and a complete shift loop only after usability is checked.
+5. Configure Android export locally, test on device/emulator, and record actual package size.
