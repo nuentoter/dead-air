@@ -57,7 +57,7 @@ The receiver tunes to the simulated time-standard signal at `10.000 MHz AM`.
 4. “The archive stores the record and its current interpretation. Later corrections are linked records; the original is not silently rewritten.”
 
 **Routine time-standard event**  
-Signal ID: `SIG-0001`; frequency/mode: `10.000 MHz AM`.
+Signal ID: `SIG-0001`; frequency/mode: `10.000 MHz AM`; scheduled at `08:00` Site 04 simulated local time.
 
 The time standard is clean and ordinary. The player can tune, view signal strength, and optionally record it. Recording this event is not required to proceed.
 
@@ -65,7 +65,7 @@ The time standard is clean and ordinary. The player can tune, view signal streng
 
 ## Sequence 2 — Routine traffic and calibration
 
-Signal IDs: `SIG-0002` and `SIG-0003` for the two authored routine events, in story order.
+Signal IDs: `SIG-0002` at `08:12` and `SIG-0003` at `08:26` Site 04 simulated local time, in story order.
 
 **Receiver behavior:** Present two or three ordinary signals across the available tuning range. Keep content short and technically legible. The player may explore, but the story progression must not depend on finding one exact live event.
 
@@ -85,11 +85,11 @@ This establishes the recovery rule: the player is not punished for missing a tra
 
 ## Sequence 3 — NR-041 first detection
 
-Signal ID: `SIG-0004`; frequency/mode: `7.418 MHz CW`; numeric sequence: `731904` (lower decode confidence than NR-041).
+Signal ID: `SIG-0004`; frequency/mode: `7.418 MHz CW`; reception time: prior monitoring cycle, `17:42` Site 04 simulated local time; numeric sequence: `731904` (lower decode confidence than NR-041).
 
 **Trigger:** The player opens `A-002` or selects the retained identifier event. If they are actively scanning, the event may appear in the waterfall; otherwise it is available through the assignment's event reference.
 
-**Event parameters:** `7.418 MHz CW`; calendar date and exact reception time remain placeholders. Identifier content is working canon: `NR-041`. The recovered sequence is `731904`, with lower confidence than the identifier.
+**Event parameters:** `7.418 MHz CW`; prior monitoring cycle at `17:42` Site 04 simulated local time; calendar date remains unknown. Identifier content is working canon: `NR-041`. The recovered sequence is `731904`, with lower confidence than the identifier.
 
 **Receiver panel**
 
@@ -134,7 +134,7 @@ Prepopulate where available:
 - Signal ID
 - Frequency
 - Mode
-- Reception time
+- Reception time (prior monitoring cycle, 17:42 Site 04 simulated local time; calendar date unknown)
 - Linked recording
 - Decoded identifier
 
@@ -173,7 +173,9 @@ After submission and a short simulated work interval, deliver the response.
 
 ## Sequence 7 — End-of-shift bridge / recurrence setup
 
-The player continues ordinary monitoring. Do not force an immediate dramatic event. After the current assignment cycle or next routine shift, make `M-04 — NR-041 recurrence` available.
+The player continues ordinary monitoring. Do not force an immediate dramatic event. After the current assignment cycle, make `M-04 — NR-041 recurrence` available on the next routine shift. Working schedule: `08:42` Site 04 simulated local time; calendar date unknown.
+
+**Recurrence event:** Signal ID `SIG-0005`; `7.418 MHz CW`; `08:42` Site 04 simulated local time on the next routine shift (calendar date unknown).
 
 **Recurrence requirements**
 - Same identifier: NR-041.
