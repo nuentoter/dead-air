@@ -2,7 +2,7 @@
 
 An offline, landscape-only Android radio-conspiracy horror game about ordinary monitoring work, contradictory records, and the limits of what an institution can account for.
 
-**Development status:** design phase. No game code should be started until the concept and design are sufficiently settled and the user explicitly asks to begin.
+**Development status:** first implementation prototype in progress. Scope and ending contracts are documented; Godot implementation is being added as a small, deterministic vertical slice. Build and Android export are not yet verified.
 
 ## Design documents
 
@@ -11,7 +11,7 @@ An offline, landscape-only Android radio-conspiracy horror game about ordinary m
 - [Player Interface & Navigation Specification](docs/PLAYER_INTERFACE_AND_NAVIGATION_SPEC.md) — landscape layout, navigation, receiver/recordings/archive/notebook/assignments/messages screens, provenance, accessibility, and UI acceptance criteria.
 - [Receiver Interaction & Signal Behavior Specification](docs/RECEIVER_INTERACTION_AND_SIGNAL_SPEC.md) — tuning, SEEK, modes, gain/bandwidth, recording, decoding, signal consistency, and evidence recovery.
 - [Shift & Assignment Progression Specification](docs/SHIFT_AND_ASSIGNMENT_PROGRESSION_SPEC.md) — shift lifecycle, simulated time, routine duties, assignment/report states, supervisor review, evidence discovery, and save/resume behavior.
-- [Prioritized Design Decision Register](docs/PRIORITIZED_DESIGN_DECISION_REGISTER.md) — open decisions ranked by priority, dependencies, prototype tests, non-negotiable guardrails, and criteria for design readiness.
+- [First Release Scope & Acceptance](docs/FIRST_RELEASE_SCOPE_AND_ACCEPTANCE.md) — bounded first playable, required systems, explicit deferrals, and release gates.\n- [Ending & Disclosure Structure](docs/ENDING_AND_DISCLOSURE_STRUCTURE.md) — first-release closure that preserves the central uncertainty.\n- [Technical Implementation Plan](docs/TECHNICAL_IMPLEMENTATION_PLAN.md) — project structure, state model, persistence, receiver simulation, and tests.\n- [Implementation Test Checklist](docs/IMPLEMENTATION_TEST_CHECKLIST.md) — repeatable verification checklist.\n- [Prioritized Design Decision Register](docs/PRIORITIZED_DESIGN_DECISION_REGISTER.md) — open decisions ranked by priority, dependencies, prototype tests, non-negotiable guardrails, and criteria for design readiness.
 - [Canonical Identifiers & Time Register](docs/CANONICAL_IDENTIFIERS_AND_TIME_REGISTER.md) — source-of-truth inventory for names, record IDs, timestamp conventions, frequencies, the working numeric sequence, Signal IDs, and remaining open questions.
 - [Master Chronology & Evidence Ledger](docs/MASTER_CHRONOLOGY_EVIDENCE_LEDGER.md) — main-story evidence, contradiction rules, optional Silent Site branch, and canon guardrails.
 - [Canon Decisions & Open Questions](docs/CANON_AND_OPEN_QUESTIONS.md) — working canon, remaining provisional details, unresolved decisions, and guardrails.
