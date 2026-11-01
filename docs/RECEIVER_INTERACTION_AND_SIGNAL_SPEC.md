@@ -364,3 +364,11 @@ These simplifications must remain honestly labelled until replaced and tested.
 - Frequency entry is constrained to the selected band. Legacy saves infer their band from the saved frequency.
 - SEEK considers only authored events within the selected band and mode. If none are indexed, it reports that fact without inventing a signal or deleting retained records. Matching events are selected in frequency order, with same-frequency retained events advanced separately.
 - These controls remain a deterministic simulation and do not implement real RF scanning or DSP.
+
+
+## Waterfall interaction (prototype)
+- The waterfall maintains a 64-row rolling history. New synthetic noise rows arrive every 0.12 seconds and push prior rows downward.
+- Horizontal scale follows the selected band; vertical scale retains the Site 04 displayed 08:00–08:30 event-time basis.
+- Tapping near a visible authored trace selects that event and tunes its frequency/mode. Dragging previews frequency and commits the tuned frequency on release; an empty frequency does not create a signal event.
+- Fine tuning steps are 1 kHz in HF, 5 kHz in VHF, and 25 kHz in UHF, available through on-screen step buttons and left/right keyboard keys.
+- The plot shows only SIG-0001–SIG-0003 because the dates for SIG-0004/SIG-0005 are unknown; those retained events remain accessible through the event index and Recordings.
