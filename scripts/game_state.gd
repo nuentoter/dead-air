@@ -41,7 +41,7 @@ func reset_defaults() -> void:
 			"A-004": "OPEN", "A-005": "OPEN", "A-006": "OPEN"
 		},
 		"messages_seen": [],
-		"settings": {"text_scale": 1.0, "audio_enabled": false},
+		"settings": {"text_scale": 1.0, "audio_enabled": true},
 		"event_log": [],
 		"next_note_id": 1,
 		"next_report_id": 1,
