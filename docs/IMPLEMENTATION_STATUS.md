@@ -31,7 +31,7 @@
 
 - Signal audio is deterministic synthetic monitor output, not a recovered live recording. CW keying is generated from the authored identifier and sequence; transcript readout is explicitly labeled as accessibility speech.
 
-- Event-aware local audio renders voice traffic as synthesized speech, CW identifiers/sequences as keyed Morse, the time reference as an audible carrier, and the partial data event as a short FSK-like burst. Spoken transcript readout remains separate from source-signal rendering.
+- Event-aware local audio renders voice traffic as synthesized speech, CW identifiers/sequences as keyed Morse, the time reference as regular second ticks with stronger minute, quarter-hour, and top-of-hour cues, and the partial data event as a short FSK-like burst. Spoken transcript readout remains separate from source-signal rendering.
 
 ## Known simplifications
 - Waterfall plot currently includes only SIG-0001–0003 from 08:00–08:30. Prior-cycle and next-shift NR-041 events are excluded because their calendar dates are unknown; this avoids implying a shared chronology.
