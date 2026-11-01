@@ -27,16 +27,28 @@ static func synthesize(source_text: String, speed: float = 1.0, pitch: float = 1
 	var segments := _phonemize(spoken)
 	if segments.is_empty():
 		return null
-	var samples := PackedFloat32Array()
 	var rate := clampf(speed, 0.65, 1.4)
 	var pitch_scale := clampf(pitch, 0.75, 1.35)
+	var total_frames := 0
+	for segment in segments:
+		var duration := float(segment.get("duration", 0.08))
+		total_frames += int((duration / rate) * float(SAMPLE_RATE)) if String(segment.get("kind", "")) != "pause" else int(duration * float(SAMPLE_RATE) / rate)
+	total_frames = clampi(total_frames, 1, SAMPLE_RATE * 60)
+	var pcm := PackedByteArray()
+	pcm.resize(total_frames * 2)
+	var write_index := 0
 	var phase := 0.0
 	for segment in segments:
+		if write_index >= total_frames:
+			break
 		var kind := String(segment.get("kind", "voice"))
 		if kind == "pause":
 			var pause_count := int(float(segment.get("duration", 0.08)) * float(SAMPLE_RATE) / rate)
 			for _p in range(pause_count):
-				samples.append(0.0)
+				if write_index >= total_frames:
+					break
+				pcm.encode_s16(write_index * 2, 0)
+				write_index += 1
 			continue
 		var duration := float(segment.get("duration", 0.075)) / rate
 		var count := maxi(1, int(duration * float(SAMPLE_RATE)))
@@ -46,6 +58,8 @@ static func synthesize(source_text: String, speed: float = 1.0, pitch: float = 1
 		var voiced := kind != "noise"
 		var fricative := kind == "noise"
 		for i in range(count):
+			if write_index >= total_frames:
+				break
 			var t := float(i) / float(count)
 			var edge := minf(1.0, t * 12.0) * minf(1.0, (1.0 - t) * 10.0)
 			var sample := 0.0
@@ -57,15 +71,12 @@ static func synthesize(source_text: String, speed: float = 1.0, pitch: float = 1
 				var formant_c := sin(TAU * f3 * float(i) / float(SAMPLE_RATE) + phase * 0.31) * 0.12
 				sample = fundamental + formant_a + formant_b + formant_c
 			if fricative:
-				var noise_seed := sin(float(i + samples.size()) * 12.9898 + f2) * 43758.5453
+				var noise_seed := sin(float(write_index) * 12.9898 + f2) * 43758.5453
 				var noise_value := (noise_seed - floor(noise_seed)) * 2.0 - 1.0
 				sample = noise_value * 0.20
-			samples.append(clampf(sample * edge * 0.72, -0.85, 0.85))
+			pcm.encode_s16(write_index * 2, int(round(clampf(sample * edge * 0.72, -0.85, 0.85) * 32767.0)))
+			write_index += 1
 		phase += 0.04
-	var pcm := PackedByteArray()
-	pcm.resize(samples.size() * 2)
-	for i in range(samples.size()):
-		pcm.encode_s16(i * 2, int(round(samples[i] * 32767.0)))
 	var stream := AudioStreamWAV.new()
 	stream.format = AudioStreamWAV.FORMAT_16_BITS
 	stream.mix_rate = SAMPLE_RATE
