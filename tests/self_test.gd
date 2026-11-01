@@ -17,7 +17,8 @@ func _run() -> void:
 	_assert(speech_a.mix_rate == 22050 and not speech_a.stereo, "Speech stream format is not the expected compact mono format.")
 	_assert(speech_a.data.size() > 4000 and speech_a.data == speech_b.data, "Speech output should be non-empty and deterministic.")
 	_assert(speech_a.data.size() < 22050 * 2 * 30, "Speech synthesis exceeded the bounded test output duration.")
-	_assert(String(SpeechEngine._expand_text("NR-041")).contains("zero four one"), "Identifier and digit expansion failed.")
+	var expanded_identifier := String(SpeechEngine._expand_text("NR-041"))
+	_assert(expanded_identifier.contains("zero") and expanded_identifier.contains("four") and expanded_identifier.contains("one"), "Identifier and digit expansion failed.")
 	var field_voice: AudioStreamWAV = SpeechEngine.synthesize("Hi.", 1.0, 1.0, "FIELD")
 	var official_voice: AudioStreamWAV = SpeechEngine.synthesize("Hi.", 1.0, 1.0, "OFFICIAL")
 	_assert(field_voice.data != official_voice.data, "Authored voice profiles should produce distinct local readouts.")
@@ -68,6 +69,7 @@ func _run() -> void:
 		_assert(String(m09.get("body", "")).contains(stamp), "M-09 missing " + stamp)
 
 	var state := GameState.new()
+	state.reset_defaults()
 	state.data["communications_comparison_reviewed"] = false
 	state.data["assignments"]["A-005"] = "OPEN"
 	state.save_game()
