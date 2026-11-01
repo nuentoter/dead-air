@@ -148,18 +148,31 @@ func refresh_assignment_progress() -> void:
 	var inspected: Array = data.get("inspected_event_ids", [])
 	var documents: Array = data.get("documents_read", [])
 	var assignments: Dictionary = data.get("assignments", {})
-	if bool(data.get("receiver_power", false)) and inspected.has("SIG-0001"):
-		assignments["A-001"] = "COMPLETED"
-	if (inspected.has("SIG-0004") or inspected.has("SIG-0005")) and documents.has("M-02"):
-		assignments["A-002"] = "COMPLETED"
-	if documents.has("M-06A") and documents.has("M-07") and documents.has("M-08"):
-		assignments["A-004"] = "COMPLETED"
-	if bool(data.get("communications_comparison_reviewed", false)) and documents.has("M-08") and documents.has("M-09"):
-		assignments["A-005"] = "COMPLETED"
-	elif String(assignments.get("A-005", "OPEN")) == "COMPLETED":
-		assignments["A-005"] = "IN PROGRESS" if documents.has("M-08") or documents.has("M-09") else "OPEN"
-
+	var receiver_ready := bool(data.get("receiver_power", false)) and inspected.has("SIG-0001")
+	_set_assignment_progress(assignments, "A-001", bool(data.get("receiver_power", false)) or inspected.has("SIG-0001"), receiver_ready)
+	var identifier_reviewed := inspected.has("SIG-0004") or inspected.has("SIG-0005")
+	_set_assignment_progress(assignments, "A-002", identifier_reviewed or documents.has("M-02"), identifier_reviewed and documents.has("M-02"))
+	_set_assignment_progress(assignments, "A-003", inspected.has("SIG-0004") or inspected.has("SIG-0005"), false)
+	var incident_docs_complete := documents.has("M-06A") and documents.has("M-07") and documents.has("M-08")
+	var incident_docs_started := documents.has("M-06A") or documents.has("M-07") or documents.has("M-08")
+	_set_assignment_progress(assignments, "A-004", incident_docs_started, incident_docs_complete)
+	var communications_started := documents.has("M-08") or documents.has("M-09")
+	var communications_complete := bool(data.get("communications_comparison_reviewed", false)) and documents.has("M-08") and documents.has("M-09")
+	_set_assignment_progress(assignments, "A-005", communications_started, communications_complete)
+	var report_docs_started := documents.has("M-02") or documents.has("M-05") or documents.has("M-07") or documents.has("M-08") or documents.has("M-09")
+	_set_assignment_progress(assignments, "A-006", report_docs_started, false)
 	data["assignments"] = assignments
+
+func _set_assignment_progress(assignments: Dictionary, assignment_id: String, started: bool, completed: bool) -> void:
+	var current := String(assignments.get(assignment_id, "OPEN"))
+	if current == "CLOSED" or current == "COMPLETED":
+		return
+	if completed:
+		assignments[assignment_id] = "COMPLETED"
+	elif started:
+		assignments[assignment_id] = "IN PROGRESS"
+	else:
+		assignments[assignment_id] = "OPEN"
 
 func complete_communications_comparison() -> bool:
 	var documents: Array = data.get("documents_read", [])
