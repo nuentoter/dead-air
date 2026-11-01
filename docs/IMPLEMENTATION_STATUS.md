@@ -10,7 +10,7 @@
 - Core archive records M-02, M-05, M-06A (closed incident file 01-773 cover), M-07, M-08, M-09, M-10B.
 - Local JSON save/load with schema version, temporary write, backup/restore during save replacement, and recovery-copy attempt for unreadable saves; automated malformed-save preservation is included in the self-test.
 - Persistent text-size controls.
-- Receiver power, frequency and mode state; authored event-match feedback; deterministic SEEK NEXT; manual-record provenance; a data-driven current-shift frequency/time plot with explicit in-plot time and frequency axis labels.
+- Receiver power, frequency and mode state; authored event-match feedback; deterministic SEEK NEXT; manual-record provenance; a data-driven current-shift frequency/time plot with explicit in-plot time and frequency axis labels; optional locally generated broadband hiss with a faint 73 Hz tone, gated by receiver power and a persistent mute preference.
 - Searchable archive, read-state tracking for required documents, notebook notes/source links, and player-selectable report citations persisted with the draft.
 - Evidence-driven assignment progress: A-001/A-002/A-004 complete from their defined receiver/document actions (A-004 requires the M-06A cover, M-07 summary, and M-08 appendix); A-003 and A-005 require their evidence to be opened and an explicit comparison confirmation. A-005 presents the M-08/M-09 timestamps and routing side by side, preserves the source-attribution limit, stores a dedicated completion marker, and migrates older auto-completed saves back to in-progress. Each assignment displays a persistent progress checklist based on the actual reviewed evidence and recorded state.
 - Immutable report submissions/addenda and unresolved case status, displayed in a read-only report history with cited source IDs in Messages; each citation can open its retained signal event or archive document.
@@ -45,6 +45,6 @@
 ## Next development steps
 1. Extend automated interaction coverage around note/report draft recovery, assignment progression, and source selection.
 2. Improve routine work-order progression while preserving free investigation and recoverable evidence.
-3. Improve receiver interaction and selected-event clarity using deterministic authored data.
+3. Improve receiver interaction and selected-event clarity using deterministic authored data; keep audio synthetic, optional, and nonessential.
 4. Add the next main-story content only after its evidence dependencies and recovery paths are implemented.
 5. Keep physical-device validation marked as unverified; continue using CI and static/layout-oriented checks rather than treating owner testing as a prerequisite for development.
