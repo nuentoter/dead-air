@@ -12,7 +12,7 @@ const EVENTS = [
 	{
 		"id": "SIG-0002", "kind": "ROUTINE TRAFFIC", "frequency_mhz": 7.200, "mode": "AM",
 		"time_label": "08:12", "time_basis": "Site 04 simulated local time",
-		"identifier": "", "sequence": "", "strength": 0.64, "classification": "VOICE / ROUTINE",
+		"identifier": "", "sequence": "", "strength": 0.64, "classification": "VOICE / ROUTINE", "voice_profile": "FIELD",
 		"transcript": "North relay, routine check complete. Weather at the ridge remains overcast. Nothing further.",
 		"provenance": "Authored routine event; automatically retained.", "essential": false
 	},
@@ -147,4 +147,3 @@ const MESSAGES = [
 	{"id": "MSG-001", "sender": "Mara Venn", "subject": "Shift handover", "body": "Morning. Start with the routine reference check, then review the retained identifier event. If the registry returns no match, report the result as an index finding—not as proof that a source cannot exist.", "unread": true},
 	{"id": "MSG-002", "sender": "Site 04 system", "subject": "Retention policy", "body": "Authored events in this training scenario are automatically retained. Manual recording adds a separate provenance entry. Tuning away or changing mode does not delete a retained event.", "unread": true}
 ]
-			"voice_profile": "FIELD",
