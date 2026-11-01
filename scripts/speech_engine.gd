@@ -75,16 +75,30 @@ static func synthesize(source_text: String, speed: float = 1.0, pitch: float = 1
 
 static func _expand_text(source: String) -> String:
 	var result := ""
-	for i in range(source.length()):
+	var i := 0
+	while i < source.length():
 		var character := source.substr(i, 1)
-		if LETTER_NAMES.has(character):
-			result += " " + String(LETTER_NAMES[character]) + " "
+		if character >= "A" and character <= "Z":
+			var run := ""
+			while i < source.length():
+				var next_character := source.substr(i, 1)
+				if next_character < "A" or next_character > "Z":
+					break
+				run += next_character
+				i += 1
+			if run.length() >= 2:
+				for letter in run:
+					result += " " + String(LETTER_NAMES.get(String(letter), String(letter).to_lower())) + " "
+			else:
+				result += run.to_lower()
+			continue
 		elif character >= "0" and character <= "9":
 			result += " " + String(DIGITS[int(character)]) + " "
 		elif character == "-" or character == "_" or character == "/":
 			result += " "
 		else:
 			result += character.to_lower()
+		i += 1
 	return result
 
 static func _phonemize(text: String) -> Array:
