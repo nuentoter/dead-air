@@ -81,7 +81,7 @@ static func _render_segments(segments: Array) -> AudioStreamWAV:
 			if frame >= total_frames:
 				break
 			var t := float(i) / float(count)
-			var edge := minf(1.0, t * duration * 250.0, (1.0 - t) * duration * 250.0)
+			var edge := minf(1.0, minf(t * duration * 250.0, (1.0 - t) * duration * 250.0))
 			var sample := 0.0
 			if tone > 0.0:
 				phase += TAU * tone / float(SAMPLE_RATE)
