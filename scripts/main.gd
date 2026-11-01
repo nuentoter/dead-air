@@ -92,7 +92,6 @@ var report_editor: TextEdit
 var note_editor: TextEdit
 var recommendation_select: OptionButton
 var frequency_spin: SpinBox
-var mode_select: OptionButton
 var receiver_audio: AudioStreamPlayer
 var speech_player: AudioStreamPlayer
 var audio_playback: AudioStreamGeneratorPlayback
@@ -365,27 +364,39 @@ func _draw_receiver() -> void:
 
 	_add_text("FREQUENCY (MHz)", 12, MUTED, control_row)
 	frequency_spin = SpinBox.new()
-	frequency_spin.min_value = 0.1
-	frequency_spin.max_value = 30000.0
+	var selected_band := String(game.data.get("band", "HF"))
+	match selected_band:
+		"HF":
+			frequency_spin.min_value = 3.0
+			frequency_spin.max_value = 30.0
+		"VHF":
+			frequency_spin.min_value = 30.001
+			frequency_spin.max_value = 300.0
+		"UHF":
+			frequency_spin.min_value = 300.001
+			frequency_spin.max_value = 3000.0
+		_:
+			frequency_spin.min_value = 3.0
+			frequency_spin.max_value = 30.0
 	frequency_spin.step = 0.001
 	frequency_spin.rounded = false
 	frequency_spin.value = float(game.data.get("frequency_mhz", 10.0))
 	frequency_spin.custom_minimum_size = Vector2(145, 38)
 	control_row.add_child(frequency_spin)
 
-	mode_select = OptionButton.new()
-	for mode in ["AM", "FM", "NFM", "USB", "LSB", "CW"]:
-		mode_select.add_item(mode)
-	var current_mode := String(game.data.get("mode", "AM"))
-	for i in range(mode_select.item_count):
-		if mode_select.get_item_text(i) == current_mode:
-			mode_select.select(i)
-	mode_select.custom_minimum_size = Vector2(100, 38)
-	control_row.add_child(mode_select)
 	_button("APPLY", _apply_receiver_settings, control_row)
 	_button("SEEK NEXT", _seek_next, control_row)
 	frequency_spin.value_changed.connect(_on_frequency_changed)
-	mode_select.item_selected.connect(_on_mode_changed)
+
+	var band_row := _row()
+	_add_text("BAND", 12, MUTED, band_row)
+	for band in ["HF", "VHF", "UHF"]:
+		_choice_button(band, _select_band.bind(band), selected_band == band, band_row)
+	var mode_row := _row()
+	_add_text("MODE", 12, MUTED, mode_row)
+	var current_mode := String(game.data.get("mode", "AM"))
+	for mode in ["AM", "FM", "NFM", "USB", "LSB", "CW"]:
+		_choice_button(mode, _select_mode.bind(mode), current_mode == mode, mode_row)
 
 	var live_state := "RX ON" if bool(game.data.get("receiver_power", false)) else "RX OFF — retained events remain available"
 	_add_text(live_state, 13, ACCENT if bool(game.data.get("receiver_power", false)) else WARNING)
@@ -536,20 +547,15 @@ func _toggle_receiver() -> void:
 
 func _on_frequency_changed(value: float) -> void:
 	game.data["frequency_mhz"] = value
+	game.data["band"] = _band_for_frequency(value)
 	game.save_game()
-
-func _on_mode_changed(index: int) -> void:
-	if mode_select != null:
-		game.data["mode"] = mode_select.get_item_text(index)
-		game.save_game()
 
 func _apply_receiver_settings() -> void:
 	var frequency := float(game.data.get("frequency_mhz", 10.0))
 	var mode := String(game.data.get("mode", "AM"))
 	if frequency_spin != null:
 		frequency = frequency_spin.value
-	if mode_select != null:
-		mode = mode_select.get_item_text(mode_select.selected)
+	game.data["band"] = _band_for_frequency(frequency)
 	game.set_receiver(bool(game.data.get("receiver_power", false)), frequency, mode)
 	status_message = "Receiver settings saved: %.3f MHz / %s." % [frequency, mode]
 	_refresh()
@@ -559,17 +565,85 @@ func _seek_next() -> void:
 		status_message = "SEEK unavailable while RX is off. Power on the receiver first."
 		_refresh()
 		return
-	var current_id := String(game.data.get("selected_event_id", "SIG-0001"))
-	var current_index := 0
-	for i in range(Catalog.EVENTS.size()):
-		if String(Catalog.EVENTS[i].get("id", "")) == current_id:
-			current_index = i
-			break
-	var next_index := (current_index + 1) % Catalog.EVENTS.size()
-	var event: Dictionary = Catalog.EVENTS[next_index]
-	game.select_event(String(event.get("id", "")))
-	game.set_receiver(true, float(event.get("frequency_mhz", 10.0)), String(event.get("mode", "AM")))
-	status_message = "SEEK selected authored event " + String(event.get("id", "")) + ". No source inference is made."
+	var selected_band := String(game.data.get("band", "HF"))
+	var selected_mode := String(game.data.get("mode", "AM"))
+	var current_frequency := float(game.data.get("frequency_mhz", 10.0))
+	var current_id := String(game.data.get("selected_event_id", ""))
+	var matches: Array = []
+	for event in Catalog.EVENTS:
+		var event_frequency := float(event.get("frequency_mhz", 0.0))
+		if _band_for_frequency(event_frequency) == selected_band and String(event.get("mode", "")) == selected_mode:
+			matches.append(event)
+	if matches.is_empty():
+		status_message = "No authored event is indexed in %s / %s. No new event was created; retained events remain accessible." % [selected_band, selected_mode]
+		_refresh()
+		return
+	var same_frequency: Array = []
+	for event in matches:
+		if String(event.get("id", "")) != current_id and absf(float(event.get("frequency_mhz", 0.0)) - current_frequency) <= 0.0005:
+			same_frequency.append(event)
+	var chosen: Dictionary = {}
+	if not same_frequency.is_empty():
+		chosen = same_frequency[0]
+	else:
+		var next_frequency := INF
+		for event in matches:
+			var event_frequency := float(event.get("frequency_mhz", 0.0))
+			if event_frequency > current_frequency + 0.0005 and event_frequency < next_frequency:
+				next_frequency = event_frequency
+				chosen = event
+		if chosen.is_empty():
+			var first_frequency := INF
+			for event in matches:
+				var event_frequency := float(event.get("frequency_mhz", 0.0))
+				if event_frequency < first_frequency:
+					first_frequency = event_frequency
+					chosen = event
+	if chosen.is_empty() or String(chosen.get("id", "")) == current_id:
+		status_message = "No further authored event is indexed in %s / %s. The receiver has not invented a stop." % [selected_band, selected_mode]
+		_refresh()
+		return
+	game.select_event(String(chosen.get("id", "")))
+	game.set_receiver(true, float(chosen.get("frequency_mhz", 10.0)), selected_mode)
+	status_message = "SEEK selected %s at %.3f MHz / %s within %s." % [String(chosen.get("id", "")), float(chosen.get("frequency_mhz", 0.0)), selected_mode, selected_band]
+	_refresh()
+
+func _band_for_frequency(frequency: float) -> String:
+	if frequency <= 30.0:
+		return "HF"
+	if frequency <= 300.0:
+		return "VHF"
+	return "UHF"
+
+func _choice_button(label_text: String, callback: Callable, selected: bool, target: Container) -> Button:
+	var button := Button.new()
+	button.text = label_text
+	button.toggle_mode = true
+	button.button_pressed = selected
+	button.custom_minimum_size = Vector2(72, 36)
+	button.add_theme_font_size_override("font_size", int(round(13.0 * _text_scale())))
+	if selected:
+		button.add_theme_color_override("font_color", ACCENT)
+	button.pressed.connect(callback)
+	target.add_child(button)
+	return button
+
+func _select_band(band: String) -> void:
+	var defaults := {"HF":10.000, "VHF":145.500, "UHF":446.000}
+	if not defaults.has(band):
+		return
+	game.data["band"] = band
+	game.data["frequency_mhz"] = float(defaults[band])
+	game.save_game()
+	status_message = "%s band selected. Frequency moved to its local default; no signal is implied." % band
+	_refresh()
+
+func _select_mode(mode: String) -> void:
+	if not ["AM", "FM", "NFM", "USB", "LSB", "CW"].has(mode):
+		return
+	game.data["mode"] = mode
+	game.save_game()
+	status_message = "%s mode selected." % mode
 	_refresh()
 
 func _select_event(event_id: String) -> void:
