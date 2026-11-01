@@ -28,7 +28,8 @@ func _run() -> void:
 	for signal_audio in [cw_audio, voice_audio, data_audio, carrier_audio]:
 		assert(signal_audio != null and signal_audio.mix_rate == 22050 and not signal_audio.stereo, "Signal renderer returned an invalid stream.")
 		assert(signal_audio.data.size() > 4000, "Signal renderer returned an empty or too-short stream.")
-	assert(cw_audio.data.size() > carrier_audio.data.size(), "CW identifier/sequence should produce a longer keyed signal than the reference carrier.")
+	assert(cw_audio.data.size() > data_audio.data.size(), "CW identifier/sequence should produce a longer keyed signal than the partial data burst.")
+	assert(carrier_audio.data.size() > data_audio.data.size(), "Time-standard ticks should be longer than the partial data burst.")
 	assert(data_audio.data.size() < cw_audio.data.size(), "Incomplete data burst should remain a short non-textual event.")
 	assert(Catalog.EVENTS.size() == 5, "Expected five canonical opening signal events.")
 	assert(Catalog.DOCUMENTS.size() >= 6, "Expected core archive documents including the closed incident-file cover.")
