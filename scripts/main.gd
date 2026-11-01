@@ -15,9 +15,14 @@ const WARNING = Color(0.91, 0.72, 0.43, 1)
 
 class WaterfallPlot extends Control:
 	var events: Array = []
+	var elapsed := 0.0
 
 	func _ready() -> void:
-		custom_minimum_size = Vector2(0, 150)
+		custom_minimum_size = Vector2(0, 190)
+		queue_redraw()
+
+	func _process(delta: float) -> void:
+		elapsed += delta
 		queue_redraw()
 
 	func _draw() -> void:
@@ -27,6 +32,19 @@ class WaterfallPlot extends Control:
 		var bottom_gutter := 18.0
 		var plot_rect := Rect2(Vector2(left_gutter, 4.0), Vector2(maxf(1.0, size.x - left_gutter - 4.0), maxf(1.0, size.y - bottom_gutter - 4.0)))
 		draw_rect(Rect2(Vector2.ZERO, size), Color(0.018, 0.035, 0.04, 1), true)
+		# Synthetic running noise bed; authored signal traces remain separate.
+		var row_height := 3.0
+		var rows := int(ceil(plot_rect.size.y / row_height))
+		for row in range(rows):
+			var y := plot_rect.position.y + float(row) * row_height
+			var age := elapsed * 5.0 + float(row)
+			for col in range(72):
+				var x := plot_rect.position.x + plot_rect.size.x * float(col) / 72.0
+				var wave := absf(sin(float(col) * 0.41 + age * 0.17) * cos(float(col) * 0.13 - age * 0.09))
+				var noise := fposmod(sin(float(col * 37 + row * 19) * 12.9898 + floor(age) * 78.233) * 43758.5453, 1.0)
+				var intensity := clampf(0.07 + wave * 0.13 + noise * 0.12, 0.04, 0.32)
+				var tint := Color(0.06 + intensity * 0.25, 0.12 + intensity * 0.75, 0.11 + intensity * 0.42, 1)
+				draw_rect(Rect2(x, y, maxf(1.0, plot_rect.size.x / 72.0 + 0.5), row_height), tint, true)
 		for step in range(0, 5):
 			var x := plot_rect.position.x + plot_rect.size.x * float(step) / 4.0
 			draw_line(Vector2(x, plot_rect.position.y), Vector2(x, plot_rect.end.y), Color(0.12, 0.2, 0.19, 1), 1.0)
@@ -73,14 +91,51 @@ var note_editor: TextEdit
 var recommendation_select: OptionButton
 var frequency_spin: SpinBox
 var mode_select: OptionButton
+var receiver_audio: AudioStreamPlayer
+var audio_playback: AudioStreamGeneratorPlayback
+var audio_enabled := true
+var audio_phase := 0.0
 var status_message := "LOCAL SIMULATION — no network or microphone access."
 
 func _ready() -> void:
+	_setup_receiver_audio()
 	game = GameState.new()
 	if not String(game.load_notice).is_empty():
 		status_message = String(game.load_notice)
 	_build_shell()
 	_refresh()
+
+func _process(_delta: float) -> void:
+	_update_receiver_audio()
+
+func _setup_receiver_audio() -> void:
+	receiver_audio = AudioStreamPlayer.new()
+	var generator := AudioStreamGenerator.new()
+	generator.mix_rate = 22050.0
+	generator.buffer_length = 0.15
+	receiver_audio.stream = generator
+	receiver_audio.volume_db = -25.0
+	add_child(receiver_audio)
+	receiver_audio.play()
+	audio_playback = receiver_audio.get_stream_playback() as AudioStreamGeneratorPlayback
+
+func _update_receiver_audio() -> void:
+	if audio_playback == null or not audio_enabled or game == null:
+		return
+	if not bool(game.data.get("receiver_power", false)):
+		return
+	var frames := audio_playback.get_frames_available()
+	if frames <= 0:
+		return
+	var buffer := PackedVector2Array()
+	buffer.resize(frames)
+	for i in range(frames):
+		var noise := randf_range(-1.0, 1.0) * 0.16
+		audio_phase += 2.0 * PI * 73.0 / 22050.0
+		var hum := sin(audio_phase) * 0.018
+		var sample := clampf(noise + hum, -0.2, 0.2)
+		buffer[i] = Vector2(sample, sample)
+	audio_playback.push_buffer(buffer)
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_PAUSED or what == NOTIFICATION_WM_CLOSE_REQUEST:
@@ -295,6 +350,7 @@ func _draw_receiver() -> void:
 	var control_row := _row()
 	var power_text := "POWER OFF" if bool(game.data.get("receiver_power", false)) else "POWER ON"
 	_button(power_text, _toggle_receiver, control_row)
+	_button("AUDIO ON" if audio_enabled else "AUDIO OFF", _toggle_audio, control_row)
 
 	_add_text("FREQUENCY (MHz)", 12, MUTED, control_row)
 	frequency_spin = SpinBox.new()
@@ -385,6 +441,11 @@ func _draw_waterfall() -> void:
 	visual.add_child(plot)
 	_add_text("Axes: frequency in MHz (horizontal); Site 04 displayed event time, 08:00–08:30 (vertical).", 11, MUTED, visual)
 	_add_text("Only SIG-0001–0003 are plotted. Prior-cycle and next-shift receptions are excluded because their dates are unknown; their records remain accessible.", 11, WARNING, visual)
+
+func _toggle_audio() -> void:
+	audio_enabled = not audio_enabled
+	status_message = "Synthetic receiver hiss enabled." if audio_enabled else "Receiver audio muted."
+	_refresh()
 
 func _toggle_receiver() -> void:
 	var next_power := not bool(game.data.get("receiver_power", false))
