@@ -40,7 +40,7 @@ The true sequence of events remains unresolved. The game does not confirm whethe
 - Landscape-only interface with touch-friendly controls.
 - Waterfall frequency axis runs horizontally; time runs vertically as new rows arrive and history scrolls. Brightness represents signal strength.
 - A small spectrum plot is optional if lightweight.
-- Procedural sound generation: tones, simple music patterns, synthetic character voices, static, fading, filtering, and narrowband distortion.
+- Procedural sound generation: tones, simple music patterns, synthetic character voices, static, fading, filtering, and narrowband distortion. A compact local formant synthesizer reads authored text without network services or platform speech dependencies; all essential content remains readable.
 - Avoid large audio libraries and elaborate equipment animation.
 
 ## 5. Receiver Controls
@@ -68,7 +68,7 @@ Classification may be wrong because of weak/noisy signals. Errors should be tech
 
 ## 7. Audio, Transcription, and Recordings
 
-The game authors the underlying text/content of every transmission. Audio generation and transcript corruption are simulated from that content; no online AI or real speech recognition is required. Audio is never the only route to essential information.
+The game authors the underlying text/content of every transmission. Audio generation and transcript corruption are simulated from that content; a deterministic local formant speech engine can synthesize transcript readouts. No online AI, platform speech service, or real speech recognition is required. Audio is never the only route to essential information.
 
 ## 8. Time, Shifts, and Requests
 
