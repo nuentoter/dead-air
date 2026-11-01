@@ -629,7 +629,7 @@ func _toggle_audio() -> void:
 		speech_player.stop()
 	game.data["settings"]["audio_enabled"] = audio_enabled
 	game.save_game()
-	status_message = "Synthetic receiver hiss enabled." if audio_enabled else "Receiver audio muted."
+	status_message = "All local audio enabled." if audio_enabled else "All local audio muted."
 	_refresh()
 
 func _toggle_receiver() -> void:
