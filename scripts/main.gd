@@ -2,6 +2,7 @@ extends Control
 
 const Catalog = preload("res://scripts/content_catalog.gd")
 const GameState = preload("res://scripts/game_state.gd")
+const SpeechEngine = preload("res://scripts/speech_engine.gd")
 
 const SECTIONS = ["Receiver", "Recordings", "Archive", "Notebook", "Assignments", "Messages"]
 const REPORT_SOURCE_OPTIONS := ["SIG-0004", "SIG-0005", "M-02", "M-05", "M-06A", "M-07", "M-08", "M-09"]
@@ -92,6 +93,7 @@ var recommendation_select: OptionButton
 var frequency_spin: SpinBox
 var mode_select: OptionButton
 var receiver_audio: AudioStreamPlayer
+var speech_player: AudioStreamPlayer
 var audio_playback: AudioStreamGeneratorPlayback
 var audio_enabled := true
 var audio_phase := 0.0
@@ -119,6 +121,9 @@ func _setup_receiver_audio() -> void:
 	add_child(receiver_audio)
 	receiver_audio.play()
 	audio_playback = receiver_audio.get_stream_playback() as AudioStreamGeneratorPlayback
+	speech_player = AudioStreamPlayer.new()
+	speech_player.volume_db = -5.0
+	add_child(speech_player)
 
 func _update_receiver_audio() -> void:
 	if audio_playback == null or not audio_enabled or game == null:
@@ -397,6 +402,7 @@ func _draw_receiver() -> void:
 		var recorded: bool = game.data.get("recorded_event_ids", []).has(String(selected.get("id", "")))
 		_button("RECORDED" if recorded else "MANUAL RECORD", _record_selected_event.bind(String(selected.get("id", ""))), action_row)
 		_button("OPEN IN RECORDINGS", _open_recordings.bind(String(selected.get("id", ""))), action_row)
+		_button("READ DECODE ALOUD", _speak_selected_transcript, action_row)
 
 	_add_text("RETAINED EVENT INDEX", 13, ACCENT)
 	for event in Catalog.EVENTS:
@@ -443,8 +449,30 @@ func _draw_waterfall() -> void:
 	_add_text("Axes: frequency in MHz (horizontal); Site 04 displayed event time, 08:00–08:30 (vertical).", 11, MUTED, visual)
 	_add_text("Only SIG-0001–0003 are plotted. Prior-cycle and next-shift receptions are excluded because their dates are unknown; their records remain accessible.", 11, WARNING, visual)
 
+func _speak_selected_transcript() -> void:
+	if not audio_enabled:
+		status_message = "Audio is muted. Enable AUDIO to hear the local speech synthesis."
+		_refresh()
+		return
+	var selected := _find_event(String(game.data.get("selected_event_id", "")))
+	if selected.is_empty():
+		return
+	var transcript := String(selected.get("transcript", ""))
+	if speech_player != null:
+		var generated: AudioStreamWAV = SpeechEngine.synthesize(transcript, 0.92, 0.94)
+		if generated != null:
+			speech_player.stop()
+			speech_player.stream = generated
+			speech_player.play()
+			status_message = "Local synthesized readout playing for " + String(selected.get("id", "")) + ". Transcript remains authoritative."
+		else:
+			status_message = "No speech content was available for this retained event."
+	_refresh()
+
 func _toggle_audio() -> void:
 	audio_enabled = not audio_enabled
+	if not audio_enabled and speech_player != null:
+		speech_player.stop()
 	game.data["settings"]["audio_enabled"] = audio_enabled
 	game.save_game()
 	status_message = "Synthetic receiver hiss enabled." if audio_enabled else "Receiver audio muted."
@@ -524,6 +552,7 @@ func _draw_recordings() -> void:
 		_add_text("%.3f MHz %s — %s" % [float(event.get("frequency_mhz", 0.0)), String(event.get("mode", "")), String(event.get("time_label", ""))], 13, MUTED, row)
 		if String(game.data.get("selected_event_id", "")) == event_id:
 			_add_text(String(event.get("transcript", "")), 15, TEXT)
+			_button("READ DECODE ALOUD", _speak_selected_transcript)
 			_add_text("Time basis: " + String(event.get("time_basis", "")), 12, MUTED)
 			_add_text("Provenance: " + String(event.get("provenance", "")), 12, MUTED)
 
