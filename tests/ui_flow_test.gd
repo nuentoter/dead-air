@@ -160,7 +160,7 @@ func _run() -> void:
 		return
 	var selection_before_empty_seek := String(game.data.get("selected_event_id", ""))
 	instance.call("_seek_next")
-	if not _expect(String(game.data.get("selected_event_id", "")) == selection_before_empty_seek and Catalog.EVENTS.size() == 5 and String(instance.get("status_message")).contains("No authored event is indexed in VHF / FM"), "SEEK invented or selected an event outside the current band/mode.")
+	if not _expect(String(game.data.get("selected_event_id", "")) == selection_before_empty_seek and Catalog.EVENTS.size() == 5 and String(instance.get("status_message")).contains("No authored event is indexed in VHF / FM"), "SEEK invented or selected an event outside the current band/mode."):
 		return
 	if not _expect(String(game.data.get("band", "")) == "VHF", "Band selection did not persist."):
 		return
