@@ -87,8 +87,9 @@ static func _expand_text(source: String) -> String:
 				run += next_character
 				i += 1
 			if run.length() >= 2:
-				for letter in run:
-					result += " " + String(LETTER_NAMES.get(String(letter), String(letter).to_lower())) + " "
+				for letter_index in range(run.length()):
+					var letter := run.substr(letter_index, 1)
+					result += " " + String(LETTER_NAMES.get(letter, letter.to_lower())) + " "
 			else:
 				result += run.to_lower()
 			continue
