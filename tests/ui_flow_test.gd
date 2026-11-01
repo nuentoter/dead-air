@@ -151,7 +151,14 @@ func _run() -> void:
 	instance.call("_on_nav_pressed", "Receiver")
 	if not bool(game.data.get("receiver_power", false)):
 		instance.call("_toggle_receiver")
-	if not _expect(_tree_contains_text(instance, "HF") and _tree_contains_text(instance, "VHF") and _tree_contains_text(instance, "UHF") and _tree_contains_text(instance, "USB"), "Receiver band or mode controls are not visible."):
+	if not _expect(_tree_contains_text(instance, "HF") and _tree_contains_text(instance, "VHF") and _tree_contains_text(instance, "UHF") and _tree_contains_text(instance, "USB") and _tree_contains_text(instance, "−STEP") and _tree_contains_text(instance, "+STEP"), "Receiver band, mode, or fine-tuning controls are not visible."):
+		return
+	var selected_before_waterfall := String(game.data.get("selected_event_id", ""))
+	instance.call("_on_waterfall_frequency_selected", 12.345)
+	if not _expect(is_equal_approx(float(game.data.get("frequency_mhz", 0.0)), 12.345) and String(game.data.get("selected_event_id", "")) == selected_before_waterfall, "Waterfall tuning changed the selected event or failed to tune frequency."):
+		return
+	instance.call("_step_frequency", 1)
+	if not _expect(is_equal_approx(float(game.data.get("frequency_mhz", 0.0)), 12.346), "Fine tuning did not advance by the HF step."):
 		return
 	instance.call("_select_band", "VHF")
 	instance.call("_select_mode", "FM")
