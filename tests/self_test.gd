@@ -128,6 +128,7 @@ func _run() -> void:
 	var legacy_settings_data = JSON.parse_string(valid_save_text)
 	legacy_settings_data["settings"].erase("speech_rate")
 	legacy_settings_data["frequency_mhz"] = 145.5
+	legacy_settings_data["mode"] = "INVALID"
 	legacy_settings_data.erase("band")
 	var legacy_settings_file := FileAccess.open(GameState.SAVE_PATH, FileAccess.WRITE)
 	_assert(legacy_settings_file != null, "Could not open save for speech-setting migration test.")
@@ -136,6 +137,7 @@ func _run() -> void:
 	var settings_migrated := GameState.new()
 	_assert(is_equal_approx(float(settings_migrated.data["settings"].get("speech_rate", 0.0)), 1.0), "Older save without speech_rate should receive the default speed.")
 	_assert(String(settings_migrated.data.get("band", "")) == "VHF", "Older save without band should infer VHF from its 145.5 MHz frequency.")
+	_assert(String(settings_migrated.data.get("mode", "")) == "AM", "Unknown legacy mode should migrate to AM safely.")
 	_assert(settings_migrated.save_game(), "Could not persist speech-setting migration.")
 	save_file = FileAccess.open(GameState.SAVE_PATH, FileAccess.READ)
 	_assert(save_file != null, "Could not reopen migrated speech settings.")
