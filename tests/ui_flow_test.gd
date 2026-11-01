@@ -121,6 +121,18 @@ func _run() -> void:
 	instance.call("_on_nav_pressed", "Notebook")
 	if not _expect(_tree_contains_text(instance, "WORKING HYPOTHESIS"), "Saved note did not display its selected classification when revisiting the Notebook."):
 		return
+	var audio_before: bool = bool(game.data.get("settings", {}).get("audio_enabled", true))
+	if not _expect(audio_before, "Receiver audio should default to enabled for the current prototype."):
+		return
+	instance.call("_toggle_audio")
+	if not _expect(not bool(game.data["settings"].get("audio_enabled", true)), "Audio toggle did not persist the muted state."):
+		return
+	var audio_reload = load("res://scripts/game_state.gd").new()
+	if not _expect(not bool(audio_reload.data["settings"].get("audio_enabled", true)), "Muted audio preference did not survive save reload."):
+		return
+	instance.call("_toggle_audio")
+	if not _expect(bool(game.data["settings"].get("audio_enabled", false)), "Audio toggle did not restore enabled state."):
+		return
 	print("DEAD AIR UI flow test passed: report submission/history/citations and notebook source labels/navigation with interpretation preserved.")
 	quit(0)
 
