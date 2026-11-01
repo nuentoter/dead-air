@@ -146,11 +146,19 @@ func _run() -> void:
 	instance.call("_on_nav_pressed", "Recordings")
 	if not _expect(_tree_contains_text(instance, "PLAY SIGNAL AUDIO") and _tree_contains_text(instance, "READ TEXT"), "Recordings does not expose signal playback and separate transcript readout."):
 		return
+	instance.call("_on_nav_pressed", "Receiver")
+	if not bool(game.data.get("receiver_power", false)):
+		instance.call("_toggle_receiver")
+	if not _expect(_tree_contains_text(instance, "HF") and _tree_contains_text(instance, "VHF") and _tree_contains_text(instance, "UHF") and _tree_contains_text(instance, "USB"), "Receiver band or mode controls are not visible."):
+		return
 	instance.call("_select_band", "VHF")
 	instance.call("_select_mode", "FM")
+	var band_frequency := instance.get("frequency_spin") as SpinBox
+	if not _expect(band_frequency != null and is_equal_approx(band_frequency.min_value, 30.001) and is_equal_approx(band_frequency.max_value, 300.0), "VHF frequency control is not constrained to the selected band."):
+		return
 	var selection_before_empty_seek := String(game.data.get("selected_event_id", ""))
 	instance.call("_seek_next")
-	if not _expect(String(game.data.get("selected_event_id", "")) == selection_before_empty_seek and Catalog.EVENTS.size() == 5, "SEEK invented or selected an event outside the current band/mode."):
+	if not _expect(String(game.data.get("selected_event_id", "")) == selection_before_empty_seek and Catalog.EVENTS.size() == 5 and String(instance.get("status_message")).contains("No authored event is indexed in VHF / FM"), "SEEK invented or selected an event outside the current band/mode.")
 		return
 	if not _expect(String(game.data.get("band", "")) == "VHF", "Band selection did not persist."):
 		return
