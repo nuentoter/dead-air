@@ -355,3 +355,12 @@ These simplifications must remain honestly labelled until replaced and tested.
 - STOP AUDIO halts playback. The shared audio mute preference gates all local playback.
 - Spoken readout speed is adjustable from 0.75× to 1.25× and saved locally.
 - These renderings are not evidence of a physical transmitter, common origin, or hidden payload. Transcripts and provenance remain authoritative.
+
+
+## Band and mode controls (prototype)
+- The receiver exposes HF (3–30 MHz), VHF (30–300 MHz), and UHF (300–3000 MHz) selections.
+- The six supported modes remain visible: AM, FM, NFM, USB, LSB, and CW.
+- Selecting a band moves the tuning control to a local default (10.000, 145.500, or 446.000 MHz respectively); this is a UI default, not an assertion that an event is present.
+- Frequency entry is constrained to the selected band. Legacy saves infer their band from the saved frequency.
+- SEEK considers only authored events within the selected band and mode. If none are indexed, it reports that fact without inventing a signal or deleting retained records. Matching events are selected in frequency order, with same-frequency retained events advanced separately.
+- These controls remain a deterministic simulation and do not implement real RF scanning or DSP.
