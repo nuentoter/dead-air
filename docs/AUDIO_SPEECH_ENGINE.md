@@ -10,7 +10,7 @@ Provide optional local audio for receiver atmosphere and readable speech output 
 - Speech is synthesized on demand from the selected retained event's authored transcript. Speech readout speed is adjustable from 0.75× to 1.25× and persists across saves.
 - Event playback is type-aware: voice traffic uses the local speech synthesizer; CW events produce keyed Morse audio from the authored identifier and sequence; the reference event produces regular second ticks, a stronger minute tick, a quarter-hour buzz, and a distinct top-of-hour marker; and the partial data event produces a short FSK-like burst with no hidden/recoverable payload.
 - The formant synthesizer is implemented in GDScript and emits mono 16-bit PCM at 22,050 Hz as an AudioStreamWAV. A compact sine wavetable avoids repeated per-sample trigonometric calls during speech rendering.
-- Basic grapheme-to-phoneme rules cover English letters, common vowel pairs, consonants, punctuation pauses, digits, and uppercase initialisms.
+- Basic grapheme-to-phoneme rules cover English letters, common vowel pairs, consonants, punctuation pauses, digits, and uppercase initialisms. Three compact authored profiles (FIELD, AMATEUR, OFFICIAL) alter pitch, formant scale, amplitude, and pacing without adding voice assets.
 - Uppercase initialisms and digits are expanded for readout (for example, NR-041 becomes spoken letter names and individual digits).
 - The readout is deliberately synthetic and slightly restrained in pitch/speed. It is not represented as an original recording or an actual human performance.
 - Playback is initiated by the player using PLAY SIGNAL AUDIO or READ TEXT on Receiver or Recordings. READ TEXT is an accessibility rendering; it is not represented as source audio. STOP AUDIO halts playback.
@@ -37,7 +37,7 @@ Provide optional local audio for receiver atmosphere and readable speech output 
 - Physical-device sound quality, speaker volume, and lifecycle interruption still require device verification.
 
 ## Known limitations / next increments
-- The current voice is a simple formant synthesizer. It is intentionally more radio-terminal than natural human speech.
+- The current voices are simple formant profiles rather than natural human speech. They are intentionally more radio-terminal than realistic performers; profile variation is authored and does not identify a real person.
 - Pronunciation is rule-based and English-focused; uncommon names and specialist vocabulary may be approximated.
 - The initial playable content has limited voice material. The current authored voice event is synthesized, while the CW/data/reference events use distinct signal renderings. Future authored traffic can provide explicit speech text, speaker profile, rate, pitch, and radio-channel treatment without changing the canonical transcript.
 - Future improvements should add phoneme exceptions and authored voice profiles before considering a larger voice model. Preserve offline operation and the 50 MB total package ceiling.
