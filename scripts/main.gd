@@ -650,7 +650,8 @@ func _select_event(event_id: String) -> void:
 	game.select_event(event_id)
 	var event := _find_event(event_id)
 	if not event.is_empty():
-		status_message = "Opened retained event " + event_id + "."
+		game.set_receiver(bool(game.data.get("receiver_power", false)), float(event.get("frequency_mhz", 10.0)), String(event.get("mode", "AM")))
+		status_message = "Tuned to retained event " + event_id + "."
 	_refresh()
 
 func _record_selected_event(event_id: String) -> void:
