@@ -607,7 +607,7 @@ func _speak_selected_transcript() -> void:
 	var selected := _find_event(String(game.data.get("selected_event_id", "")))
 	if selected.is_empty() or speech_player == null:
 		return
-	var generated: AudioStreamWAV = SpeechEngine.synthesize(String(selected.get("transcript", "")), _speech_rate(), 0.94)
+	var generated: AudioStreamWAV = SpeechEngine.synthesize(String(selected.get("transcript", "")), _speech_rate(), 0.94, String(selected.get("voice_profile", "FIELD")) )
 	if generated != null:
 		speech_player.stop()
 		speech_player.stream = generated
