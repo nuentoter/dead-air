@@ -147,3 +147,4 @@ const MESSAGES = [
 	{"id": "MSG-001", "sender": "Mara Venn", "subject": "Shift handover", "body": "Morning. Start with the routine reference check, then review the retained identifier event. If the registry returns no match, report the result as an index finding—not as proof that a source cannot exist.", "unread": true},
 	{"id": "MSG-002", "sender": "Site 04 system", "subject": "Retention policy", "body": "Authored events in this training scenario are automatically retained. Manual recording adds a separate provenance entry. Tuning away or changing mode does not delete a retained event.", "unread": true}
 ]
+			"voice_profile": "FIELD",
