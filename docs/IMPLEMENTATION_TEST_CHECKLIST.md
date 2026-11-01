@@ -21,7 +21,8 @@ Mark only tests actually performed; “not run” is not a pass.
 - [ ] Navigate all six sections.
 - [ ] Verify A-001/A-002/A-004/A-005 completion follows their evidence actions.
 - [ ] Verify A-003 requires both receptions and explicit comparison confirmation.
-- [ ] Power receiver on/off.
+- [ ] Power receiver on/off; hiss is audible only while powered on.
+- [ ] Toggle receiver audio mute; preference persists after reload.
 - [ ] Change frequency and mode.
 - [ ] Waterfall maps current-shift event frequencies horizontally and time vertically; it excludes prior/next-shift records with unknown dates.
 - [ ] SEEK selects only authored events.
