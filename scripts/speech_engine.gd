@@ -6,6 +6,11 @@ class_name DeadAirSpeechEngine
 const SAMPLE_RATE := 22050
 const WAVE_TABLE_SIZE := 2048
 const BASE_PITCH := 112.0
+const VOICE_PROFILES := {
+	"FIELD":{"pitch":0.96, "formant":1.0, "amplitude":0.94, "rate":1.0},
+	"AMATEUR":{"pitch":1.08, "formant":1.04, "amplitude":1.0, "rate":1.03},
+	"OFFICIAL":{"pitch":0.84, "formant":0.94, "amplitude":0.90, "rate":0.96}
+}
 const LETTER_NAMES := {
 	"A":"ay", "B":"bee", "C":"see", "D":"dee", "E":"ee", "F":"eff",
 	"G":"gee", "H":"aitch", "I":"eye", "J":"jay", "K":"kay", "L":"ell",
@@ -23,13 +28,16 @@ const VOWELS := {
 	"ow":[450.0, 1150.0, 2450.0], "er":[480.0, 1350.0, 1650.0]
 }
 
-static func synthesize(source_text: String, speed: float = 1.0, pitch: float = 1.0) -> AudioStreamWAV:
+static func synthesize(source_text: String, speed: float = 1.0, pitch: float = 1.0, voice_profile: String = "FIELD") -> AudioStreamWAV:
 	var spoken := _expand_text(source_text)
 	var segments := _phonemize(spoken)
 	if segments.is_empty():
 		return null
-	var rate := clampf(speed, 0.65, 1.4)
-	var pitch_scale := clampf(pitch, 0.75, 1.35)
+	var profile: Dictionary = VOICE_PROFILES.get(voice_profile.to_upper(), VOICE_PROFILES["FIELD"])
+	var rate := clampf(speed * float(profile.get("rate", 1.0)), 0.65, 1.4)
+	var pitch_scale := clampf(pitch * float(profile.get("pitch", 1.0)), 0.65, 1.5)
+	var formant_scale := float(profile.get("formant", 1.0))
+	var amplitude_scale := float(profile.get("amplitude", 1.0))
 	var sine_table := PackedFloat32Array()
 	sine_table.resize(WAVE_TABLE_SIZE)
 	for table_index in range(WAVE_TABLE_SIZE):
@@ -61,9 +69,9 @@ static func synthesize(source_text: String, speed: float = 1.0, pitch: float = 1
 			continue
 		var duration := float(segment.get("duration", 0.075)) / rate
 		var count := maxi(1, int(duration * float(SAMPLE_RATE)))
-		var f1 := float(segment.get("f1", 500.0))
-		var f2 := float(segment.get("f2", 1500.0))
-		var f3 := float(segment.get("f3", 2500.0))
+		var f1 := float(segment.get("f1", 500.0)) * formant_scale
+		var f2 := float(segment.get("f2", 1500.0)) * formant_scale
+		var f3 := float(segment.get("f3", 2500.0)) * formant_scale
 		var voiced := kind != "noise"
 		var pitch_increment := BASE_PITCH * pitch_scale * float(WAVE_TABLE_SIZE) / float(SAMPLE_RATE)
 		var increment_a := f1 * float(WAVE_TABLE_SIZE) / float(SAMPLE_RATE)
@@ -93,7 +101,7 @@ static func synthesize(source_text: String, speed: float = 1.0, pitch: float = 1
 				if phase_c >= WAVE_TABLE_SIZE: phase_c -= WAVE_TABLE_SIZE
 			else:
 				sample = noise_value * 0.20
-			pcm.encode_s16(write_index * 2, int(round(clampf(sample * edge * 0.72, -0.85, 0.85) * 32767.0)))
+			pcm.encode_s16(write_index * 2, int(round(clampf(sample * edge * 0.72 * amplitude_scale, -0.85, 0.85) * 32767.0)))
 			write_index += 1
 	var stream := AudioStreamWAV.new()
 	stream.format = AudioStreamWAV.FORMAT_16_BITS
