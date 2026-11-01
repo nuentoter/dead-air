@@ -9,14 +9,20 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
-	var speech_a: AudioStreamWAV = SpeechEngine.synthesize("Hi NR-041.", 1.0, 1.0)
+	var speech_a: AudioStreamWAV = SpeechEngine.synthesize("Hi.", 1.0, 1.0)
 	var speech_b: AudioStreamWAV = SpeechEngine.synthesize("Hi NR-041.", 1.0, 1.0)
 	assert(speech_a != null and speech_b != null, "Offline speech synthesis did not return an audio stream.")
 	assert(speech_a.mix_rate == 22050 and not speech_a.stereo, "Speech stream format is not the expected compact mono format.")
 	assert(speech_a.data.size() > 22050 and speech_a.data == speech_b.data, "Speech output should be non-empty and deterministic.")
 	assert(speech_a.data.size() < 22050 * 2 * 30, "Speech synthesis exceeded the bounded test output duration.")
-	var cw_audio: AudioStreamWAV = SignalAudioEngine.build_event_audio(_event("SIG-0004"))
-	var voice_audio: AudioStreamWAV = SignalAudioEngine.build_event_audio(_event("SIG-0002"))
+	assert(String(SpeechEngine._expand_text("NR-041")).contains("zero four one"), "Identifier and digit expansion failed.")
+	var cw_event := _event("SIG-0004").duplicate(true)
+	cw_event["identifier"] = "N"
+	cw_event["sequence"] = "1"
+	var voice_event := _event("SIG-0002").duplicate(true)
+	voice_event["transcript"] = "Hi."
+	var cw_audio: AudioStreamWAV = SignalAudioEngine.build_event_audio(cw_event)
+	var voice_audio: AudioStreamWAV = SignalAudioEngine.build_event_audio(voice_event)
 	var data_audio: AudioStreamWAV = SignalAudioEngine.build_event_audio(_event("SIG-0003"))
 	var carrier_audio: AudioStreamWAV = SignalAudioEngine.build_event_audio(_event("SIG-0001"))
 	for signal_audio in [cw_audio, voice_audio, data_audio, carrier_audio]:
