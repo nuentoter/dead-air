@@ -20,7 +20,7 @@ static func build_event_audio(event: Dictionary, speech_rate: float = 1.0) -> Au
 	if mode == "CW":
 		var identifier := String(event.get("identifier", "")).replace("-", "")
 		var sequence := String(event.get("sequence", ""))
-		return _build_morse(identifier + " " + sequence, 18.0)
+		return _build_morse(identifier + " " + sequence, 18.0, float(event.get("strength", 0.7)))
 	if kind == "TIME STANDARD" or classification == "REFERENCE":
 		return _build_time_standard(String(event.get("time_label", "08:00")) )
 	if classification.contains("DATA") or kind.contains("DATA"):
@@ -29,10 +29,14 @@ static func build_event_audio(event: Dictionary, speech_rate: float = 1.0) -> Au
 		return SpeechEngine.synthesize(String(event.get("transcript", "")), speech_rate, 0.94, String(event.get("voice_profile", "FIELD")))
 	return SpeechEngine.synthesize(String(event.get("transcript", "")), speech_rate, 0.94, String(event.get("voice_profile", "FIELD")))
 
-static func _build_morse(message: String, words_per_minute: float) -> AudioStreamWAV:
+static func _build_morse(message: String, words_per_minute: float, signal_strength: float = 0.7) -> AudioStreamWAV:
 	var unit := 1.2 / clampf(words_per_minute, 8.0, 30.0)
 	var segments: Array = []
 	var words := message.to_upper().split(" ", false)
+	var total_characters := 0
+	for word in words:
+		total_characters += word.length()
+	var character_progress := 0
 	for word_index in range(words.size()):
 		var word: String = words[word_index]
 		for char_index in range(word.length()):
@@ -40,9 +44,13 @@ static func _build_morse(message: String, words_per_minute: float) -> AudioStrea
 			var code := String(MORSE.get(character, ""))
 			if code.is_empty():
 				continue
+			var progress := float(character_progress) / float(maxi(1, total_characters))
+			var fade := lerpf(1.0, 0.42, progress) if signal_strength < 0.5 else 1.0
+			var amplitude := 0.24 * clampf(signal_strength, 0.15, 1.0) * fade
+			character_progress += 1
 			for element_index in range(code.length()):
 				var element := code.substr(element_index, 1)
-				segments.append({"tone":700.0, "duration":unit * (3.0 if element == "-" else 1.0), "amplitude":0.24})
+				segments.append({"tone":700.0, "duration":unit * (3.0 if element == "-" else 1.0), "amplitude":amplitude})
 				if element_index < code.length() - 1:
 					segments.append({"tone":0.0, "duration":unit})
 			if char_index < word.length() - 1:
