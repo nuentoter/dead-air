@@ -133,6 +133,12 @@ func _run() -> void:
 	instance.call("_toggle_audio")
 	if not _expect(bool(game.data["settings"].get("audio_enabled", false)), "Audio toggle did not restore enabled state."):
 		return
+	instance.call("_change_speech_rate", 0.1)
+	if not _expect(is_equal_approx(float(game.data["settings"].get("speech_rate", 1.0)), 1.1), "Speech speed control did not update its setting."):
+		return
+	var speech_reload = load("res://scripts/game_state.gd").new()
+	if not _expect(is_equal_approx(float(speech_reload.data["settings"].get("speech_rate", 1.0)), 1.1), "Speech speed preference did not persist across reload."):
+		return
 	print("DEAD AIR UI flow test passed: report submission/history/citations and notebook source labels/navigation with interpretation preserved.")
 	quit(0)
 
