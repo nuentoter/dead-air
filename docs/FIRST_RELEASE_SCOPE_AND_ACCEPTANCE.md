@@ -36,12 +36,13 @@ This is a narrative-first vertical slice with stable, deterministic simulationâ€
 - Simple tuning, mode selector, simulated waterfall, event selection, and SEEK that selects only authored events.
 - Signal IDs SIG-0001 through SIG-0005.
 - Transcript always available; recording provenance.
+- Optional locally generated receiver hiss with mute control; no authored speech or audio-only clues.
 - Searchable archive with honest no-result states.
 - Notes and source links.
 - Opening assignments A-001/A-002 and main path A-003 through A-006.
 - Report draft, permanent submitted version, supervisor review.
 - Local save/load and schema version.
-- Persistent text-size setting; audio playback and mute controls are deferred together until audio is actually included. Essential evidence is readable regardless of audio.
+- Persistent text-size and receiver-audio mute preferences. Essential evidence is readable regardless of audio.
 
 ### Explicitly defer
 Real DSP, live RF, SDR, microphone, speech recognition, online services, full procedural voice ecosystem, long ambient transmissions, complete Silent Site branch, branch-heavy endings, complex evidence board, 3D station, export-to-file, cloud saves, monetization, ads, analytics. Package size remains unverified until an Android export is measured.
