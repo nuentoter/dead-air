@@ -8,7 +8,7 @@ Provide optional local audio for receiver atmosphere and readable speech output 
 ## Current implementation
 - Receiver hiss remains generated locally with a faint 73 Hz tone and is gated by receiver power.
 - Speech is synthesized on demand from the selected retained event's authored transcript. Speech readout speed is adjustable from 0.75× to 1.25× and persists across saves.
-- Event playback is type-aware: voice traffic uses the local speech synthesizer; CW events produce keyed Morse audio from the authored identifier and sequence; the reference event produces a steady monitor tone; and the partial data event produces a short FSK-like burst with no hidden/recoverable payload.
+- Event playback is type-aware: voice traffic uses the local speech synthesizer; CW events produce keyed Morse audio from the authored identifier and sequence; the reference event produces regular second ticks, a stronger minute tick, a quarter-hour buzz, and a distinct top-of-hour marker; and the partial data event produces a short FSK-like burst with no hidden/recoverable payload.
 - The formant synthesizer is implemented in GDScript and emits mono 16-bit PCM at 22,050 Hz as an AudioStreamWAV. A compact sine wavetable avoids repeated per-sample trigonometric calls during speech rendering.
 - Basic grapheme-to-phoneme rules cover English letters, common vowel pairs, consonants, punctuation pauses, digits, and uppercase initialisms.
 - Uppercase initialisms and digits are expanded for readout (for example, NR-041 becomes spoken letter names and individual digits).
