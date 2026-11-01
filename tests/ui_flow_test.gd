@@ -146,6 +146,20 @@ func _run() -> void:
 	instance.call("_on_nav_pressed", "Recordings")
 	if not _expect(_tree_contains_text(instance, "PLAY SIGNAL AUDIO") and _tree_contains_text(instance, "READ TEXT"), "Recordings does not expose signal playback and separate transcript readout."):
 		return
+	instance.call("_select_band", "VHF")
+	instance.call("_select_mode", "FM")
+	var selection_before_empty_seek := String(game.data.get("selected_event_id", ""))
+	instance.call("_seek_next")
+	if not _expect(String(game.data.get("selected_event_id", "")) == selection_before_empty_seek and Catalog.EVENTS.size() == 5, "SEEK invented or selected an event outside the current band/mode."):
+		return
+	if not _expect(String(game.data.get("band", "")) == "VHF", "Band selection did not persist."):
+		return
+	instance.call("_select_band", "HF")
+	instance.call("_select_mode", "CW")
+	instance.call("_select_event", "SIG-0004")
+	instance.call("_seek_next")
+	if not _expect(String(game.data.get("selected_event_id", "")) == "SIG-0005", "HF/CW SEEK did not advance to the other retained NR-041 reception."):
+		return
 	print("DEAD AIR UI flow test passed: report submission/history/citations and notebook source labels/navigation with interpretation preserved.")
 	quit(0)
 
