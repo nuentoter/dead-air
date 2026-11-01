@@ -27,13 +27,19 @@ func _run() -> void:
 	var voice_event := _event("SIG-0002").duplicate(true)
 	voice_event["transcript"] = "Hi."
 	var cw_audio: AudioStreamWAV = SignalAudioEngine.build_event_audio(cw_event)
+	var weak_cw_event := _event("SIG-0005").duplicate(true)
+	weak_cw_event["identifier"] = "N"
+	weak_cw_event["sequence"] = "1"
+	var weak_cw_audio: AudioStreamWAV = SignalAudioEngine.build_event_audio(weak_cw_event)
 	var voice_audio: AudioStreamWAV = SignalAudioEngine.build_event_audio(voice_event)
 	var data_audio: AudioStreamWAV = SignalAudioEngine.build_event_audio(_event("SIG-0003"))
 	var carrier_audio: AudioStreamWAV = SignalAudioEngine.build_event_audio(_event("SIG-0001"))
-	for signal_audio in [cw_audio, voice_audio, data_audio, carrier_audio]:
+	for signal_audio in [cw_audio, weak_cw_audio, voice_audio, data_audio, carrier_audio]:
 		_assert(signal_audio != null and signal_audio.mix_rate == 22050 and not signal_audio.stereo, "Signal renderer returned an invalid stream.")
 		_assert(signal_audio.data.size() > 4000, "Signal renderer returned an empty or too-short stream.")
 	_assert(cw_audio.data.size() > data_audio.data.size(), "CW identifier/sequence should produce a longer keyed signal than the partial data burst.")
+	_assert(cw_audio.data.size() == weak_cw_audio.data.size(), "Weak CW reception should preserve the keyed message timing.")
+	_assert(_audio_peak(weak_cw_audio.data) < _audio_peak(cw_audio.data), "The weaker recurring CW reception should be quieter than the first reception.")
 	_assert(carrier_audio.data.size() > data_audio.data.size(), "Time-standard ticks should be longer than the partial data burst.")
 	_assert(carrier_audio.data.size() > 22050 * 2 * 4, "Top-of-hour reference pattern should include several seconds of time-standard ticks.")
 	_assert(data_audio.data.size() < cw_audio.data.size(), "Incomplete data burst should remain a short non-textual event.")
@@ -183,3 +189,9 @@ func _assert(condition: bool, message: String) -> void:
 	if not condition:
 		test_failed = true
 		push_error(message)
+
+func _audio_peak(pcm: PackedByteArray) -> int:
+	var peak := 0
+	for offset in range(0, pcm.size(), 2):
+		peak = maxi(peak, abs(pcm.decode_s16(offset)))
+	return peak
