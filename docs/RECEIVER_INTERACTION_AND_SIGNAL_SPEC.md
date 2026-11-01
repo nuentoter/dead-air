@@ -372,3 +372,5 @@ These simplifications must remain honestly labelled until replaced and tested.
 - Tapping near a visible authored trace selects that event and tunes its frequency/mode. Dragging previews frequency and commits the tuned frequency on release; an empty frequency does not create a signal event.
 - Fine tuning steps are 1 kHz in HF, 5 kHz in VHF, and 25 kHz in UHF, available through on-screen step buttons and left/right keyboard keys.
 - The plot shows only SIG-0001–SIG-0003 because the dates for SIG-0004/SIG-0005 are unknown; those retained events remain accessible through the event index and Recordings.
+
+- The 10.000 MHz AM reference event uses a local time-standard pattern: regular second ticks, a stronger minute tick, a distinct quarter-hour buzz, and a top-of-hour marker. The current 08:00 reference event plays the top-of-hour pattern.
