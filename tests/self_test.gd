@@ -5,6 +5,8 @@ const GameState = preload("res://scripts/game_state.gd")
 const SpeechEngine = preload("res://scripts/speech_engine.gd")
 const SignalAudioEngine = preload("res://scripts/signal_audio_engine.gd")
 
+var test_failed := false
+
 func _initialize() -> void:
 	call_deferred("_run")
 
@@ -156,6 +158,10 @@ func _run() -> void:
 	restore_file.close()
 	var final_reload := GameState.new()
 	_assert(final_reload.data.get("reports", []).size() >= report_count_before + 2, "Valid save could not be restored after malformed-save test.")
+	if test_failed:
+		push_error("DEAD AIR self-test failed. See assertion messages above.")
+		quit(1)
+		return
 	print("DEAD AIR self-test passed: catalog, chronology, retention, immutable reports, addendum, accessibility, persistence, malformed-save recovery.")
 	quit(0)
 
@@ -173,5 +179,5 @@ func _document(document_id: String) -> Dictionary:
 
 func _assert(condition: bool, message: String) -> void:
 	if not condition:
+		test_failed = true
 		push_error(message)
-		quit(1)
