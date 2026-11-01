@@ -3,6 +3,7 @@ extends Control
 const Catalog = preload("res://scripts/content_catalog.gd")
 const GameState = preload("res://scripts/game_state.gd")
 const SpeechEngine = preload("res://scripts/speech_engine.gd")
+const SignalAudioEngine = preload("res://scripts/signal_audio_engine.gd")
 
 const SECTIONS = ["Receiver", "Recordings", "Archive", "Notebook", "Assignments", "Messages"]
 const REPORT_SOURCE_OPTIONS := ["SIG-0004", "SIG-0005", "M-02", "M-05", "M-06A", "M-07", "M-08", "M-09"]
@@ -238,7 +239,11 @@ func _build_shell() -> void:
 	settings_row.add_child(text_scale_label)
 	_button("A−", _decrease_text_size, settings_row)
 	_button("A+", _increase_text_size, settings_row)
-	_add_text("AUDIO: TEXT-ONLY PROTOTYPE", 11, MUTED, settings_row)
+	_add_text("AUDIO: LOCAL SYNTH", 11, MUTED, settings_row)
+	_add_text("SPEECH SPEED", 11, MUTED, settings_row)
+	_button("−", _decrease_speech_rate, settings_row)
+	_add_text("%.1fx" % _speech_rate(), 11, ACCENT, settings_row)
+	_button("+", _increase_speech_rate, settings_row)
 
 func _refresh() -> void:
 	if body == null:
@@ -402,7 +407,9 @@ func _draw_receiver() -> void:
 		var recorded: bool = game.data.get("recorded_event_ids", []).has(String(selected.get("id", "")))
 		_button("RECORDED" if recorded else "MANUAL RECORD", _record_selected_event.bind(String(selected.get("id", ""))), action_row)
 		_button("OPEN IN RECORDINGS", _open_recordings.bind(String(selected.get("id", ""))), action_row)
-		_button("READ DECODE ALOUD", _speak_selected_transcript, action_row)
+		_button("PLAY SIGNAL AUDIO", _play_selected_signal, action_row)
+		_button("READ TEXT", _speak_selected_transcript, action_row)
+		_button("STOP AUDIO", _stop_audio, action_row)
 
 	_add_text("RETAINED EVENT INDEX", 13, ACCENT)
 	for event in Catalog.EVENTS:
@@ -449,24 +456,66 @@ func _draw_waterfall() -> void:
 	_add_text("Axes: frequency in MHz (horizontal); Site 04 displayed event time, 08:00–08:30 (vertical).", 11, MUTED, visual)
 	_add_text("Only SIG-0001–0003 are plotted. Prior-cycle and next-shift receptions are excluded because their dates are unknown; their records remain accessible.", 11, WARNING, visual)
 
-func _speak_selected_transcript() -> void:
+func _speech_rate() -> float:
+	return clampf(float(game.data.get("settings", {}).get("speech_rate", 1.0)), 0.75, 1.25)
+
+func _change_speech_rate(delta: float) -> void:
+	var settings: Dictionary = game.data.get("settings", {})
+	settings["speech_rate"] = clampf(_speech_rate() + delta, 0.75, 1.25)
+	game.data["settings"] = settings
+	game.save_game()
+	status_message = "Speech readout speed set to %.1fx." % _speech_rate()
+	_refresh()
+
+func _decrease_speech_rate() -> void:
+	_change_speech_rate(-0.1)
+
+func _increase_speech_rate() -> void:
+	_change_speech_rate(0.1)
+
+func _play_selected_signal() -> void:
 	if not audio_enabled:
-		status_message = "Audio is muted. Enable AUDIO to hear the local speech synthesis."
+		status_message = "Audio is muted. Enable AUDIO to play the local signal rendering."
 		_refresh()
 		return
 	var selected := _find_event(String(game.data.get("selected_event_id", "")))
-	if selected.is_empty():
+	if selected.is_empty() or speech_player == null:
 		return
-	var transcript := String(selected.get("transcript", ""))
+	var generated: AudioStreamWAV = SignalAudioEngine.build_event_audio(selected, _speech_rate())
+	if generated == null:
+		status_message = "No playable signal rendering is available for this event."
+		_refresh()
+		return
+	speech_player.stop()
+	speech_player.stream = generated
+	speech_player.play()
+	var mode := String(selected.get("mode", ""))
+	var audio_description := "keyed CW tone" if mode == "CW" else "local synthetic monitor audio"
+	status_message = "Playing %s for %s. The retained transcript remains authoritative." % [audio_description, String(selected.get("id", ""))]
+	_refresh()
+
+func _speak_selected_transcript() -> void:
+	if not audio_enabled:
+		status_message = "Audio is muted. Enable AUDIO to hear the optional spoken text readout."
+		_refresh()
+		return
+	var selected := _find_event(String(game.data.get("selected_event_id", "")))
+	if selected.is_empty() or speech_player == null:
+		return
+	var generated: AudioStreamWAV = SpeechEngine.synthesize(String(selected.get("transcript", "")), _speech_rate(), 0.94)
+	if generated != null:
+		speech_player.stop()
+		speech_player.stream = generated
+		speech_player.play()
+		status_message = "Spoken text readout playing for %s. This is an accessibility rendering, not source audio." % String(selected.get("id", ""))
+	else:
+		status_message = "No text was available for the spoken readout."
+	_refresh()
+
+func _stop_audio() -> void:
 	if speech_player != null:
-		var generated: AudioStreamWAV = SpeechEngine.synthesize(transcript, 0.92, 0.94)
-		if generated != null:
-			speech_player.stop()
-			speech_player.stream = generated
-			speech_player.play()
-			status_message = "Local synthesized readout playing for " + String(selected.get("id", "")) + ". Transcript remains authoritative."
-		else:
-			status_message = "No speech content was available for this retained event."
+		speech_player.stop()
+	status_message = "Audio playback stopped."
 	_refresh()
 
 func _toggle_audio() -> void:
@@ -552,7 +601,9 @@ func _draw_recordings() -> void:
 		_add_text("%.3f MHz %s — %s" % [float(event.get("frequency_mhz", 0.0)), String(event.get("mode", "")), String(event.get("time_label", ""))], 13, MUTED, row)
 		if String(game.data.get("selected_event_id", "")) == event_id:
 			_add_text(String(event.get("transcript", "")), 15, TEXT)
-			_button("READ DECODE ALOUD", _speak_selected_transcript)
+			_button("PLAY SIGNAL AUDIO", _play_selected_signal)
+			_button("READ TEXT", _speak_selected_transcript)
+			_button("STOP AUDIO", _stop_audio)
 			_add_text("Time basis: " + String(event.get("time_basis", "")), 12, MUTED)
 			_add_text("Provenance: " + String(event.get("provenance", "")), 12, MUTED)
 
