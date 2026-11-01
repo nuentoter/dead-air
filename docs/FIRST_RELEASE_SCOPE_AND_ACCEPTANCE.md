@@ -33,7 +33,7 @@ This is a narrative-first vertical slice with stable, deterministic simulationâ€
 - Six destinations: Receiver, Recordings, Archive, Notebook, Assignments, Messages.
 - Landscape-safe layout and large touch targets.
 - Deterministic authored signal events and consistent metadata.
-- HF/VHF/UHF band buttons, six visible modes (AM/FM/NFM/USB/LSB/CW), frequency tuning constrained to the selected band, simulated waterfall, event selection, and SEEK filtered to authored events in the selected band/mode.
+- HF/VHF/UHF band buttons, six visible modes (AM/FM/NFM/USB/LSB/CW), frequency tuning constrained to the selected band, rolling simulated waterfall with tap/drag tuning, fine frequency steps, event selection, and SEEK filtered to authored events in the selected band/mode.
 - Signal IDs SIG-0001 through SIG-0005.
 - Transcript always available; recording provenance.
 - Optional locally generated receiver hiss with mute control; deterministic, fully offline speech readout plus event-aware local audio rendering (voice, CW, reference carrier, and partial data burst); no authored speech or audio-only clues. All essential content remains readable.
