@@ -85,7 +85,10 @@ func _ensure_defaults() -> void:
 	for key in defaults:
 		if not data.has(key):
 			data[key] = defaults[key]
+	data["frequency_mhz"] = clampf(float(data.get("frequency_mhz", 10.0)), 3.0, 3000.0)
 	var saved_frequency := float(data.get("frequency_mhz", 10.0))
+	if not ["AM", "FM", "NFM", "USB", "LSB", "CW"].has(String(data.get("mode", "AM"))):
+		data["mode"] = "AM"
 	var inferred_band := "HF" if saved_frequency <= 30.0 else ("VHF" if saved_frequency <= 300.0 else "UHF")
 	if not ["HF", "VHF", "UHF"].has(String(data.get("band", ""))) or String(data.get("band", "")) != inferred_band:
 		data["band"] = inferred_band
@@ -139,6 +142,8 @@ func log_event(message: String) -> void:
 func set_receiver(powered: bool, frequency_mhz: float, mode: String) -> void:
 	data["receiver_power"] = powered
 	data["frequency_mhz"] = clampf(frequency_mhz, 3.0, 3000.0)
+	if not ["AM", "FM", "NFM", "USB", "LSB", "CW"].has(mode):
+		mode = "AM"
 	var frequency := float(data["frequency_mhz"])
 	data["band"] = "HF" if frequency <= 30.0 else ("VHF" if frequency <= 300.0 else "UHF")
 	data["mode"] = mode
