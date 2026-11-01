@@ -42,10 +42,16 @@ Curated deterministic events only—not RF simulation.
 - Event selection shows exact metadata and transcript.
 - Manual recording appends event ID and provenance; system retention remains separate.
 
-## 5. UI
+## 5. Audio and speech
+- Receiver ambience is locally generated and optional.
+- The formant speech engine synthesizes authored transcript text locally into compact mono PCM; no online service, system TTS dependency, or microphone permission is used.
+- Speech playback is explicit/on-demand; written transcripts remain authoritative and all essential clues remain readable.
+- Package ceiling is 50 MB total: 25 MB base plus up to 25 MB reserved for audio/speech technology and voice assets. The reserved amount is not a target to fill.
+
+## 6. UI
 Use Godot Control nodes, Containers, and scrollable panels. Landscape layout: top status strip, persistent six-destination navigation, content workspace, status notice. Touch targets and labels must work at phone scale. First slice may omit audio playback, but must label that clearly and keep text equivalents. No fake errors, flicker, or deceptive controls.
 
-## 6. Minimum tests
+## 7. Minimum tests
 1. Fresh state retains all essential event IDs.
 2. Tuning/mode/SEEK never deletes events.
 3. Essential event opens from archive when receiver is off.
@@ -57,14 +63,14 @@ Use Godot Control nodes, Containers, and scrollable panels. Landscape layout: to
 9. Matching identifiers/sequences do not infer source.
 10. Save/load preserves section, receiver state, notes, reports, settings.
 
-## 7. Verification commands
+## 8. Verification commands
 With Godot 4 installed:
 - godot --headless --path . --editor --quit
 - godot --headless --path . --quit-after 3
 - Android export requires configured Android SDK/JDK and export preset; measure actual APK/AAB size.
 These must be run before claiming the build tested.
 
-## 8. Risks
+## 9. Risks
 Godot version differences may affect settings and themes; procedural UI needs device tuning; under-25-MB is unverified; GDScript is not validated until run in Godot; GitHub-only edits must be cloned/downloaded to a local Godot environment for proper build testing.
 
 
