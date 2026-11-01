@@ -41,7 +41,7 @@ func reset_defaults() -> void:
 			"A-004": "OPEN", "A-005": "OPEN", "A-006": "OPEN"
 		},
 		"messages_seen": [],
-		"settings": {"text_scale": 1.0, "audio_enabled": true},
+		"settings": {"text_scale": 1.0, "audio_enabled": true, "speech_rate": 1.0},
 		"event_log": [],
 		"next_note_id": 1,
 		"next_report_id": 1,
@@ -75,7 +75,7 @@ func _ensure_defaults() -> void:
 		"current_section": "Receiver", "receiver_power": false, "frequency_mhz": 10.0,
 		"mode": "AM", "selected_event_id": "SIG-0001", "retained_event_ids": [],
 		"inspected_event_ids": [], "recorded_event_ids": [], "documents_read": [], "notes": [], "reports": [],
-		"assignments": {}, "messages_seen": [], "settings": {"text_scale": 1.0, "audio_enabled": true},
+		"assignments": {}, "messages_seen": [], "settings": {"text_scale": 1.0, "audio_enabled": true, "speech_rate": 1.0},
 		"event_log": [], "next_note_id": 1, "next_report_id": 1,
 		"note_draft": "", "note_draft_classification": "UNCLASSIFIED", "communications_comparison_reviewed": false, "report_draft": "The retained records establish a repeated identifier and conflicting chronology. The available material does not establish a common transmitter or explain the source-clock difference.",
 		"report_recommendation": "Retain records and request clock/source documentation.",
@@ -84,6 +84,12 @@ func _ensure_defaults() -> void:
 	for key in defaults:
 		if not data.has(key):
 			data[key] = defaults[key]
+	var settings: Dictionary = data.get("settings", {})
+	for setting_key in ["text_scale", "audio_enabled", "speech_rate"]:
+		if not settings.has(setting_key):
+			settings[setting_key] = 1.0 if setting_key != "audio_enabled" else true
+	settings["speech_rate"] = clampf(float(settings.get("speech_rate", 1.0)), 0.75, 1.25)
+	data["settings"] = settings
 	if typeof(data.get("inspected_event_ids", [])) != TYPE_ARRAY:
 		data["inspected_event_ids"] = []
 	data["schema_version"] = SCHEMA_VERSION
