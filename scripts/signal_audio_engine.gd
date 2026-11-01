@@ -26,8 +26,8 @@ static func build_event_audio(event: Dictionary, speech_rate: float = 1.0) -> Au
 	if classification.contains("DATA") or kind.contains("DATA"):
 		return _build_data_burst()
 	if classification.contains("VOICE") or kind == "ROUTINE TRAFFIC":
-		return SpeechEngine.synthesize(String(event.get("transcript", "")), speech_rate, 0.94)
-	return SpeechEngine.synthesize(String(event.get("transcript", "")), speech_rate, 0.94)
+		return SpeechEngine.synthesize(String(event.get("transcript", "")), speech_rate, 0.94, String(event.get("voice_profile", "FIELD")))
+	return SpeechEngine.synthesize(String(event.get("transcript", "")), speech_rate, 0.94, String(event.get("voice_profile", "FIELD")))
 
 static func _build_morse(message: String, words_per_minute: float) -> AudioStreamWAV:
 	var unit := 1.2 / clampf(words_per_minute, 8.0, 30.0)
