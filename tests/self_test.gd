@@ -3,6 +3,7 @@ extends SceneTree
 const Catalog = preload("res://scripts/content_catalog.gd")
 const GameState = preload("res://scripts/game_state.gd")
 const SpeechEngine = preload("res://scripts/speech_engine.gd")
+const SignalAudioEngine = preload("res://scripts/signal_audio_engine.gd")
 
 func _initialize() -> void:
 	call_deferred("_run")
@@ -14,6 +15,15 @@ func _run() -> void:
 	assert(speech_a.mix_rate == 22050 and not speech_a.stereo, "Speech stream format is not the expected compact mono format.")
 	assert(speech_a.data.size() > 22050 and speech_a.data == speech_b.data, "Speech output should be non-empty and deterministic.")
 	assert(speech_a.data.size() < 22050 * 2 * 30, "Speech synthesis exceeded the bounded test output duration.")
+	var cw_audio: AudioStreamWAV = SignalAudioEngine.build_event_audio(_event("SIG-0004"))
+	var voice_audio: AudioStreamWAV = SignalAudioEngine.build_event_audio(_event("SIG-0002"))
+	var data_audio: AudioStreamWAV = SignalAudioEngine.build_event_audio(_event("SIG-0003"))
+	var carrier_audio: AudioStreamWAV = SignalAudioEngine.build_event_audio(_event("SIG-0001"))
+	for signal_audio in [cw_audio, voice_audio, data_audio, carrier_audio]:
+		assert(signal_audio != null and signal_audio.mix_rate == 22050 and not signal_audio.stereo, "Signal renderer returned an invalid stream.")
+		assert(signal_audio.data.size() > 4000, "Signal renderer returned an empty or too-short stream.")
+	assert(cw_audio.data.size() > carrier_audio.data.size(), "CW identifier/sequence should produce a longer keyed signal than the reference carrier.")
+	assert(data_audio.data.size() < cw_audio.data.size(), "Incomplete data burst should remain a short non-textual event.")
 	assert(Catalog.EVENTS.size() == 5, "Expected five canonical opening signal events.")
 	assert(Catalog.DOCUMENTS.size() >= 6, "Expected core archive documents including the closed incident-file cover.")
 	var ids: Array[String] = []
@@ -81,6 +91,7 @@ func _run() -> void:
 	assert(String(reloaded.data["reports"][-1].get("case_status", "")) == "UNRESOLVED", "Persisted case status changed.")
 	assert(bool(reloaded.data.get("communications_comparison_reviewed", false)), "Explicit A-005 comparison review did not persist.")
 	assert(is_equal_approx(float(reloaded.data["settings"].get("text_scale", 1.0)), 1.1), "Text size setting did not persist.")
+	assert(is_equal_approx(float(reloaded.data["settings"].get("speech_rate", 1.0)), 1.0), "Speech rate default did not persist.")
 	var save_file := FileAccess.open(GameState.SAVE_PATH, FileAccess.READ)
 	assert(save_file != null, "Could not open valid save before recovery test.")
 	var valid_save_text := save_file.get_as_text()
