@@ -27,6 +27,7 @@ func reset_defaults() -> void:
 		"current_section": "Receiver",
 		"receiver_power": false,
 		"frequency_mhz": 10.0,
+		"band": "HF",
 		"mode": "AM",
 		"selected_event_id": "SIG-0001",
 		"retained_event_ids": ["SIG-0001", "SIG-0002", "SIG-0003", "SIG-0004", "SIG-0005"],
@@ -73,7 +74,7 @@ func _ensure_defaults() -> void:
 	var legacy_a005_completed := not bool(data.get("communications_comparison_reviewed", false)) and String(data.get("assignments", {}).get("A-005", "OPEN")) == "COMPLETED"
 	var defaults := {
 		"current_section": "Receiver", "receiver_power": false, "frequency_mhz": 10.0,
-		"mode": "AM", "selected_event_id": "SIG-0001", "retained_event_ids": [],
+		"mode": "AM", "band": "HF", "selected_event_id": "SIG-0001", "retained_event_ids": [],
 		"inspected_event_ids": [], "recorded_event_ids": [], "documents_read": [], "notes": [], "reports": [],
 		"assignments": {}, "messages_seen": [], "settings": {"text_scale": 1.0, "audio_enabled": true, "speech_rate": 1.0},
 		"event_log": [], "next_note_id": 1, "next_report_id": 1,
@@ -84,6 +85,9 @@ func _ensure_defaults() -> void:
 	for key in defaults:
 		if not data.has(key):
 			data[key] = defaults[key]
+	if not data.has("band"):
+		var saved_frequency := float(data.get("frequency_mhz", 10.0))
+		data["band"] = "HF" if saved_frequency <= 30.0 else ("VHF" if saved_frequency <= 300.0 else "UHF")
 	var settings: Dictionary = data.get("settings", {})
 	for setting_key in ["text_scale", "audio_enabled", "speech_rate"]:
 		if not settings.has(setting_key):
