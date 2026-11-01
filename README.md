@@ -15,7 +15,8 @@ An offline, landscape-only Android radio-conspiracy horror game about ordinary m
 - [Ending & Disclosure Structure](docs/ENDING_AND_DISCLOSURE_STRUCTURE.md) — first-release closure that preserves the central uncertainty.
 - [Technical Implementation Plan](docs/TECHNICAL_IMPLEMENTATION_PLAN.md) — project structure, state model, persistence, receiver simulation, and tests.
 - [Implementation Test Checklist](docs/IMPLEMENTATION_TEST_CHECKLIST.md) — repeatable verification checklist.
-- [Implementation Status](docs/IMPLEMENTATION_STATUS.md) — implemented prototype features, verified headless checks, known simplifications, and unverified items.
+- [Implementation Status](docs/IMPLEMENTATION_STATUS.md) — implemented prototype features, verified checks, and remaining validation.
+- [Offline Audio & Speech Engine](docs/AUDIO_SPEECH_ENGINE.md) — local synthesis, playback behavior, package budget, and verification rules. — implemented prototype features, verified headless checks, known simplifications, and unverified items.
 - [Build & Run Guide](docs/BUILD_AND_RUN.md) — local Godot run, headless checks, and Android export instructions.
 - [Android Debug Export Workflow](.github/workflows/android-export.yml) — reproducible APK export attempt and artifact upload.
 - [Prioritized Design Decision Register](docs/PRIORITIZED_DESIGN_DECISION_REGISTER.md) — open decisions ranked by priority, dependencies, prototype tests, non-negotiable guardrails, and criteria for design readiness.
