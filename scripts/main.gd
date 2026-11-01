@@ -16,15 +16,98 @@ const ACCENT = Color(0.45, 0.79, 0.65, 1)
 const WARNING = Color(0.91, 0.72, 0.43, 1)
 
 class WaterfallPlot extends Control:
+	signal frequency_selected(frequency: float)
+	signal event_selected(event_id: String)
+
 	var events: Array = []
-	var elapsed := 0.0
+	var frequency_min := 3.0
+	var frequency_max := 30.0
+	var tuned_frequency := 10.0
+	var history: Array = []
+	var row_clock := 0.0
+	var row_counter := 0
+	var drag_active := false
 
 	func _ready() -> void:
 		custom_minimum_size = Vector2(0, 190)
+		mouse_filter = Control.MOUSE_FILTER_STOP
+		for row in range(64):
+			history.append(_make_noise_row(row))
 		queue_redraw()
 
 	func _process(delta: float) -> void:
-		elapsed += delta
+		row_clock += delta
+		var added_row := false
+		while row_clock >= 0.12:
+			row_clock -= 0.12
+			history.push_front(_make_noise_row(row_counter))
+			row_counter += 1
+			if history.size() > 64:
+				history.pop_back()
+			added_row = true
+		if added_row:
+			queue_redraw()
+
+	func _make_noise_row(seed_value: int) -> PackedFloat32Array:
+		var values := PackedFloat32Array()
+		values.resize(96)
+		for col in range(96):
+			var wave := absf(sin(float(col) * 0.41 + float(seed_value) * 0.17) * cos(float(col) * 0.13 - float(seed_value) * 0.09))
+			var noise := fposmod(sin(float(col * 37 + seed_value * 19) * 12.9898 + float(seed_value) * 78.233) * 43758.5453, 1.0)
+			values[col] = clampf(0.07 + wave * 0.13 + noise * 0.12, 0.04, 0.32)
+		return values
+
+	func _gui_input(event: InputEvent) -> void:
+		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				drag_active = true
+				_preview_at(event.position)
+			elif drag_active:
+				drag_active = false
+				_select_at(event.position)
+		elif event is InputEventMouseMotion and drag_active:
+			if (event.button_mask & MOUSE_BUTTON_MASK_LEFT) != 0:
+				_preview_at(event.position)
+		elif event is InputEventScreenTouch:
+			if event.pressed:
+				drag_active = true
+				_preview_at(event.position)
+			elif drag_active:
+				drag_active = false
+				_select_at(event.position)
+		elif event is InputEventScreenDrag and drag_active:
+			_preview_at(event.position)
+
+	func _frequency_at(position: Vector2) -> float:
+		var left := 44.0
+		var right := maxf(left + 1.0, size.x - 4.0)
+		var normalized := clampf((position.x - left) / (right - left), 0.0, 1.0)
+		return lerpf(frequency_min, frequency_max, normalized)
+
+	func _preview_at(position: Vector2) -> void:
+		tuned_frequency = _frequency_at(position)
+		queue_redraw()
+
+	func _select_at(position: Vector2) -> void:
+		tuned_frequency = _frequency_at(position)
+		var nearest_id := ""
+		var nearest_difference := INF
+		for event_data in events:
+			var event_id := String(event_data.get("id", ""))
+			if not ["SIG-0001", "SIG-0002", "SIG-0003"].has(event_id):
+				continue
+			var event_frequency := float(event_data.get("frequency_mhz", 0.0))
+			if event_frequency < frequency_min or event_frequency > frequency_max:
+				continue
+			var difference := absf(event_frequency - tuned_frequency)
+			if difference < nearest_difference:
+				nearest_difference = difference
+				nearest_id = event_id
+		var snap_threshold := (frequency_max - frequency_min) * 0.015
+		if not nearest_id.is_empty() and nearest_difference <= snap_threshold:
+			event_selected.emit(nearest_id)
+		else:
+			frequency_selected.emit(tuned_frequency)
 		queue_redraw()
 
 	func _draw() -> void:
@@ -34,48 +117,50 @@ class WaterfallPlot extends Control:
 		var bottom_gutter := 18.0
 		var plot_rect := Rect2(Vector2(left_gutter, 4.0), Vector2(maxf(1.0, size.x - left_gutter - 4.0), maxf(1.0, size.y - bottom_gutter - 4.0)))
 		draw_rect(Rect2(Vector2.ZERO, size), Color(0.018, 0.035, 0.04, 1), true)
-		# Synthetic running noise bed; authored signal traces remain separate.
-		var row_height := 3.0
-		var rows := int(ceil(plot_rect.size.y / row_height))
-		for row in range(rows):
-			var y := plot_rect.position.y + float(row) * row_height
-			var age := elapsed * 5.0 + float(row)
-			for col in range(72):
-				var x := plot_rect.position.x + plot_rect.size.x * float(col) / 72.0
-				var wave := absf(sin(float(col) * 0.41 + age * 0.17) * cos(float(col) * 0.13 - age * 0.09))
-				var noise := fposmod(sin(float(col * 37 + row * 19) * 12.9898 + floor(age) * 78.233) * 43758.5453, 1.0)
-				var intensity := clampf(0.07 + wave * 0.13 + noise * 0.12, 0.04, 0.32)
+		var cell_height := plot_rect.size.y / float(maxi(1, history.size()))
+		var cell_width := plot_rect.size.x / 96.0
+		for row in range(history.size()):
+			var values: PackedFloat32Array = history[row]
+			var y := plot_rect.position.y + float(row) * cell_height
+			for col in range(values.size()):
+				var intensity := values[col]
 				var tint := Color(0.06 + intensity * 0.25, 0.12 + intensity * 0.75, 0.11 + intensity * 0.42, 1)
-				draw_rect(Rect2(x, y, maxf(1.0, plot_rect.size.x / 72.0 + 0.5), row_height), tint, true)
-		for step in range(0, 5):
+				draw_rect(Rect2(plot_rect.position.x + float(col) * cell_width, y, cell_width + 0.5, cell_height + 0.25), tint, true)
+		for step in range(5):
 			var x := plot_rect.position.x + plot_rect.size.x * float(step) / 4.0
 			draw_line(Vector2(x, plot_rect.position.y), Vector2(x, plot_rect.end.y), Color(0.12, 0.2, 0.19, 1), 1.0)
 			if step == 0 or step == 2 or step == 4:
-				var frequency_label: String = ["0", "7.5", "15"][int(step / 2)] + " MHz"
-				draw_string(font, Vector2(x - 18.0, size.y - 3.0), frequency_label, HORIZONTAL_ALIGNMENT_LEFT, 42.0, label_size, Color(0.57, 0.68, 0.67, 1))
+				var frequency_label := "%.1f MHz" % lerpf(frequency_min, frequency_max, float(step) / 4.0)
+				draw_string(font, Vector2(x - 18.0, size.y - 3.0), frequency_label, HORIZONTAL_ALIGNMENT_LEFT, 52.0, label_size, Color(0.57, 0.68, 0.67, 1))
 		for minute in [0, 15, 30]:
 			var y := plot_rect.position.y + plot_rect.size.y * float(minute) / 30.0
 			draw_line(Vector2(plot_rect.position.x, y), Vector2(plot_rect.end.x, y), Color(0.16, 0.25, 0.23, 1), 1.0)
-			var time_label: String = "08:%02d" % minute
+			var time_label := "08:%02d" % minute
 			var label_y := clampf(y + 4.0, 12.0, size.y - bottom_gutter)
 			draw_string(font, Vector2(2.0, label_y), time_label, HORIZONTAL_ALIGNMENT_LEFT, left_gutter - 5.0, label_size, Color(0.57, 0.68, 0.67, 1))
-		for event in events:
-			var event_id := String(event.get("id", ""))
+		for event_data in events:
+			var event_id := String(event_data.get("id", ""))
 			if not ["SIG-0001", "SIG-0002", "SIG-0003"].has(event_id):
 				continue
-			var parts: PackedStringArray = String(event.get("time_label", "08:00")).split(":")
+			var parts: PackedStringArray = String(event_data.get("time_label", "08:00")).split(":")
 			if parts.size() != 2:
 				continue
 			var minutes := int(parts[0]) * 60 + int(parts[1])
 			var relative_minutes := clampf(float(minutes - 480), 0.0, 30.0)
+			var frequency := float(event_data.get("frequency_mhz", 0.0))
+			if frequency < frequency_min or frequency > frequency_max:
+				continue
+			var normalized_frequency := (frequency - frequency_min) / maxf(0.001, frequency_max - frequency_min)
+			var x := plot_rect.position.x + plot_rect.size.x * normalized_frequency
 			var y := plot_rect.position.y + plot_rect.size.y * relative_minutes / 30.0
-			var frequency := clampf(float(event.get("frequency_mhz", 0.0)), 0.0, 15.0)
-			var x := plot_rect.position.x + plot_rect.size.x * frequency / 15.0
-			var strength := clampf(float(event.get("strength", 0.5)), 0.0, 1.0)
+			var strength := clampf(float(event_data.get("strength", 0.5)), 0.0, 1.0)
 			var half_width := 5.0 + strength * 18.0
 			var trace_color := Color(0.22, 0.48, 0.39, 1).lerp(Color(0.5, 0.88, 0.68, 1), strength)
 			draw_line(Vector2(maxf(plot_rect.position.x, x - half_width), y), Vector2(minf(plot_rect.end.x, x + half_width), y), trace_color, 3.0)
 			draw_line(Vector2(x, maxf(plot_rect.position.y, y - 4.0)), Vector2(x, minf(plot_rect.end.y, y + 4.0)), trace_color, 2.0)
+		var tuned_normalized := clampf((tuned_frequency - frequency_min) / maxf(0.001, frequency_max - frequency_min), 0.0, 1.0)
+		var tuned_x := plot_rect.position.x + plot_rect.size.x * tuned_normalized
+		draw_line(Vector2(tuned_x, plot_rect.position.y), Vector2(tuned_x, plot_rect.end.y), Color(0.88, 0.72, 0.42, 0.75), 1.5)
 
 var game
 var root_column: VBoxContainer
@@ -378,11 +463,13 @@ func _draw_receiver() -> void:
 		_:
 			frequency_spin.min_value = 3.0
 			frequency_spin.max_value = 30.0
-	frequency_spin.step = 0.001
+	frequency_spin.step = 0.001 if selected_band == "HF" else (0.005 if selected_band == "VHF" else 0.025)
 	frequency_spin.rounded = false
 	frequency_spin.value = float(game.data.get("frequency_mhz", 10.0))
 	frequency_spin.custom_minimum_size = Vector2(145, 38)
 	control_row.add_child(frequency_spin)
+	_button("−STEP", _step_frequency.bind(-1), control_row)
+	_button("+STEP", _step_frequency.bind(1), control_row)
 
 	_button("APPLY", _apply_receiver_settings, control_row)
 	_button("SEEK NEXT", _seek_next, control_row)
@@ -460,8 +547,15 @@ func _draw_waterfall() -> void:
 	var visual := VBoxContainer.new()
 	frame.add_child(visual)
 	_add_text("WATERFALL  /  FREQUENCY →     TIME ↓", 11, MUTED, visual)
+	_add_text("Tap a visible trace to tune; drag across the display to explore frequencies.", 11, MUTED, visual)
 	var plot := WaterfallPlot.new()
 	plot.events = Catalog.EVENTS
+	var bounds := _band_bounds(String(game.data.get("band", "HF")))
+	plot.frequency_min = bounds.x
+	plot.frequency_max = bounds.y
+	plot.tuned_frequency = float(game.data.get("frequency_mhz", 10.0))
+	plot.frequency_selected.connect(_on_waterfall_frequency_selected)
+	plot.event_selected.connect(_select_event)
 	plot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	visual.add_child(plot)
 	_add_text("Axes: frequency in MHz (horizontal); Site 04 displayed event time, 08:00–08:30 (vertical).", 11, MUTED, visual)
@@ -607,6 +701,47 @@ func _seek_next() -> void:
 	game.set_receiver(true, float(chosen.get("frequency_mhz", 10.0)), selected_mode)
 	status_message = "SEEK selected %s at %.3f MHz / %s within %s." % [String(chosen.get("id", "")), float(chosen.get("frequency_mhz", 0.0)), selected_mode, selected_band]
 	_refresh()
+
+func _band_bounds(band: String) -> Vector2:
+	match band:
+		"VHF":
+			return Vector2(30.001, 300.0)
+		"UHF":
+			return Vector2(300.001, 3000.0)
+		_:
+			return Vector2(3.0, 30.0)
+
+func _on_waterfall_frequency_selected(frequency: float) -> void:
+	var bounds := _band_bounds(String(game.data.get("band", "HF")))
+	var tuned := clampf(frequency, bounds.x, bounds.y)
+	game.data["frequency_mhz"] = tuned
+	game.save_game()
+	if frequency_spin != null:
+		frequency_spin.value = tuned
+	status_message = "Waterfall tuning set to %.3f MHz. No event was inferred at this frequency." % tuned
+	if status_label != null:
+		status_label.text = status_message
+
+func _step_frequency(direction: int) -> void:
+	var band := String(game.data.get("band", "HF"))
+	var bounds := _band_bounds(band)
+	var step := 0.001 if band == "HF" else (0.005 if band == "VHF" else 0.025)
+	var frequency := clampf(float(game.data.get("frequency_mhz", bounds.x)) + step * float(direction), bounds.x, bounds.y)
+	game.set_receiver(bool(game.data.get("receiver_power", false)), frequency, String(game.data.get("mode", "AM")))
+	status_message = "Fine tune: %.3f MHz." % frequency
+	_refresh()
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	if not event is InputEventKey or not event.pressed or event.echo:
+		return
+	if String(game.data.get("current_section", "Receiver")) != "Receiver":
+		return
+	if event.keycode == KEY_LEFT:
+		_step_frequency(-1)
+		get_viewport().set_input_as_handled()
+	elif event.keycode == KEY_RIGHT:
+		_step_frequency(1)
+		get_viewport().set_input_as_handled()
 
 func _band_for_frequency(frequency: float) -> String:
 	if frequency <= 30.0:
