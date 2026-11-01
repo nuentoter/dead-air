@@ -18,7 +18,7 @@ func _run() -> void:
 	_assert(speech_a.data.size() > 4000 and speech_a.data == speech_b.data, "Speech output should be non-empty and deterministic.")
 	_assert(speech_a.data.size() < 22050 * 2 * 30, "Speech synthesis exceeded the bounded test output duration.")
 	var expanded_identifier := String(SpeechEngine._expand_text("NR-041"))
-	_assert(expanded_identifier.contains("zero") and expanded_identifier.contains("four") and expanded_identifier.contains("one"), "Identifier and digit expansion failed.")
+	_assert(expanded_identifier.contains("zero four one"), "Identifier and digit expansion failed.")
 	var field_voice: AudioStreamWAV = SpeechEngine.synthesize("Hi.", 1.0, 1.0, "FIELD")
 	var official_voice: AudioStreamWAV = SpeechEngine.synthesize("Hi.", 1.0, 1.0, "OFFICIAL")
 	_assert(field_voice.data != official_voice.data, "Authored voice profiles should produce distinct local readouts.")
