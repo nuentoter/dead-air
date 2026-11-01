@@ -22,7 +22,7 @@ static func build_event_audio(event: Dictionary, speech_rate: float = 1.0) -> Au
 		var sequence := String(event.get("sequence", ""))
 		return _build_morse(identifier + " " + sequence, 18.0)
 	if kind == "TIME STANDARD" or classification == "REFERENCE":
-		return _render_segments([{"tone":1000.0, "secondary":73.0, "duration":1.15, "amplitude":0.20}])
+		return _build_time_standard(String(event.get("time_label", "08:00")) )
 	if classification.contains("DATA") or kind.contains("DATA"):
 		return _build_data_burst()
 	if classification.contains("VOICE") or kind == "ROUTINE TRAFFIC":
@@ -49,6 +49,25 @@ static func _build_morse(message: String, words_per_minute: float) -> AudioStrea
 				segments.append({"tone":0.0, "duration":unit * 3.0})
 		if word_index < words.size() - 1:
 			segments.append({"tone":0.0, "duration":unit * 7.0})
+	return _render_segments(segments)
+
+static func _build_time_standard(time_label: String) -> AudioStreamWAV:
+	var parts := time_label.split(":")
+	var minute := int(parts[1]) if parts.size() == 2 else 0
+	var segments: Array = []
+	if minute == 0:
+		# Distinct top-of-hour marker: three rising notes before the regular second ticks.
+		for tone in [440.0, 660.0, 880.0]:
+			segments.append({"tone":tone, "duration":0.12, "amplitude":0.24})
+			segments.append({"tone":0.0, "duration":0.08})
+	elif minute % 15 == 0:
+		# Quarter-hour marker; it is an audible time cue, not a story signal.
+		segments.append({"tone":310.0, "duration":0.62, "amplitude":0.25})
+		segments.append({"tone":0.0, "duration":0.18})
+	for tick in range(4):
+		var amplitude := 0.30 if tick == 0 else 0.16
+		segments.append({"tone":1000.0, "duration":0.085, "amplitude":amplitude})
+		segments.append({"tone":0.0, "duration":0.915})
 	return _render_segments(segments)
 
 static func _build_data_burst() -> AudioStreamWAV:
