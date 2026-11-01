@@ -139,6 +139,13 @@ func _run() -> void:
 	var speech_reload = load("res://scripts/game_state.gd").new()
 	if not _expect(is_equal_approx(float(speech_reload.data["settings"].get("speech_rate", 1.0)), 1.1), "Speech speed preference did not persist across reload."):
 		return
+	instance.call("_on_nav_pressed", "Receiver")
+	instance.call("_select_event", "SIG-0004")
+	if not _expect(_tree_contains_text(instance, "PLAY SIGNAL AUDIO") and _tree_contains_text(instance, "READ TEXT"), "Receiver does not expose signal playback and separate transcript readout."):
+		return
+	instance.call("_on_nav_pressed", "Recordings")
+	if not _expect(_tree_contains_text(instance, "PLAY SIGNAL AUDIO") and _tree_contains_text(instance, "READ TEXT"), "Recordings does not expose signal playback and separate transcript readout."):
+		return
 	print("DEAD AIR UI flow test passed: report submission/history/citations and notebook source labels/navigation with interpretation preserved.")
 	quit(0)
 
