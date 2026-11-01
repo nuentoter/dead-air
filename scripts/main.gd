@@ -100,6 +100,7 @@ var status_message := "LOCAL SIMULATION — no network or microphone access."
 func _ready() -> void:
 	_setup_receiver_audio()
 	game = GameState.new()
+	audio_enabled = bool(game.data.get("settings", {}).get("audio_enabled", true))
 	if not String(game.load_notice).is_empty():
 		status_message = String(game.load_notice)
 	_build_shell()
@@ -444,6 +445,8 @@ func _draw_waterfall() -> void:
 
 func _toggle_audio() -> void:
 	audio_enabled = not audio_enabled
+	game.data["settings"]["audio_enabled"] = audio_enabled
+	game.save_game()
 	status_message = "Synthetic receiver hiss enabled." if audio_enabled else "Receiver audio muted."
 	_refresh()
 
