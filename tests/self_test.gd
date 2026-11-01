@@ -2,11 +2,18 @@ extends SceneTree
 
 const Catalog = preload("res://scripts/content_catalog.gd")
 const GameState = preload("res://scripts/game_state.gd")
+const SpeechEngine = preload("res://scripts/speech_engine.gd")
 
 func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
+	var speech_a: AudioStreamWAV = SpeechEngine.synthesize("North relay, routine check complete. NR-041.", 1.0, 1.0)
+	var speech_b: AudioStreamWAV = SpeechEngine.synthesize("North relay, routine check complete. NR-041.", 1.0, 1.0)
+	assert(speech_a != null and speech_b != null, "Offline speech synthesis did not return an audio stream.")
+	assert(speech_a.mix_rate == 22050 and not speech_a.stereo, "Speech stream format is not the expected compact mono format.")
+	assert(speech_a.data.size() > 22050 and speech_a.data == speech_b.data, "Speech output should be non-empty and deterministic.")
+	assert(speech_a.data.size() < 22050 * 2 * 30, "Speech synthesis exceeded the bounded test output duration.")
 	assert(Catalog.EVENTS.size() == 5, "Expected five canonical opening signal events.")
 	assert(Catalog.DOCUMENTS.size() >= 6, "Expected core archive documents including the closed incident-file cover.")
 	var ids: Array[String] = []
