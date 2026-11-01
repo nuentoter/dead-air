@@ -1,5 +1,7 @@
 extends SceneTree
 
+const Catalog = preload("res://scripts/content_catalog.gd")
+
 func _initialize() -> void:
 	call_deferred("_run")
 
