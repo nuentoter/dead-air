@@ -347,3 +347,11 @@ The first implementation deliberately covers only a deterministic subset:
 - Event transcripts and source limitations are always visible as text.
 
 These simplifications must remain honestly labelled until replaced and tested.
+
+
+## Local event audio rendering (prototype)
+- PLAY SIGNAL AUDIO uses authored event metadata to select a deterministic local rendering: synthetic voice for voice traffic, keyed Morse for CW identifier/sequence, a monitor carrier for the reference event, and a short FSK-like burst for the incomplete data event.
+- READ TEXT is a separate optional accessibility rendering of the visible transcript; it is never presented as source audio.
+- STOP AUDIO halts playback. The shared audio mute preference gates all local playback.
+- Spoken readout speed is adjustable from 0.75× to 1.25× and saved locally.
+- These renderings are not evidence of a physical transmitter, common origin, or hidden payload. Transcripts and provenance remain authoritative.
