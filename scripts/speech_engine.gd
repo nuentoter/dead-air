@@ -137,7 +137,7 @@ static func _expand_text(source: String) -> String:
 		else:
 			result += character.to_lower()
 		i += 1
-	return result
+	return " ".join(result.split(" ", false))
 
 static func _phonemize(text: String) -> Array:
 	var result: Array = []
