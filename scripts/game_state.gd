@@ -70,7 +70,7 @@ func load_game() -> bool:
 	return true
 
 func _ensure_defaults() -> void:
-	var legacy_a005_completed := not data.has("communications_comparison_reviewed") and String(data.get("assignments", {}).get("A-005", "OPEN")) == "COMPLETED"
+	var legacy_a005_completed := not bool(data.get("communications_comparison_reviewed", false)) and String(data.get("assignments", {}).get("A-005", "OPEN")) == "COMPLETED"
 	var defaults := {
 		"current_section": "Receiver", "receiver_power": false, "frequency_mhz": 10.0,
 		"mode": "AM", "selected_event_id": "SIG-0001", "retained_event_ids": [],
