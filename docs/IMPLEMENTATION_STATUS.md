@@ -1,6 +1,6 @@
 # DEAD AIR — Implementation Status
 
-**Current milestone:** First workstation prototype, v0.1.0  
+**Current milestone:** Offline audio/speech prototype, v0.1.1  
 **Status:** Godot 4.3 headless CI passes. On gameplay commit 56d9e5f75907e84c83f7f05cdbbc80fb1e2c3116, the arm64 debug APK exported at 24,347,029 bytes and the CI-signed release-mode APK at 22,983,108 bytes; both are below 25,000,000 bytes. The same export workflow passed the manifest audit: both APKs have an explicit orientation entry and neither requests INTERNET or RECORD_AUDIO. Later commits in this development sequence changed automated test coverage or documentation only; physical-device behavior remains unverified. Physical-device tests remain pending.
 
 ## Implemented
@@ -10,7 +10,7 @@
 - Core archive records M-02, M-05, M-06A (closed incident file 01-773 cover), M-07, M-08, M-09, M-10B.
 - Local JSON save/load with schema version, temporary write, backup/restore during save replacement, and recovery-copy attempt for unreadable saves; automated malformed-save preservation is included in the self-test.
 - Persistent text-size controls.
-- Receiver power, frequency and mode state; authored event-match feedback; deterministic SEEK NEXT; manual-record provenance; a data-driven current-shift frequency/time plot with explicit in-plot time and frequency axis labels; optional locally generated broadband hiss with a faint 73 Hz tone, gated by receiver power and a persistent mute preference.
+- Receiver power, frequency and mode state; authored event-match feedback; deterministic SEEK NEXT; manual-record provenance; a data-driven current-shift frequency/time plot with explicit in-plot time and frequency axis labels; optional locally generated broadband hiss with a faint 73 Hz tone, gated by receiver power and a persistent mute preference; a fully offline formant-based speech synthesizer generates mono 22.05 kHz PCM from authored transcript text, expands uppercase identifiers and digits for readout, and plays on demand from Receiver/Recordings.
 - Searchable archive, read-state tracking for required documents, notebook notes/source links, and player-selectable report citations persisted with the draft.
 - Evidence-driven assignment progress: A-001/A-002/A-004 complete from their defined receiver/document actions (A-004 requires the M-06A cover, M-07 summary, and M-08 appendix); A-003 and A-005 require their evidence to be opened and an explicit comparison confirmation. A-005 presents the M-08/M-09 timestamps and routing side by side, preserves the source-attribution limit, stores a dedicated completion marker, and migrates older auto-completed saves back to in-progress. Each assignment displays a persistent progress checklist based on the actual reviewed evidence and recorded state; work-order status moves from OPEN to IN PROGRESS on relevant evidence activity and only reaches COMPLETED after its defined completion action.
 - Immutable report submissions/addenda and unresolved case status, displayed in a read-only report history with cited source IDs in Messages; each citation can open its retained signal event or archive document.
@@ -27,10 +27,12 @@
 - Integrity self-test passed: opening Signal IDs, NR-041, sequence 731904, 7.418 MHz consistency, M-07/M-08/M-09 timestamps, event retention, report immutability/addenda, text-size persistence, and save/load round trip.
 - Successful workflow logs contained no parser/runtime error lines.
 
+- Offline speech engine is procedural/formant-based rather than a neural voice model; it prioritizes deterministic, compact, network-free synthesis. Initial integration reads retained transcripts aloud; it does not claim to reproduce original live recordings or distinct human performers. Generated speech is optional and transcripts remain authoritative.
+
 ## Known simplifications
 - Waterfall plot currently includes only SIG-0001–0003 from 08:00–08:30. Prior-cycle and next-shift NR-041 events are excluded because their calendar dates are unknown; this avoids implying a shared chronology.
 - SEEK NEXT cycles through authored events; it is not a physical band scan.
-- Frequency/mode are simulated; there is no RF processing, audio playback, SDR, or microphone use.
+- Frequency/mode are simulated; there is no RF processing, SDR, or microphone use. Audio is locally synthesized; speech is a procedural readout of authored transcript text.
 - All authored events are retained from the start so essential clues cannot be missed.
 - No full eight-hour clock progression, queued archive retrieval, branch-heavy ending system, or complete Silent Site branch.
 - Debug and CI-signed release-mode APK exports pass. Godot export success does not validate installation, runtime behavior, or visual usability on a physical phone.
