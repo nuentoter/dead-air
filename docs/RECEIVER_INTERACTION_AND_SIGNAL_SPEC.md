@@ -374,3 +374,5 @@ These simplifications must remain honestly labelled until replaced and tested.
 - The plot shows only SIG-0001–SIG-0003 because the dates for SIG-0004/SIG-0005 are unknown; those retained events remain accessible through the event index and Recordings.
 
 - The 10.000 MHz AM reference event uses a local time-standard pattern: regular second ticks, a stronger minute tick, a distinct quarter-hour buzz, and a top-of-hour marker. The current 08:00 reference event plays the top-of-hour pattern.
+
+- The weaker SIG-0005 CW rendering is quieter and fades across the keyed sequence. Its timing and decoded text remain unchanged; this is a reception-strength treatment, not an added clue.
