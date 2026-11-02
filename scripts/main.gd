@@ -711,7 +711,9 @@ func _draw_session_signal_comparison() -> void:
 	for event in marked_events:
 		var summary := "%s   %.3f MHz %s   %s   %s" % [String(event.get("id", "")), float(event.get("frequency_mhz", 0.0)), String(event.get("mode", "")), String(event.get("time_label", "UNKNOWN TIME")), String(event.get("kind", ""))]
 		_add_text(summary, 12, TEXT)
-		_add_text("Basis: " + String(event.get("time_basis", "unknown")) + " | Source: " + String(event.get("provenance", "unknown")), 11, MUTED)
+		_add_text("Basis: " + String(event.get("time_basis", "unknown")) + " | Source: " + String(event.get("provenance", "unknown")), 12, MUTED)
+		var open_comparison_source := _button("OPEN " + String(event.get("id", "")), _open_comparison_source.bind(String(event.get("id", ""))))
+		open_comparison_source.custom_minimum_size.y = 56.0
 	if marked_events.size() >= 2:
 		var a: Dictionary = marked_events[0]
 		var b: Dictionary = marked_events[1]
@@ -719,8 +721,19 @@ func _draw_session_signal_comparison() -> void:
 		_add_text("First pair: %.1f kHz apart | same mode: %s" % [separation_khz, "YES" if String(a.get("mode", "")) == String(b.get("mode", "")) else "NO"], 12, ACCENT)
 		_add_text("Displayed times may use different date bases. Do not infer simultaneity.", 11, WARNING)
 	var comparison_actions := _row()
-	_button("SAVE AS INVESTIGATOR NOTE", _save_comparison_note, comparison_actions)
-	_button("CLEAR MARKS", _clear_session_marks, comparison_actions)
+	var save_comparison_button := _button("SAVE AS INVESTIGATOR NOTE", _save_comparison_note, comparison_actions)
+	save_comparison_button.custom_minimum_size.y = 56.0
+	var clear_comparison_button := _button("CLEAR MARKS", _clear_session_marks, comparison_actions)
+	clear_comparison_button.custom_minimum_size.y = 56.0
+
+func _open_comparison_source(event_id: String) -> void:
+	if _find_event(event_id).is_empty():
+		status_message = "Comparison source unavailable: " + event_id
+		_refresh()
+		return
+	game.select_event(event_id)
+	status_message = "Opened retained comparison source " + event_id + ". Session marks remain unchanged."
+	_refresh()
 
 func _save_comparison_note() -> void:
 	if session_signal_marks.size() < 2:
@@ -981,7 +994,7 @@ func _draw_notebook() -> void:
 	note_editor = TextEdit.new()
 	note_editor.placeholder_text = "Write a note. Link a source if useful."
 	note_editor.text = String(game.data.get("note_draft", ""))
-	note_editor.custom_minimum_size = Vector2(0, 100)
+	note_editor.custom_minimum_size = Vector2(0, 160)
 	note_editor.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	note_editor.text_changed.connect(_on_note_draft_changed)
 	body.add_child(note_editor)
@@ -995,7 +1008,7 @@ func _draw_notebook() -> void:
 		if note_class_select.get_item_text(class_index) == saved_classification:
 			note_class_select.select(class_index)
 	note_class_select.item_selected.connect(_on_note_classification_selected)
-	note_class_select.custom_minimum_size = Vector2(220, 38)
+	note_class_select.custom_minimum_size = Vector2(220, 56)
 	classification_row.add_child(note_class_select)
 	var source_row := _row()
 	_add_text("SOURCE LINK", 12, MUTED, source_row)
@@ -1003,7 +1016,7 @@ func _draw_notebook() -> void:
 	note_source_select.add_item("No source link")
 	for item in ["SIG-0004", "SIG-0005", "M-02", "M-05", "M-06A", "M-07", "M-08", "M-09"]:
 		note_source_select.add_item(item)
-	note_source_select.custom_minimum_size = Vector2(170, 38)
+	note_source_select.custom_minimum_size = Vector2(200, 56)
 	source_row.add_child(note_source_select)
 	_button("SAVE NOTE", _save_note_from_ui, source_row)
 	_add_text("SAVED NOTES", 14, ACCENT)
@@ -1013,12 +1026,15 @@ func _draw_notebook() -> void:
 		var note_id := String(note.get("id", ""))
 		var source_id := String(note.get("source_id", ""))
 		_add_text(note_id + "  /  " + String(note.get("classification", "UNCLASSIFIED")) + (("  /  SOURCE: " + source_id) if not source_id.is_empty() else "  /  NO SOURCE LINK"), 12, MUTED)
-		_add_text(String(note.get("text", "")), 15, TEXT)
+		_add_text(String(note.get("text", "")), 17, TEXT)
+		var note_actions := _row()
 		if not source_id.is_empty():
 			var source_title := _source_display_title(source_id)
 			_add_text("Evidence reference: " + source_title, 12, MUTED)
-			_button("OPEN SOURCE " + source_id, _open_note_source.bind(source_id))
-		_button("DELETE " + note_id, _delete_note.bind(note_id))
+			var open_note_button := _button("OPEN SOURCE " + source_id, _open_note_source.bind(source_id), note_actions)
+			open_note_button.custom_minimum_size.y = 56.0
+		var delete_note_button := _button("DELETE " + note_id, _delete_note.bind(note_id), note_actions)
+		delete_note_button.custom_minimum_size.y = 56.0
 
 func _save_note_from_ui() -> void:
 	var source_id := ""
