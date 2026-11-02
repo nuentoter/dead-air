@@ -78,6 +78,13 @@ func _run() -> void:
 		return
 	if not _expect(_tree_contains_text(instance, "Cited source IDs: M-07, M-08, M-09"), "Read-only report history does not display its citations."):
 		return
+	if not _expect(_tree_contains_text(instance, "FINAL ADMINISTRATIVE DISPOSITION"), "Disposition choices are missing after report submission."):
+		return
+	instance.call("_choose_ending", "DISCLOSURE")
+	if not _expect(String(game.data.get("ending_disposition", "")) == "DISCLOSURE", "Disclosure choice not filed."):
+		return
+	if not _expect(_tree_contains_text(instance, "independent-review request"), "Disclosure epilogue not visible."):
+		return
 	instance.call("_open_report_source", "M-07")
 	if not _expect(String(game.data["current_section"]) == "Archive", "Opening a report citation did not navigate to Archive."):
 		return
