@@ -83,13 +83,12 @@ func _build() -> void:
 	_mask(Rect2(485, 91, 670, 45))
 	header_label = _readout(Rect2(497, 92, 647, 42), 21)
 	_mask(Rect2(298, 201, 182, 201))
-	event_label = _readout(Rect2(310, 211, 162, 174), 21)
+	event_label = _readout(Rect2(310, 211, 162, 145), 20)
 	_mask(Rect2(1264, 635, 276, 67))
 	freq_label = _readout(Rect2(1274, 641, 257, 51), 31, true)
 	_mask(Rect2(504, 140, 606, 62), Color(0.002, 0.025, 0.016, 0.91))
 	signal_label = _readout(Rect2(518, 144, 580, 50), 19)
-	_mask(Rect2(528, 736, 620, 39), Color(0.004, 0.022, 0.014, 0.94))
-	feedback_label = _readout(Rect2(539, 740, 597, 34), 18)
+	feedback_label = _readout(Rect2(310, 360, 162, 37), 14)
 
 	# Real left-side navigation: 8 pictured buttons, not 6 misaligned zones.
 	# RADIO is also the physical power control. Case Files opens assignments.
@@ -219,7 +218,7 @@ func refresh_from_game() -> void:
 	freq_label.text = "%.3f MHz" % freq
 	event_label.text = "NRMS  SITE 04\n\nRETAINED RECORD\n" + event_id + "\n" + String(event.get("time_label", "--")) + "\n" + String(event.get("identifier", ""))
 	signal_label.text = String(event.get("kind", "UNKNOWN")) + "  /  " + ("RECEIVER ON" if on else "RECEIVER OFF") + "\nRECORD STATUS: " + ("ACTIVE" if host.monitor_capture.is_recording() else "IDLE")
-	feedback_label.text = host.status_message.left(75)
+	feedback_label.text = host.status_message.left(52)
 	recording_button.tooltip_text = "STOP MONITOR RECORDING" if host.monitor_capture.is_recording() else "RECORD MONITOR (+30s)"
 	if analysis_visible:
 		analysis_label.text = "SITE 04 / SIGNAL ANALYSIS\n\n" + event_id + "     " + String(event.get("kind", "")) + "\n" + str(event.get("frequency_mhz", "")) + " MHz  /  " + String(event.get("mode", "")) + "\n\n" + String(event.get("transcript", "")) + "\n\nProvenance: " + String(event.get("provenance", ""))
