@@ -486,6 +486,7 @@ func _draw_receiver() -> void:
 		_button("READ TEXT", _speak_selected_transcript, action_row)
 		_button("STOP AUDIO", _stop_audio, action_row)
 
+	_draw_session_signal_comparison()
 	_add_text("RETAINED EVENT INDEX / SESSION MARKS", 13, ACCENT)
 	_add_text("Marks are temporary investigator selections, not institutional evidence.", 11, MUTED)
 	for event in Catalog.EVENTS:
@@ -695,6 +696,33 @@ func _tune_to_retained_event(event_id: String) -> void:
 	game.select_event(event_id)
 	game.set_receiver(bool(game.data.get("receiver_power", false)), frequency, mode)
 	status_message = "Tuned to retained channel %s: %.3f MHz %s. No new reception claimed." % [event_id, frequency, mode]
+	_refresh()
+
+func _draw_session_signal_comparison() -> void:
+	if session_signal_marks.is_empty():
+		return
+	_add_text("SIGNAL COMPARISON / INVESTIGATOR WORKSPACE", 14, ACCENT)
+	_add_text("Selections are not evidence of common origin, identity, or timing.", 11, WARNING)
+	var marked_events: Array[Dictionary] = []
+	for event_id in session_signal_marks:
+		var event: Dictionary = _find_event(event_id)
+		if not event.is_empty():
+			marked_events.append(event)
+	for event in marked_events:
+		var summary := "%s   %.3f MHz %s   %s   %s" % [String(event.get("id", "")), float(event.get("frequency_mhz", 0.0)), String(event.get("mode", "")), String(event.get("time_label", "UNKNOWN TIME")), String(event.get("kind", ""))]
+		_add_text(summary, 12, TEXT)
+		_add_text("Basis: " + String(event.get("time_basis", "unknown")) + " | Source: " + String(event.get("provenance", "unknown")), 11, MUTED)
+	if marked_events.size() >= 2:
+		var a: Dictionary = marked_events[0]
+		var b: Dictionary = marked_events[1]
+		var separation_khz := absf(float(a.get("frequency_mhz", 0.0)) - float(b.get("frequency_mhz", 0.0))) * 1000.0
+		_add_text("First pair: %.1f kHz apart | same mode: %s" % [separation_khz, "YES" if String(a.get("mode", "")) == String(b.get("mode", "")) else "NO"], 12, ACCENT)
+		_add_text("Displayed times may use different date bases. Do not infer simultaneity.", 11, WARNING)
+	_button("CLEAR SESSION MARKS", _clear_session_marks)
+
+func _clear_session_marks() -> void:
+	session_signal_marks.clear()
+	status_message = "Session selections cleared; retained records unchanged."
 	_refresh()
 
 func _toggle_session_mark(event_id: String) -> void:
