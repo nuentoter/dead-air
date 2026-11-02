@@ -98,7 +98,6 @@ jobs:
             fi
           done
       - name: Headless graphite receiver smoke test
-        continue-on-error: true
         run: godot --headless --path . --script res://tests/graphite_receiver_test.gd
       - name: Upload Android APKs
         if: always()
