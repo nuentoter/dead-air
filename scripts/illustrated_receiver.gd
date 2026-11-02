@@ -1,8 +1,8 @@
 extends Control
 ## Android workstation: every interactive area follows the photographed controls.
 ## Authoritative records, receiver settings and recording flow live in main.gd.
-const MASTER = preload("res://gui/working_v2/dead_air_gui_v2/assets/master.png")
-const REFERENCE := Vector2(1672.0, 941.0)
+const MASTER = preload("res://gui/graphite_green/graphite_green_receiver.png")
+const REFERENCE := Vector2(1671.0, 941.0)
 const GREEN := Color(0.68, 1.0, 0.73)
 const DARK := Color(0.005, 0.033, 0.020, 0.97)
 
@@ -65,110 +65,91 @@ func _readout(area: Rect2, font_size: int, centered: bool = false) -> Label:
 	return label
 
 func _build() -> void:
-	_mask_full_background()
-	rig = Control.new()
-	rig.name = "IllustratedRig"
-	rig.size = REFERENCE
-	rig.mouse_filter = Control.MOUSE_FILTER_PASS
-	add_child(rig)
-	var art := TextureRect.new()
-	art.texture = MASTER
-	art.size = REFERENCE
-	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	art.stretch_mode = TextureRect.STRETCH_SCALE
-	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	rig.add_child(art)
+    _mask_full_background()
+    rig = Control.new()
+    rig.name = "IllustratedRig"
+    rig.size = REFERENCE
+    rig.mouse_filter = Control.MOUSE_FILTER_PASS
+    add_child(rig)
+    var art := TextureRect.new()
+    art.texture = MASTER
+    art.size = REFERENCE
+    art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+    art.stretch_mode = TextureRect.STRETCH_SCALE
+    art.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+    art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+    rig.add_child(art)
 
-	# Cover *baked* unrelated Blackwood content and decorative readouts.
-	# Labels are set from the authoritative Godot save, not CSS browser demo values.
-	_mask(Rect2(485, 91, 670, 45))
-	header_label = _readout(Rect2(497, 92, 647, 42), 21)
-	_mask(Rect2(298, 201, 182, 201))
-	event_label = _readout(Rect2(310, 211, 162, 145), 20)
-	_mask(Rect2(1264, 635, 276, 67))
-	freq_label = _readout(Rect2(1274, 641, 257, 51), 31, true)
-	_mask(Rect2(504, 140, 606, 62), Color(0.002, 0.025, 0.016, 0.91))
-	signal_label = _readout(Rect2(518, 144, 580, 50), 19)
-	feedback_label = _readout(Rect2(310, 360, 162, 37), 14)
+    # The approved 16:9 pixel art is the chassis; gameplay remains in main.gd.
+    # These readouts are recomputed from persisted Godot receiver state.
+    header_label = _readout(Rect2(0, 0, 1, 1), 12)
+    header_label.visible = false
+    event_label = _readout(Rect2(0, 0, 1, 1), 12)
+    event_label.visible = false
+    signal_label = _readout(Rect2(0, 0, 1, 1), 12)
+    signal_label.visible = false
+    feedback_label = _readout(Rect2(281, 163, 870, 30), 17)
+    feedback_label.visible = false
 
-	# Real left-side navigation: 8 pictured buttons, not 6 misaligned zones.
-	# RADIO is also the physical power control. Case Files opens assignments.
-	power_button = _hit("RADIO / POWER", Rect2(100, 164, 166, 50), _power)
-	_hit("CASE FILES / ASSIGNMENTS", Rect2(100, 222, 166, 49), _navigate.bind("Assignments"))
-	_hit("EVIDENCE / ARCHIVE", Rect2(100, 278, 166, 50), _navigate.bind("Archive"))
-	_hit("RECORDINGS", Rect2(100, 335, 166, 49), _navigate.bind("Recordings"))
-	_hit("TIMELINE / CHRONOLOGY", Rect2(100, 392, 166, 49), _open_timeline)
-	_hit("MAP / SITE INDEX", Rect2(100, 449, 166, 49), _open_map)
-	_hit("ARCHIVE", Rect2(100, 507, 166, 49), _navigate.bind("Archive"))
-	_hit("NOTES", Rect2(100, 565, 166, 50), _navigate.bind("Notebook"))
+    # Hide the baked sample frequency only; preserve frame and adjacent buttons.
+    _mask(Rect2(396, 745, 426, 73), Color(0.006, 0.025, 0.018, 1.0))
+    freq_label = _readout(Rect2(409, 752, 396, 59), 39, true)
 
-	# Bottom-center photographed instrument switches.
-	_hit("SEEK / SCAN", Rect2(497, 606, 104, 102), _seek)
-	_hit("HOLD DISPLAY", Rect2(616, 606, 106, 102), _hold)
-	recording_button = _hit("RECORD / STOP", Rect2(729, 606, 111, 102), _record)
-	_hit("MARK CURRENT EVENT", Rect2(850, 606, 109, 102), _mark)
-	_hit("ANALYZE", Rect2(969, 606, 110, 102), _analyze)
+    # Five left icon keys are the radio investigation navigation.
+    power_button = _hit("RADIO / POWER", Rect2(97, 208, 141, 96), _power)
+    _hit("ARCHIVE", Rect2(97, 320, 141, 94), _navigate.bind("Archive"))
+    _hit("RECORDINGS", Rect2(97, 427, 141, 96), _navigate.bind("Recordings"))
+    _hit("ASSIGNMENTS", Rect2(97, 536, 141, 97), _navigate.bind("Assignments"))
+    _hit("NOTEBOOK", Rect2(97, 643, 141, 92), _navigate.bind("Notebook"))
 
-	# The five photographed modulation buttons (not a cycle button elsewhere).
-	for item in [
-		["AM", 630], ["LSB", 655], ["USB", 679],
-		["CW", 704], ["FM", 729]
-	]:
-		_hit("MODE " + String(item[0]), Rect2(310, int(item[1]), 119, 24), _set_mode.bind(String(item[0])))
-	# Right-hand physical tuning steps, matching the labels in the artwork.
-	for entry in [
-		[10000, 381], [1000, 434], [100, 487], [10, 541]
-	]:
-		_hit("STEP " + str(entry[0]) + " Hz", Rect2(1515, int(entry[1]), 93, 45), _set_step.bind(int(entry[0])))
+    # Right column: utility buttons and real receiver actions.
+    _hit("RADIO POWER", Rect2(1258, 214, 120, 93), _power)
+    _hit("SEEK", Rect2(1258, 323, 120, 89), _seek)
+    _hit("ANALYZE", Rect2(1258, 432, 120, 91), _analyze)
+    _hit("RECEIVER SETTINGS", Rect2(1258, 541, 120, 90), _navigate.bind("Settings"))
+    _hit("SCAN", Rect2(1402, 227, 188, 86), _seek)
+    _hit("HOLD", Rect2(1402, 337, 188, 82), _hold)
+    _hit("SIGNAL LOG", Rect2(1402, 440, 188, 85), _navigate.bind("Recordings"))
+    recording_button = _hit("RECORD / STOP", Rect2(1402, 548, 188, 85), _record)
 
-	# On-photo RF/AF/SQUELCH knobs: tap to change their saved simulated
-	# audio controls. Their visible instrument readout reflects each change.
-	_hit("RF GAIN", Rect2(1245, 217, 108, 115), _adjust_knob.bind("rf_gain"))
-	_hit("AF GAIN", Rect2(1360, 217, 106, 115), _adjust_knob.bind("af_gain"))
-	_hit("SQUELCH", Rect2(1494, 217, 109, 115), _adjust_knob.bind("squelch"))
-	_hit("AGC", Rect2(977, 97, 83, 39), _toggle_feature.bind("agc"))
-	_hit("NB", Rect2(1065, 97, 93, 39), _toggle_feature.bind("nb"))
-	for item in [["LIVE", 608], ["HISTORY", 640], ["PEAK", 672], ["AVERAGE", 702]]:
-		_hit("WATERFALL " + String(item[0]), Rect2(1100, int(item[1]), 120, 28), _select_waterfall_mode.bind(String(item[0])))
+    # Bottom hardware tuning arrows and modulation row.
+    _hit("TUNE DOWN", Rect2(295, 747, 91, 80), _tune.bind(-1))
+    _hit("TUNE UP", Rect2(833, 747, 93, 80), _tune.bind(1))
+    for item in [["AM", 970], ["USB", 1080], ["LSB", 1193], ["CW", 1304], ["FM", 1414]]:
+        _hit("MODE " + String(item[0]), Rect2(int(item[1]), 740, 104, 89), _set_mode.bind(String(item[0])))
 
-	# Tuning dial: tap left/right side or swipe/drag to tune. A real touch
-	# drag is handled by gui_input; there are no invisible off-knob +/- zones.
-	var dial := Control.new()
-	dial.name = "TuningDial"
-	dial.position = Vector2(1250, 368)
-	dial.size = Vector2(265, 264)
-	dial.mouse_filter = Control.MOUSE_FILTER_STOP
-	dial.gui_input.connect(_dial_input)
-	rig.add_child(dial)
+    # Original Mk II has no separate step keys. Cycling step is available
+    # from the receiver's lower-left speaker/grille, with tooltip feedback.
+    _hit("CYCLE TUNING STEP", Rect2(93, 745, 171, 90), _cycle_step)
 
-	# An on-radio analysis pane, only when ANALYZE is tapped.
-	analysis_panel = PanelContainer.new()
-	analysis_panel.name = "RadioAnalysis"
-	analysis_panel.position = Vector2(492, 205)
-	analysis_panel.size = Vector2(622, 387)
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.006, 0.039, 0.024, 0.98)
-	style.border_color = Color(0.38, 0.72, 0.50)
-	style.set_border_width_all(3)
-	style.set_content_margin_all(15)
-	analysis_panel.add_theme_stylebox_override("panel", style)
-	rig.add_child(analysis_panel)
-	var contents := VBoxContainer.new()
-	contents.add_theme_constant_override("separation", 10)
-	analysis_panel.add_child(contents)
-	analysis_label = Label.new()
-	analysis_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	analysis_label.custom_minimum_size = Vector2(560, 264)
-	analysis_label.add_theme_color_override("font_color", GREEN)
-	analysis_label.add_theme_font_size_override("font_size", 22)
-	contents.add_child(analysis_label)
-	var actions := HBoxContainer.new()
-	contents.add_child(actions)
-	_action(actions, "PLAY SIGNAL", _play_signal)
-	_action(actions, "READ TEXT", _read_signal)
-	_action(actions, "CLOSE", _close_analysis)
-	analysis_panel.visible = false
-	refresh_from_game()
+    # Analysis stays an in-radio overlay; no separate screen or data fork.
+    analysis_panel = PanelContainer.new()
+    analysis_panel.name = "RadioAnalysis"
+    analysis_panel.position = Vector2(278, 205)
+    analysis_panel.size = Vector2(914, 479)
+    var style := StyleBoxFlat.new()
+    style.bg_color = Color(0.015, 0.025, 0.023, 0.985)
+    style.border_color = Color(0.37, 0.95, 0.43)
+    style.set_border_width_all(4)
+    style.set_content_margin_all(18)
+    analysis_panel.add_theme_stylebox_override("panel", style)
+    rig.add_child(analysis_panel)
+    var contents := VBoxContainer.new()
+    contents.add_theme_constant_override("separation", 12)
+    analysis_panel.add_child(contents)
+    analysis_label = Label.new()
+    analysis_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    analysis_label.custom_minimum_size = Vector2(850, 365)
+    analysis_label.add_theme_color_override("font_color", Color(0.65, 1.0, 0.68))
+    analysis_label.add_theme_font_size_override("font_size", 24)
+    contents.add_child(analysis_label)
+    var actions := HBoxContainer.new()
+    contents.add_child(actions)
+    _action(actions, "PLAY SIGNAL", _play_signal)
+    _action(actions, "READ TEXT", _read_signal)
+    _action(actions, "CLOSE", _close_analysis)
+    analysis_panel.visible = false
+    refresh_from_game()
 
 func _mask_full_background() -> void:
 	var shade := ColorRect.new()
