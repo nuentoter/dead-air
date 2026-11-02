@@ -28,6 +28,19 @@ func _run() -> void:
 	illustration.call("_tune", 1)
 	if not _expect(float(game.data.get("frequency_mhz", 10.0)) > frequency_before, "Illustrated tuner did not modify authoritative game frequency."):
 		return
+	var rig: Node = illustration.get_node_or_null("IllustratedRig")
+	if not _expect(rig != null and rig.get_node_or_null("Hit_MODE_CW") != null and rig.get_node_or_null("Hit_STEP_100_Hz") != null and rig.get_node_or_null("Hit_RECORD__STOP") != null, "Photographed mode/step/record controls are not present or mapped."):
+		return
+	if not _expect(rig.get_node_or_null("Hit_CASE_FILES__ASSIGNMENTS") != null and rig.get_node_or_null("Hit_NOTES") != null, "Left-hand navigation buttons missing."):
+		return
+	illustration.call("_set_step", 10)
+	var fine_tune_before: float = float(game.data.get("frequency_mhz", 10.0))
+	illustration.call("_tune", 1)
+	if not _expect(float(game.data.get("frequency_mhz", 10.0)) > fine_tune_before, "10 Hz fine tuning must not be swallowed by float comparison."):
+		return
+	illustration.call("_set_mode", "CW")
+	if not _expect(String(game.data.get("mode", "")) == "CW", "CW physical mode button did not apply to game state."):
+		return
 	illustration.call("_cycle_mode")
 	if not _expect(String(game.data.get("mode", "AM")) != "AM", "Illustrated mode control did not modify game state."):
 		return
