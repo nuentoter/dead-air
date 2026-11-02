@@ -19,6 +19,18 @@ func _run() -> void:
 		push_error("Retained event direct tuning did not select 14.070 MHz USB")
 		quit(1)
 		return
+	root_game.call("_toggle_session_mark", "SIG-0001")
+	root_game.call("_toggle_session_mark", "SIG-0003")
+	var marks: Array = root_game.get("session_signal_marks")
+	if marks.size() != 2:
+		push_error("Session signal marks were not recorded")
+		quit(1)
+		return
+	root_game.call("_clear_session_marks")
+	if not (root_game.get("session_signal_marks") as Array).is_empty():
+		push_error("Session marks were not cleared")
+		quit(1)
+		return
 	var original_mhz := float(tuning_game.data.get("frequency_mhz", 10.0))
 	root_game.call("_quick_tune", 0.001)
 	if not is_equal_approx(float(tuning_game.data.get("frequency_mhz", 10.0)), original_mhz + 0.001):
