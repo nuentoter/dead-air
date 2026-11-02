@@ -38,12 +38,35 @@ jobs:
           chmod +x Godot_v4.3-stable_linux.x86_64
           sudo mv Godot_v4.3-stable_linux.x86_64 /usr/local/bin/godot
       - name: Import and parse project
-        run: godot --headless --path . --editor --quit
+        shell: bash
+        run: |
+          set -o pipefail
+          timeout 60s godot --headless --path . --editor --quit 2>&1 | tee /tmp/dead-air-import.log
+          if grep -Eq 'SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script' /tmp/dead-air-import.log; then exit 1; fi
       - name: Strict script parse and main-scene smoke test
-        run: godot --headless --path . -s res://tests/parse_project.gd
+        shell: bash
+        run: |
+          set -o pipefail
+          timeout 60s godot --headless --path . -s res://tests/parse_project.gd 2>&1 | tee /tmp/dead-air-parse.log
+          if grep -Eq 'SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script' /tmp/dead-air-parse.log; then exit 1; fi
+          grep -Fq 'DEAD AIR project parse/startup check passed.' /tmp/dead-air-parse.log
       - name: Run UI flow test
-        run: godot --headless --path . -s res://tests/ui_flow_test.gd
+        shell: bash
+        run: |
+          set -o pipefail
+          timeout 60s godot --headless --path . -s res://tests/ui_flow_test.gd 2>&1 | tee /tmp/dead-air-ui.log
+          if grep -Eq 'SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script|ERROR: Assertion failed' /tmp/dead-air-ui.log; then exit 1; fi
+          grep -Fq 'DEAD AIR UI flow test passed:' /tmp/dead-air-ui.log
       - name: Run integrity self-test
-        run: godot --headless --path . -s res://tests/self_test.gd
+        shell: bash
+        run: |
+          set -o pipefail
+          timeout 90s godot --headless --path . -s res://tests/self_test.gd 2>&1 | tee /tmp/dead-air-self.log
+          if grep -Eq 'SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script|ERROR: Assertion failed' /tmp/dead-air-self.log; then exit 1; fi
+          grep -Fq 'DEAD AIR self-test passed:' /tmp/dead-air-self.log
       - name: Check main scene startup
-        run: godot --headless --path . --quit-after 3
+        shell: bash
+        run: |
+          set -o pipefail
+          timeout 30s godot --headless --path . --quit-after 3 2>&1 | tee /tmp/dead-air-startup.log
+          if grep -Eq 'SCRIPT ERROR:|Parse Error:|ERROR: Failed to load script' /tmp/dead-air-startup.log; then exit 1; fi
