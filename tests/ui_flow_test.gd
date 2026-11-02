@@ -33,6 +33,18 @@ func _run() -> void:
 		return
 	if not _expect(rig.get_node_or_null("Hit_CASE_FILES___ASSIGNMENTS") != null and rig.get_node_or_null("Hit_NOTES") != null, "Left-hand navigation buttons missing."):
 		return
+	(rig.get_node("Hit_STEP_100_Hz") as Button).pressed.emit()
+	if not _expect(int(illustration.get("step_hz")) == 100, "STEP 100 Hz hardware switch did not fire."):
+		return
+	(rig.get_node("Hit_MODE_CW") as Button).pressed.emit()
+	if not _expect(String(game.data.get("mode", "")) == "CW", "CW hardware key did not set authoritative receiver mode."):
+		return
+	(rig.get_node("Hit_RECORD___STOP") as Button).pressed.emit()
+	if not _expect(instance.get("monitor_capture").is_recording(), "RECORD hardware button did not activate monitor recording."):
+		return
+	(rig.get_node("Hit_RECORD___STOP") as Button).pressed.emit()
+	if not _expect(not instance.get("monitor_capture").is_recording(), "Second RECORD press did not stop capture."):
+		return
 	illustration.call("_set_step", 10)
 	var fine_tune_before: float = float(game.data.get("frequency_mhz", 10.0))
 	illustration.call("_tune", 1)
