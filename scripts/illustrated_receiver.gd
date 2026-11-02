@@ -19,6 +19,7 @@ var waterfall: Control
 var record_indicator: ColorRect
 var hold_indicator: ColorRect
 var power_button: Button
+var active_lights: Dictionary = {}
 var step_hz := 100
 var hold_display := false
 var waterfall_mode := "LIVE"
@@ -123,6 +124,7 @@ func _build() -> void:
 	_hit("SIGNAL LOG", Rect2(1402, 440, 188, 85), _navigate.bind("Recordings"))
 	recording_button = _hit("RECORD / STOP", Rect2(1402, 548, 188, 85), _record)
 	hold_indicator = _indicator(Rect2(1574, 350, 9, 9))
+	active_lights["POWER"] = _indicator(Rect2(1360, 220, 10, 10))
 	record_indicator = _indicator(Rect2(1574, 566, 9, 9))
 
 	# Bottom hardware tuning arrows and modulation row.
@@ -130,6 +132,7 @@ func _build() -> void:
 	_hit("TUNE UP", Rect2(833, 747, 93, 80), _tune.bind(1))
 	for item in [["AM", 970], ["USB", 1080], ["LSB", 1193], ["CW", 1304], ["FM", 1414]]:
 		_hit("MODE " + String(item[0]), Rect2(int(item[1]), 740, 104, 89), _set_mode.bind(String(item[0])))
+		active_lights[String(item[0])] = _indicator(Rect2(int(item[1]) + 45, 822, 13, 5))
 
 	# Original Mk II has no separate step keys. Cycling step is available
 	# from the receiver's lower-left speaker/grille, with tooltip feedback.
@@ -240,6 +243,9 @@ func refresh_from_game() -> void:
 		waterfall.signal_offset = clampf((event_frequency - freq) * 8.0, -0.38, 0.38)
 		hold_indicator.color = Color(0.25, 1.0, 0.35) if hold_display else Color(0.03, 0.11, 0.04)
 		record_indicator.color = Color(1.0, 0.16, 0.09) if host.monitor_capture.is_recording() else Color(0.03, 0.11, 0.04)
+		for key in active_lights:
+			var active := on if key == "POWER" else key == mode
+			(active_lights[key] as ColorRect).color = Color(0.26, 1.0, 0.40) if active else Color(0.025, 0.09, 0.04)
 	header_label.text = ("RX ON" if on else "RX OFF") + "   SITE 04   " + mode + "   " + _step_name() + " STEP   AGC " + ("ON" if bool(controls.get("agc", true)) else "OFF") + "   NB " + ("ON" if bool(controls.get("nb", true)) else "OFF")
 	freq_label.text = "%.3f MHz" % freq
 	event_label.text = "NRMS  SITE 04\n\nRETAINED RECORD\n" + event_id + "\n" + String(event.get("time_label", "--")) + "\n" + String(event.get("identifier", ""))
