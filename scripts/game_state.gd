@@ -5,6 +5,8 @@ const SAVE_PATH = "user://dead_air_save.json"
 const TEMP_PATH = "user://dead_air_save.tmp"
 const RECOVERY_PATH = "user://dead_air_save.recovery.json"
 const SCHEMA_VERSION = 1
+const RECORDING_BUFFER_SECONDS = 90
+const RECORDING_PRE_ROLL_SECONDS = 30
 
 var data: Dictionary = {}
 var load_notice := ""
@@ -32,6 +34,10 @@ func reset_defaults() -> void:
 		"retained_event_ids": ["SIG-0001", "SIG-0002", "SIG-0003", "SIG-0004", "SIG-0005"],
 		"inspected_event_ids": [],
 		"recorded_event_ids": [],
+		"recording_records": [],
+		"next_recording_id": 1,
+		"ending_disposition": "",
+		"ending_history": [],
 		"documents_read": [],
 		"notes": [],
 		"reports": [],
@@ -74,7 +80,7 @@ func _ensure_defaults() -> void:
 	var defaults := {
 		"current_section": "Receiver", "receiver_power": false, "frequency_mhz": 10.0,
 		"mode": "AM", "selected_event_id": "SIG-0001", "retained_event_ids": [],
-		"inspected_event_ids": [], "recorded_event_ids": [], "documents_read": [], "notes": [], "reports": [],
+		"inspected_event_ids": [], "recorded_event_ids": [], "recording_records": [], "next_recording_id": 1, "ending_disposition": "", "ending_history": [], "documents_read": [], "notes": [], "reports": [],
 		"assignments": {}, "messages_seen": [], "settings": {"text_scale": 1.0, "audio_enabled": true, "speech_rate": 1.0},
 		"event_log": [], "next_note_id": 1, "next_report_id": 1,
 		"note_draft": "", "note_draft_classification": "UNCLASSIFIED", "communications_comparison_reviewed": false, "report_draft": "The retained records establish a repeated identifier and conflicting chronology. The available material does not establish a common transmitter or explain the source-clock difference.",
@@ -193,10 +199,56 @@ func complete_communications_comparison() -> bool:
 	return true
 
 func record_event(event_id: String) -> void:
-	if not data["recorded_event_ids"].has(event_id):
-		data["recorded_event_ids"].append(event_id)
-		log_event("Manual recording created for " + event_id + ". Automatic retention remains a separate provenance state.")
+	# No claim of live captured PCM: this prototype saves a manual excerpt annotation
+	# of an already retained authored event. Its institutional source remains intact.
+	if not data["retained_event_ids"].has(event_id):
+		return
+	if data["recorded_event_ids"].has(event_id):
+		return
+	data["recorded_event_ids"].append(event_id)
+	var record_id := "REC-%04d" % int(data["next_recording_id"])
+	data["next_recording_id"] = int(data["next_recording_id"]) + 1
+	data["recording_records"].append({
+		"id": record_id, "event_id": event_id,
+		"source_type": "PLAYER EXCERPT ANNOTATION",
+		"original_source_type": "INSTITUTIONAL RETAINED EVENT",
+		"audio_capture_status": "NOT RECORDED AS PCM",
+		"pre_roll_seconds": 0,
+		"recording_policy": "90s active-channel buffer / optional 30s pre-roll (future live capture)",
+		"provenance_note": "Manual selection of retained authored event; not an independently captured transmission."
+	})
+	log_event("Manual excerpt annotation " + record_id + " filed for " + event_id + ". Original institutional record unchanged.")
 	save_game()
+
+func choose_ending(disposition: String) -> bool:
+	if not ["CLOSURE", "PRESERVATION", "DISCLOSURE"].has(disposition):
+		return false
+	if data.get("reports", []).is_empty():
+		return false
+	if not String(data.get("ending_disposition", "")).is_empty():
+		return false
+	var record := {
+		"id": "END-0001", "disposition": disposition,
+		"case_status": "UNRESOLVED",
+		"report_id": String(data["reports"][0].get("id", "")),
+		"evidence_ids": ["M-02", "M-05", "M-07", "M-08", "M-09"],
+		"note": "An administrative decision; does not prove source, clock basis, or cause."
+	}
+	data["ending_disposition"] = disposition
+	data["ending_history"].append(record)
+	log_event("Final administrative disposition filed: " + disposition + ". Source remains unresolved.")
+	save_game()
+	return true
+
+func ending_epilogue() -> String:
+	match String(data.get("ending_disposition", "")):
+		"CLOSURE":
+			return "The work order is closed. The originals remain in the archive. The discrepancy has not been reconciled."
+		"PRESERVATION":
+			return "Copies and provenance are retained for review. No source attribution or common clock basis is verified."
+		"DISCLOSURE":
+			return "An independent-review request is logged for transmission outside routine channels. Receipt and interpretation are not confirmed."
+	return ""
 
 func add_note(text_value: String, source_id: String = "", classification: String = "UNCLASSIFIED") -> void:
 	var trimmed := text_value.strip_edges()
