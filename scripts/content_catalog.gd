@@ -131,6 +131,86 @@ Receipt confirms that a package or record was indexed here; it does not establis
 Received. No verified registered-station link is established by the material available to this office. The chronology question remains open pending source-clock documentation.
 
 The report is accepted for filing; this acceptance does not confirm the underlying event."""
+	},
+	{
+		"id": "SS-01", "title": "Silent Site — Closure Notice", "source": "Records Index",
+		"claimed_event_time": "Not verified", "clock_basis": "Not established",
+		"status": "OPTIONAL", "version": 1, "essential": false, "related_ids": ["SS-02"],
+		"body": """SILENT SITE — CLOSURE NOTICE
+
+Closure completed; transfer described as complete. The notice does not itemize final operational logs.
+
+Evidence limit: This record does not establish deliberate destruction, the location of missing logs, or a connection to NR-041."""
+	},
+	{
+		"id": "SS-02", "title": "Silent Site — Equipment Receipt", "source": "Regional Equipment Desk",
+		"claimed_event_time": "Not verified", "clock_basis": "Not established",
+		"status": "OPTIONAL", "version": 1, "essential": false, "related_ids": ["SS-03"],
+		"body": """SILENT SITE — EQUIPMENT RECEIPT
+
+Equipment transfer marked received. Inventory lists equipment and administrative materials; the final monitoring logs are not listed.
+
+Evidence limit: This record does not establish deliberate destruction, the location of missing logs, or a connection to NR-041."""
+	},
+	{
+		"id": "SS-03", "title": "Silent Site — Partial Operations Index", "source": "Site Records Registry",
+		"claimed_event_time": "Not verified", "clock_basis": "Not established",
+		"status": "OPTIONAL", "version": 1, "essential": false, "related_ids": ["SS-04"],
+		"body": """SILENT SITE — PARTIAL OPERATIONS INDEX
+
+Operational log index incomplete. Final shift entries are absent from the supplied index. No exception report is attached.
+
+Evidence limit: This record does not establish deliberate destruction, the location of missing logs, or a connection to NR-041."""
+	},
+	{
+		"id": "SS-04", "title": "Silent Site — Neighboring Station Excerpt", "source": "Neighboring Monitoring Station",
+		"claimed_event_time": "Not verified", "clock_basis": "Not established",
+		"status": "OPTIONAL", "version": 1, "essential": false, "related_ids": ["SS-05"],
+		"body": """SILENT SITE — NEIGHBORING STATION EXCERPT
+
+Incomplete received audio transcript: '...going back to the site...' No dependable attribution, subject, or full context retained.
+
+Evidence limit: This record does not establish deliberate destruction, the location of missing logs, or a connection to NR-041."""
+	},
+	{
+		"id": "SS-05", "title": "Silent Site — Transfer Dispatch", "source": "Site Transfer Office",
+		"claimed_event_time": "Not verified", "clock_basis": "Not established",
+		"status": "OPTIONAL", "version": 1, "essential": false, "related_ids": ["SS-06"],
+		"body": """SILENT SITE — TRANSFER DISPATCH
+
+Package dispatch logged to Regional Operations. The copy lacks an itemized inventory and verified receiving signature.
+
+Evidence limit: This record does not establish deliberate destruction, the location of missing logs, or a connection to NR-041."""
+	},
+	{
+		"id": "SS-06", "title": "Silent Site — Regional Receipt Index", "source": "Regional Operations",
+		"claimed_event_time": "Not verified", "clock_basis": "Not established",
+		"status": "OPTIONAL", "version": 1, "essential": false, "related_ids": ["SS-07"],
+		"body": """SILENT SITE — REGIONAL RECEIPT INDEX
+
+Receipt index lists a package with partially legible initials. Contents not verified by the index. Receipt is not an itemized chain of custody.
+
+Evidence limit: This record does not establish deliberate destruction, the location of missing logs, or a connection to NR-041."""
+	},
+	{
+		"id": "SS-07", "title": "Silent Site — Continuity Unit Stamp", "source": "Former Records Continuity Unit",
+		"claimed_event_time": "Not verified", "clock_basis": "Not established",
+		"status": "OPTIONAL", "version": 1, "essential": false, "related_ids": ["SS-08"],
+		"body": """SILENT SITE — CONTINUITY UNIT STAMP
+
+Obsolete Records Continuity Unit marking appears in an attached administrative copy. The stamp does not establish who handled the missing logs or when.
+
+Evidence limit: This record does not establish deliberate destruction, the location of missing logs, or a connection to NR-041."""
+	},
+	{
+		"id": "SS-08", "title": "Silent Site — Final Disposition Notice", "source": "Records Retention Office",
+		"claimed_event_time": "Not verified", "clock_basis": "Not established",
+		"status": "OPTIONAL", "version": 1, "essential": false, "related_ids": ["SS-01"],
+		"body": """SILENT SITE — FINAL DISPOSITION NOTICE
+
+Standard retention policy cited. Package unavailable for retrieval; no itemized disposal record supplied. Disposition remains an administrative finding; fate of final logs unknown.
+
+Evidence limit: This record does not establish deliberate destruction, the location of missing logs, or a connection to NR-041."""
 	}
 ]
 
