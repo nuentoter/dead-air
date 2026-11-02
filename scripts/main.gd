@@ -108,7 +108,7 @@ func _ready() -> void:
 	_setup_receiver_audio()
 	game = GameState.new()
 	audio_enabled = bool(game.data.get("settings", {}).get("audio_enabled", true))
-	receiver_audio.volume_db = -25.0 if audio_enabled else -80.0
+	receiver_audio.volume_db = _receiver_volume_db() if audio_enabled else -80.0
 	if not String(game.load_notice).is_empty():
 		status_message = String(game.load_notice)
 	_build_shell()
@@ -139,6 +139,24 @@ func _return_to_illustrated_receiver() -> void:
 func _process(_delta: float) -> void:
 	_update_receiver_audio()
 
+func _receiver_volume_db() -> float:
+	if game == null:
+		return -25.0
+	var controls: Dictionary = game.data.get("receiver_controls", {})
+	return -55.0 + clampf(float(controls.get("af_gain", 55)), 0.0, 100.0) * 0.55
+
+func _set_receiver_control(name: String, value: Variant) -> void:
+	if not ["rf_gain", "af_gain", "squelch", "agc", "nb"].has(name):
+		return
+	var controls: Dictionary = game.data.get("receiver_controls", {}).duplicate(true)
+	if ["agc", "nb"].has(name):
+		controls[name] = bool(value)
+	else:
+		controls[name] = clampi(int(value), 0, 100)
+	game.data["receiver_controls"] = controls
+	receiver_audio.volume_db = _receiver_volume_db() if audio_enabled else -80.0
+	game.save_game()
+
 func _setup_receiver_audio() -> void:
 	receiver_audio = AudioStreamPlayer.new()
 	var generator := AudioStreamGenerator.new()
@@ -164,7 +182,11 @@ func _update_receiver_audio() -> void:
 	var buffer := PackedVector2Array()
 	buffer.resize(frames)
 	for i in range(frames):
-		var noise := randf_range(-1.0, 1.0) * 0.16
+		var controls: Dictionary = game.data.get("receiver_controls", {})
+		var rf_gain := clampf(float(controls.get("rf_gain", 55)), 0.0, 100.0) / 55.0
+		var squelch := clampf(float(controls.get("squelch", 20)), 0.0, 100.0)
+		var nb_factor := 0.76 if bool(controls.get("nb", true)) else 1.0
+		var noise := randf_range(-1.0, 1.0) * 0.16 * rf_gain * nb_factor * (1.0 - squelch / 120.0)
 		audio_phase += 2.0 * PI * 73.0 / 22050.0
 		var hum := sin(audio_phase) * 0.018
 		var sample := clampf(noise + hum, -0.2, 0.2)
@@ -563,7 +585,7 @@ func _stop_audio() -> void:
 
 func _toggle_audio() -> void:
 	audio_enabled = not audio_enabled
-	receiver_audio.volume_db = -25.0 if audio_enabled else -80.0
+	receiver_audio.volume_db = _receiver_volume_db() if audio_enabled else -80.0
 	if not audio_enabled and speech_player != null:
 		speech_player.stop()
 	game.data["settings"]["audio_enabled"] = audio_enabled
