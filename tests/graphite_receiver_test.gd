@@ -26,6 +26,18 @@ func _run() -> void:
 		push_error("Session signal marks were not recorded")
 		quit(1)
 		return
+	var notes_before: int = tuning_game.data.get("notes", []).size()
+	root_game.call("_save_comparison_note")
+	var saved_notes: Array = tuning_game.data.get("notes", [])
+	if saved_notes.size() != notes_before + 1:
+		push_error("Comparison did not create an investigator note")
+		quit(1)
+		return
+	var comparison_note: Dictionary = saved_notes[-1]
+	if String(comparison_note.get("classification", "")) != "WORKING HYPOTHESIS" or not String(comparison_note.get("text", "")).contains("SIG-0003"):
+		push_error("Comparison note lost its classification or source detail")
+		quit(1)
+		return
 	root_game.call("_clear_session_marks")
 	if not (root_game.get("session_signal_marks") as Array).is_empty():
 		push_error("Session marks were not cleared")
