@@ -29,36 +29,25 @@ func _run() -> void:
 	if not _expect(float(game.data.get("frequency_mhz", 10.0)) > frequency_before, "Illustrated tuner did not modify authoritative game frequency."):
 		return
 	var rig: Node = illustration.get_node_or_null("IllustratedRig")
-	if not _expect(rig != null and rig.get_node_or_null("Hit_MODE_CW") != null and rig.get_node_or_null("Hit_STEP_100_Hz") != null and rig.get_node_or_null("Hit_RECORD___STOP") != null, "Photographed mode/step/record controls are not present or mapped."):
+	# The graphite receiver uses push-buttons instead of the retired hardware knobs.
+	if not _expect(rig != null and rig.get_node_or_null("LiveWaterfall") != null and rig.get_node_or_null("Hit_MODE_CW") != null and rig.get_node_or_null("Hit_RECORD___STOP") != null, "Graphite radio controls and waterfall missing."):
 		return
-	if not _expect(rig.get_node_or_null("Hit_CASE_FILES___ASSIGNMENTS") != null and rig.get_node_or_null("Hit_NOTES") != null, "Left-hand navigation buttons missing."):
-		return
-	(rig.get_node("Hit_RF_GAIN") as Button).pressed.emit()
-	if not _expect(int(game.data.get("receiver_controls", {}).get("rf_gain", 0)) == 65, "RF hardware knob was not connected to game state."):
-		return
-	(rig.get_node("Hit_AF_GAIN") as Button).pressed.emit()
-	if not _expect(int(game.data.get("receiver_controls", {}).get("af_gain", 0)) == 65, "AF hardware knob was not connected to game state."):
-		return
-	(rig.get_node("Hit_SQUELCH") as Button).pressed.emit()
-	if not _expect(int(game.data.get("receiver_controls", {}).get("squelch", 0)) == 30, "Squelch hardware knob was not connected to game state."):
-		return
-	(rig.get_node("Hit_AGC") as Button).pressed.emit()
-	if not _expect(not bool(game.data.get("receiver_controls", {}).get("agc", true)), "AGC hardware toggle was not connected."):
-		return
-	(rig.get_node("Hit_WATERFALL_PEAK") as Button).pressed.emit()
-	if not _expect(String(illustration.get("waterfall_mode")) == "PEAK", "Waterfall hardware mode switch was not connected."):
-		return
-	(rig.get_node("Hit_STEP_100_Hz") as Button).pressed.emit()
-	if not _expect(int(illustration.get("step_hz")) == 100, "STEP 100 Hz hardware switch did not fire."):
+	if not _expect(rig.get_node_or_null("Hit_ASSIGNMENTS") != null and rig.get_node_or_null("Hit_NOTEBOOK") != null, "Graphite navigation buttons missing."):
 		return
 	(rig.get_node("Hit_MODE_CW") as Button).pressed.emit()
-	if not _expect(String(game.data.get("mode", "")) == "CW", "CW hardware key did not set authoritative receiver mode."):
+	if not _expect(String(game.data.get("mode", "")) == "CW", "CW mode key did not update the receiver."):
+		return
+	(rig.get_node("Hit_HOLD") as Button).pressed.emit()
+	if not _expect(bool(illustration.get("hold_display")), "HOLD key failed."):
+		return
+	(rig.get_node("Hit_HOLD") as Button).pressed.emit()
+	if not _expect(not bool(illustration.get("hold_display")), "HOLD key failed to release."):
 		return
 	(rig.get_node("Hit_RECORD___STOP") as Button).pressed.emit()
-	if not _expect(instance.get("monitor_capture").is_recording(), "RECORD hardware button did not activate monitor recording."):
+	if not _expect(instance.get("monitor_capture").is_recording(), "Recording button did not start capture."):
 		return
 	(rig.get_node("Hit_RECORD___STOP") as Button).pressed.emit()
-	if not _expect(not instance.get("monitor_capture").is_recording(), "Second RECORD press did not stop capture."):
+	if not _expect(not instance.get("monitor_capture").is_recording(), "Recording button did not stop capture."):
 		return
 	illustration.call("_set_step", 10)
 	var fine_tune_before: float = float(game.data.get("frequency_mhz", 10.0))
