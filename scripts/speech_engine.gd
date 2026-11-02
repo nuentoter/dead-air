@@ -72,7 +72,7 @@ static func synthesize(source_text: String, speed: float = 1.0, pitch: float = 1
 				sample = fundamental + formant_a + formant_b + formant_c
 			if fricative:
 				var noise_seed := sin(float(write_index) * 12.9898 + f2) * 43758.5453
-				var noise_value := (noise_seed - floor(noise_seed)) * 2.0 - 1.0
+				var noise_value: float = (noise_seed - floor(noise_seed)) * 2.0 - 1.0
 				sample = noise_value * 0.20
 			pcm.encode_s16(write_index * 2, int(round(clampf(sample * edge * 0.72, -0.85, 0.85) * 32767.0)))
 			write_index += 1
