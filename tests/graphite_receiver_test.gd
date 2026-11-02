@@ -28,6 +28,11 @@ func _run() -> void:
 			push_error("Missing receiver control: " + control_name)
 			quit(1)
 			return
+	var plot: Control = rig.get_node("LiveWaterfall")
+	if plot.get("rows") == null or int(plot.get("COLS")) != 128:
+		push_error("Waterfall renderer was not initialized")
+		quit(1)
+		return
 	var game = root_game.get("game")
 	if not bool(game.data.get("receiver_power", false)):
 		receiver.call("_power")
