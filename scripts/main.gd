@@ -4,6 +4,7 @@ const Catalog = preload("res://scripts/content_catalog.gd")
 const GameState = preload("res://scripts/game_state.gd")
 const SpeechEngine = preload("res://scripts/speech_engine.gd")
 const SignalAudioEngine = preload("res://scripts/signal_audio_engine.gd")
+const CaptureEngine = preload("res://scripts/receiver_capture.gd")
 
 const SECTIONS = ["Receiver", "Recordings", "Archive", "Notebook", "Assignments", "Messages"]
 const REPORT_SOURCE_OPTIONS := ["SIG-0004", "SIG-0005", "M-02", "M-05", "M-06A", "M-07", "M-08", "M-09"]
@@ -78,6 +79,7 @@ class WaterfallPlot extends Control:
 			draw_line(Vector2(x, maxf(plot_rect.position.y, y - 4.0)), Vector2(x, minf(plot_rect.end.y, y + 4.0)), trace_color, 2.0)
 
 var game
+var monitor_capture = CaptureEngine.new()
 var root_column: VBoxContainer
 var body: VBoxContainer
 var status_label: Label
@@ -104,6 +106,7 @@ func _ready() -> void:
 	_setup_receiver_audio()
 	game = GameState.new()
 	audio_enabled = bool(game.data.get("settings", {}).get("audio_enabled", true))
+	receiver_audio.volume_db = -25.0 if audio_enabled else -80.0
 	if not String(game.load_notice).is_empty():
 		status_message = String(game.load_notice)
 	_build_shell()
@@ -127,7 +130,7 @@ func _setup_receiver_audio() -> void:
 	add_child(speech_player)
 
 func _update_receiver_audio() -> void:
-	if audio_playback == null or not audio_enabled or game == null:
+	if audio_playback == null or game == null:
 		return
 	if not bool(game.data.get("receiver_power", false)):
 		return
@@ -142,11 +145,13 @@ func _update_receiver_audio() -> void:
 		var hum := sin(audio_phase) * 0.018
 		var sample := clampf(noise + hum, -0.2, 0.2)
 		buffer[i] = Vector2(sample, sample)
+	monitor_capture.ingest(buffer, float(game.data.get("frequency_mhz", 10.0)), String(game.data.get("mode", "AM")))
 	audio_playback.push_buffer(buffer)
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_PAUSED or what == NOTIFICATION_WM_CLOSE_REQUEST:
 		if game != null:
+			_finish_monitor_recording("INTERRUPTED_APP_PAUSE")
 			game.save_game()
 
 func _build_shell() -> void:
@@ -387,6 +392,14 @@ func _draw_receiver() -> void:
 	frequency_spin.value_changed.connect(_on_frequency_changed)
 	mode_select.item_selected.connect(_on_mode_changed)
 
+	var capture_row := _row()
+	if monitor_capture.is_recording():
+		_button("STOP MONITOR RECORDING", _stop_monitor_recording, capture_row)
+		_add_text("Recording synthetic monitor PCM; channel changes or app pause finalize as interrupted.", 12, WARNING, capture_row)
+	else:
+		var start_button := _button("RECORD MONITOR (+30s PRE-ROLL)", _start_monitor_recording, capture_row)
+		start_button.disabled = not bool(game.data.get("receiver_power", false))
+		_add_text("Buffered: %.1fs / 90s. No microphone or RF input." % monitor_capture.buffered_seconds(), 12, MUTED, capture_row)
 	var live_state := "RX ON" if bool(game.data.get("receiver_power", false)) else "RX OFF — retained events remain available"
 	_add_text(live_state, 13, ACCENT if bool(game.data.get("receiver_power", false)) else WARNING)
 	_draw_waterfall()
@@ -520,6 +533,7 @@ func _stop_audio() -> void:
 
 func _toggle_audio() -> void:
 	audio_enabled = not audio_enabled
+	receiver_audio.volume_db = -25.0 if audio_enabled else -80.0
 	if not audio_enabled and speech_player != null:
 		speech_player.stop()
 	game.data["settings"]["audio_enabled"] = audio_enabled
@@ -529,18 +543,28 @@ func _toggle_audio() -> void:
 
 func _toggle_receiver() -> void:
 	var next_power := not bool(game.data.get("receiver_power", false))
+	if not next_power:
+		_finish_monitor_recording("INTERRUPTED_RX_OFF")
+		monitor_capture.retune(-1.0, "")
 	game.set_receiver(next_power, float(game.data.get("frequency_mhz", 10.0)), String(game.data.get("mode", "AM")))
 	status_message = "Receiver powered on. Retained events are unchanged." if next_power else "Receiver powered off. Archive and retained events remain available."
 	game.log_event(status_message)
 	_refresh()
 
 func _on_frequency_changed(value: float) -> void:
+	if not is_equal_approx(float(game.data.get("frequency_mhz", 10.0)), value):
+		_finish_monitor_recording("INTERRUPTED_TUNE")
+		monitor_capture.retune(value, String(game.data.get("mode", "AM")))
 	game.data["frequency_mhz"] = value
 	game.save_game()
 
 func _on_mode_changed(index: int) -> void:
 	if mode_select != null:
-		game.data["mode"] = mode_select.get_item_text(index)
+		var new_mode := mode_select.get_item_text(index)
+		if new_mode != String(game.data.get("mode", "AM")):
+			_finish_monitor_recording("INTERRUPTED_TUNE")
+			monitor_capture.retune(float(game.data.get("frequency_mhz", 10.0)), new_mode)
+		game.data["mode"] = new_mode
 		game.save_game()
 
 func _apply_receiver_settings() -> void:
@@ -550,6 +574,9 @@ func _apply_receiver_settings() -> void:
 		frequency = frequency_spin.value
 	if mode_select != null:
 		mode = mode_select.get_item_text(mode_select.selected)
+	if not is_equal_approx(float(game.data.get("frequency_mhz", 10.0)), frequency) or String(game.data.get("mode", "AM")) != mode:
+		_finish_monitor_recording("INTERRUPTED_TUNE")
+		monitor_capture.retune(frequency, mode)
 	game.set_receiver(bool(game.data.get("receiver_power", false)), frequency, mode)
 	status_message = "Receiver settings saved: %.3f MHz / %s." % [frequency, mode]
 	_refresh()
@@ -565,6 +592,7 @@ func _seek_next() -> void:
 		if String(Catalog.EVENTS[i].get("id", "")) == current_id:
 			current_index = i
 			break
+	_finish_monitor_recording("INTERRUPTED_TUNE")
 	var next_index := (current_index + 1) % Catalog.EVENTS.size()
 	var event: Dictionary = Catalog.EVENTS[next_index]
 	game.select_event(String(event.get("id", "")))
@@ -577,6 +605,55 @@ func _select_event(event_id: String) -> void:
 	var event := _find_event(event_id)
 	if not event.is_empty():
 		status_message = "Opened retained event " + event_id + "."
+	_refresh()
+
+func _start_monitor_recording() -> void:
+	if not bool(game.data.get("receiver_power", false)):
+		status_message = "Power on the receiver to record local monitor audio."
+	elif monitor_capture.start(true):
+		status_message = "Synthetic monitor recording started with up to 30 seconds of pre-roll. Channel changes will finalize the clip."
+	else:
+		status_message = "Monitor recording is already active."
+	_refresh()
+
+func _finish_monitor_recording(capture_status: String) -> void:
+	if not monitor_capture.is_recording():
+		return
+	var result: Dictionary = monitor_capture.stop()
+	if int(result.get("samples", 0)) == 0:
+		status_message = "No monitor samples were available; no empty recording was filed."
+		return
+	var record: Dictionary = game.add_pcm_capture(result.get("pcm", PackedByteArray()), int(result.get("sample_rate", 22050)), float(result.get("frequency_mhz", 10.0)), String(result.get("mode", "AM")), int(result.get("pre_roll_samples", 0)), capture_status)
+	if record.is_empty():
+		status_message = "Monitor capture could not be saved. Check local storage."
+	else:
+		status_message = String(record.get("id", "")) + " filed as local synthetic monitor PCM (" + capture_status + ")."
+
+func _stop_monitor_recording() -> void:
+	_finish_monitor_recording("COMPLETE")
+	_refresh()
+
+func _play_monitor_capture(path: String) -> void:
+	if not audio_enabled:
+		status_message = "Audio muted. Turn audio on to play synthetic monitor clips."
+	elif not path.begins_with("user://captures/"):
+		status_message = "Invalid local monitor capture path."
+	elif not FileAccess.file_exists(path):
+		status_message = "PCM clip not found in local storage. Metadata remains retained."
+	else:
+		var pcm: PackedByteArray = FileAccess.get_file_as_bytes(path)
+		if pcm.is_empty():
+			status_message = "PCM clip is empty."
+		else:
+			var wav := AudioStreamWAV.new()
+			wav.format = AudioStreamWAV.FORMAT_16_BITS
+			wav.mix_rate = 22050
+			wav.stereo = false
+			wav.data = pcm
+			speech_player.stop()
+			speech_player.stream = wav
+			speech_player.play()
+			status_message = "Playing locally generated monitor clip. This is not an archived transmission."
 	_refresh()
 
 func _record_selected_event(event_id: String) -> void:
@@ -592,6 +669,14 @@ func _open_recordings(event_id: String) -> void:
 
 func _draw_recordings() -> void:
 	_heading("RECORDINGS", "Institutional retained events remain available while the receiver is off.")
+	_add_text("MONITOR AUDIO CLIPS (LOCAL SYNTHETIC PCM)", 14, ACCENT)
+	for capture_record in game.data.get("recording_records", []):
+		if String(capture_record.get("source_type", "")) != "PLAYER SYNTHETIC MONITOR AUDIO":
+			continue
+		var capture_row := _row()
+		_add_text("%s  /  %.3f MHz %s  /  %.1fs  /  %s" % [String(capture_record.get("id", "")), float(capture_record.get("frequency_mhz", 0.0)), String(capture_record.get("mode", "")), float(capture_record.get("duration_seconds", 0.0)), String(capture_record.get("audio_capture_status", ""))], 12, MUTED, capture_row)
+		_button("PLAY PCM", _play_monitor_capture.bind(String(capture_record.get("audio_path", ""))), capture_row)
+	_add_text("These recordings contain the procedurally generated receiver hiss/tone only, not the separately played authored transmission. Live transmission mixing is not implemented.", 12, WARNING)
 	_add_text("Current prototype: MANUAL RECORD files a player excerpt annotation, not a new PCM capture. The active-channel 90-second buffer and 30-second pre-roll are approved design targets, not yet live capture controls.", 12, WARNING)
 	for event in Catalog.EVENTS:
 		var event_id := String(event.get("id", ""))
