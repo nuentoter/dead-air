@@ -60,3 +60,12 @@
 - Optional Silent Site documents SS-01–SS-08 are available in the archive as a separate unresolved records chain; no established link to NR-041 or proof of destruction.
 - Regression checks now cover report-end disposition, save persistence, manual excerpt provenance, and the ending UI; consult CI for the actual outcome.
 - **Still outstanding:** live rolling audio buffer/pre-roll and interruptions, full simulated shift clock, additional later-story authored content, full ending scene treatment, actual Android device usability/lifecycle checks, and release signing. Never describe these as complete.
+
+## Follow-up: synthetic receiver monitor capture (November 2026)
+- Added `scripts/receiver_capture.gd`: in-memory rolling 90-second **active tuned channel** PCM16 buffer, mono 22.05 kHz. A manual capture optionally includes up to 30 seconds of existing buffer, followed by newly generated monitor audio.
+- Added `RECORD MONITOR (+30s PRE-ROLL)` and `STOP MONITOR RECORDING` on the Receiver panel, plus replay of stored `user://captures/REC-xxxx.pcm` clips under Recordings. Capture duration, pre-roll, tuned frequency/mode, interruption status, and an explicit source label are saved.
+- Retuning, seeking, receiver power-off, and application pause finalize active captures as interrupted. The short rolling buffer itself is volatile and cleared on channel change.
+- No audio data is transmitted; no microphone, SDR, or internet dependency is added.
+- **Scope/limitation:** Monitor captures record only generated receiver hiss/tone at present; separately played authored Morse/voice/data signal clips are **not** mixed into the recorded monitor stream. Preexisting retained institutional story events are unchanged and remain recoverable. These captures cannot be offered as evidence of an actual off-air transmission.
+- **Persistence limitation:** A hard process kill before a pause/stop callback may lose the currently active, unfinalized PCM buffer. Existing completed clips remain on disk.
+- Automated integrity tests cover pre-roll, retune buffer invalidation, file storage, and provenance; the exact CI result must be checked per commit. Actual physical-device playback and lifecycle reliability remain unverified.
