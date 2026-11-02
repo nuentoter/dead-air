@@ -36,8 +36,18 @@ var _dial_down := false
 var _dial_dragged := false
 var _dial_total := 0.0
 
+func artwork_diagnostic() -> String:
+	if artwork == null:
+		return "Receiver artwork node missing"
+	if artwork.texture == null:
+		return "Receiver artwork texture missing from APK"
+	var dimensions := artwork.texture.get_size()
+	if dimensions.x <= 0.0 or dimensions.y <= 0.0:
+		return "Receiver artwork dimensions invalid: " + str(dimensions)
+	return "READY " + str(dimensions)
+
 func is_artwork_ready() -> bool:
-	return artwork != null and artwork.texture != null and artwork.texture.get_width() > 0 and artwork.texture.get_height() > 0
+	return artwork != null and artwork.texture != null and artwork.texture.get_size().x > 0.0 and artwork.texture.get_size().y > 0.0
 
 func _exit_illustration() -> void:
 	host._on_nav_pressed("Receiver")
