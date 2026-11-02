@@ -13,6 +13,11 @@ func _run() -> void:
 	root.add_child(root_game)
 	await process_frame
 	root_game.call("_on_nav_pressed", "Receiver")
+	if bool(root_game.get("illustrated_receiver").visible):
+		push_error("Receiver tab should open safe standard receiver.")
+		quit(1)
+		return
+	root_game.call("_return_to_illustrated_receiver")
 	var receiver: Control = root_game.get_node_or_null("IllustratedReceiver")
 	if receiver == null:
 		push_error("Receiver not mounted")
@@ -23,7 +28,7 @@ func _run() -> void:
 		push_error("Graphite chassis not mounted")
 		quit(1)
 		return
-	for control_name in ["LiveWaterfall", "Hit_MODE_USB", "Hit_MODE_CW", "Hit_TUNE_DOWN", "Hit_TUNE_UP", "Hit_RECORD___STOP", "Hit_HOLD", "Hit_SCAN", "Hit_ARCHIVE", "Hit_NOTEBOOK", "Hit_TUNING_STEP"]:
+	for control_name in ["LiveWaterfall", "Hit_MODE_USB", "Hit_MODE_CW", "Hit_TUNE_DOWN", "Hit_TUNE_UP", "Hit_RECORD___STOP", "Hit_HOLD", "Hit_SCAN", "Hit_ARCHIVE", "Hit_NOTEBOOK", "Hit_TUNING_STEP", "ExitIllustration"]:
 		if rig.get_node_or_null(control_name) == null:
 			push_error("Missing receiver control: " + control_name)
 			quit(1)
