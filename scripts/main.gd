@@ -718,7 +718,43 @@ func _draw_session_signal_comparison() -> void:
 		var separation_khz := absf(float(a.get("frequency_mhz", 0.0)) - float(b.get("frequency_mhz", 0.0))) * 1000.0
 		_add_text("First pair: %.1f kHz apart | same mode: %s" % [separation_khz, "YES" if String(a.get("mode", "")) == String(b.get("mode", "")) else "NO"], 12, ACCENT)
 		_add_text("Displayed times may use different date bases. Do not infer simultaneity.", 11, WARNING)
-	_button("CLEAR SESSION MARKS", _clear_session_marks)
+	var comparison_actions := _row()
+	_button("SAVE AS INVESTIGATOR NOTE", _save_comparison_note, comparison_actions)
+	_button("CLEAR MARKS", _clear_session_marks, comparison_actions)
+
+func _save_comparison_note() -> void:
+	if session_signal_marks.size() < 2:
+		status_message = "Mark at least two valid signals to save a comparison."
+		_refresh()
+		return
+	var valid: Array[Dictionary] = []
+	for event_id in session_signal_marks:
+		var event: Dictionary = _find_event(event_id)
+		if not event.is_empty():
+			valid.append(event)
+	if valid.size() < 2:
+		status_message = "At least two valid retained signals are required."
+		_refresh()
+		return
+	var lines: PackedStringArray = PackedStringArray([
+		"INVESTIGATOR COMPARISON — WORKING HYPOTHESIS",
+		"These are player-selected retained records, not proof of common source or simultaneity."
+	])
+	for event in valid:
+		lines.append("%s | %.3f MHz | %s | displayed time %s | basis %s | %s" % [
+			String(event.get("id", "")),
+			float(event.get("frequency_mhz", 0.0)),
+			String(event.get("mode", "")),
+			String(event.get("time_label", "unknown")),
+			String(event.get("time_basis", "unknown")),
+			String(event.get("kind", "unknown"))
+		])
+	var separation_khz := absf(float(valid[0].get("frequency_mhz", 0.0)) - float(valid[1].get("frequency_mhz", 0.0))) * 1000.0
+	lines.append("First pair separation: %.1f kHz. Mode match: %s." % [separation_khz, "yes" if String(valid[0].get("mode", "")) == String(valid[1].get("mode", "")) else "no"])
+	lines.append("Interpretation pending. Different date/time bases cannot be assumed to align.")
+	game.add_note("\n".join(lines), "", "WORKING HYPOTHESIS")
+	status_message = "Investigator comparison saved in Notebook as WORKING HYPOTHESIS."
+	_refresh()
 
 func _clear_session_marks() -> void:
 	session_signal_marks.clear()
