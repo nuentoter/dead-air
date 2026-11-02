@@ -31,6 +31,17 @@ func _run() -> void:
 	var game = root_game.get("game")
 	if not bool(game.data.get("receiver_power", false)):
 		receiver.call("_power")
+	receiver.call("_set_mode", "USB")
+	receiver.call("refresh_from_game")
+	var lamps: Dictionary = receiver.get("active_lights")
+	if not lamps.has("USB") or not lamps.has("POWER"):
+		push_error("Mode or power indicator missing")
+		quit(1)
+		return
+	if (lamps["USB"] as ColorRect).color.g < 0.9 or (lamps["POWER"] as ColorRect).color.g < 0.9:
+		push_error("Active receiver lamps did not illuminate")
+		quit(1)
+		return
 	receiver.call("_set_step", 1000)
 	var old_frequency := float(game.data.get("frequency_mhz", 0.0))
 	receiver.call("_tune", 1)
