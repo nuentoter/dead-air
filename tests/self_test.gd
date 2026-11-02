@@ -49,6 +49,8 @@ func _run() -> void:
 		assert(String(m09.get("body", "")).contains(stamp), "M-09 missing " + stamp)
 
 	var state := GameState.new()
+	# Each CI test runs on a disposable profile; isolate this test from UI-flow ending choices.
+	state.reset_defaults()
 	state.data["communications_comparison_reviewed"] = false
 	state.data["assignments"]["A-005"] = "OPEN"
 	state.save_game()
