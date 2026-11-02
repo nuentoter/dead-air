@@ -20,6 +20,7 @@ var record_indicator: ColorRect
 var hold_indicator: ColorRect
 var power_button: Button
 var diagnostic_label: Label
+var fallback_status: Label
 var artwork: TextureRect
 var active_lights: Dictionary = {}
 var _last_powered := false
@@ -44,6 +45,14 @@ func setup(main_control: Control) -> void:
 	size = get_viewport_rect().size
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	_build()
+	fallback_status = Label.new()
+	fallback_status.name = "ViewportStatus"
+	fallback_status.text = "DEAD AIR / RECEIVER INITIALIZING"
+	fallback_status.position = Vector2(16, 14)
+	fallback_status.add_theme_font_size_override("font_size", 17)
+	fallback_status.add_theme_color_override("font_color", Color(1.0, 0.74, 0.33, 1.0))
+	fallback_status.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(fallback_status)
 	resized.connect(_layout_rig)
 	call_deferred("_layout_rig")
 
@@ -57,6 +66,9 @@ func _layout_rig() -> void:
 		return
 	var factor := maxf(0.001, minf(available.x / REFERENCE.x, available.y / REFERENCE.y))
 	_last_layout_size = available
+	if fallback_status != null:
+		fallback_status.visible = artwork == null or artwork.texture == null or factor <= 0.01
+		fallback_status.text = "RECEIVER ART NOT LOADED" if artwork == null or artwork.texture == null else "RECEIVER LAYOUT INVALID"
 	if diagnostic_label != null:
 		diagnostic_label.text = "ARTWORK UNAVAILABLE — CHECK APK" if artwork == null or artwork.texture == null else ""
 	rig.scale = Vector2(factor, factor)
