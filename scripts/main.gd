@@ -488,7 +488,9 @@ func _draw_receiver() -> void:
 	_add_text("RETAINED EVENT INDEX", 13, ACCENT)
 	for event in Catalog.EVENTS:
 		var label := "%s   %.3f MHz %s   %s" % [String(event.get("id", "")), float(event.get("frequency_mhz", 0.0)), String(event.get("mode", "")), String(event.get("kind", ""))]
-		_button(label, _select_event.bind(String(event.get("id", ""))))
+		var event_row := _row()
+		_button(label, _select_event.bind(String(event.get("id", ""))), event_row)
+		_button("TUNE", _tune_to_retained_event.bind(String(event.get("id", ""))), event_row)
 
 func _draw_tuned_event_matches() -> void:
 	_add_text("TUNED EVENT CHECK", 13, ACCENT)
@@ -672,6 +674,23 @@ func _seek_next() -> void:
 	game.select_event(String(event.get("id", "")))
 	game.set_receiver(true, float(event.get("frequency_mhz", 10.0)), String(event.get("mode", "AM")))
 	status_message = "SEEK selected authored event " + String(event.get("id", "")) + ". No source inference is made."
+	_refresh()
+
+func _tune_to_retained_event(event_id: String) -> void:
+	# Opening a record and tuning to its channel are deliberately separate.
+	# Tuning does not establish any extra provenance or automatically record it.
+	var event: Dictionary = _find_event(event_id)
+	if event.is_empty():
+		status_message = "Retained event not found: " + event_id
+		_refresh()
+		return
+	var frequency := float(event.get("frequency_mhz", 10.0))
+	var mode := String(event.get("mode", "AM"))
+	_finish_monitor_recording("INTERRUPTED_TUNE")
+	monitor_capture.retune(frequency, mode)
+	game.select_event(event_id)
+	game.set_receiver(bool(game.data.get("receiver_power", false)), frequency, mode)
+	status_message = "Tuned to retained channel %s: %.3f MHz %s. No new reception claimed." % [event_id, frequency, mode]
 	_refresh()
 
 func _select_event(event_id: String) -> void:
