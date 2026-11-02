@@ -155,7 +155,7 @@ func _run() -> void:
 	legacy_settings_data["settings"].erase("speech_rate")
 	var legacy_settings_file := FileAccess.open(GameState.SAVE_PATH, FileAccess.WRITE)
 	assert(legacy_settings_file != null, "Could not open save for speech-setting migration test.")
-	legacy_settings_file.store_string(JSON.stringify(legacy_settings_data, "\\t"))
+	legacy_settings_file.store_string(JSON.stringify(legacy_settings_data))
 	legacy_settings_file.close()
 	var settings_migrated := GameState.new()
 	assert(is_equal_approx(float(settings_migrated.data["settings"].get("speech_rate", 0.0)), 1.0), "Older save without speech_rate should receive the default speed.")
