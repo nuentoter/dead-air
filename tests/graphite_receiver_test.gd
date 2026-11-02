@@ -28,6 +28,11 @@ func _run() -> void:
 			push_error("Missing receiver control: " + control_name)
 			quit(1)
 			return
+	receiver.call("_layout_rig")
+	if (rig as Control).scale.x <= 0.01 or (rig as Control).scale.y <= 0.01:
+		push_error("Illustrated receiver has a zero-sized viewport layout")
+		quit(1)
+		return
 	var plot: Control = rig.get_node("LiveWaterfall")
 	if plot.get("rows") == null or plot.size.x <= 0.0 or plot.size.y <= 0.0:
 		push_error("Waterfall renderer was not initialized")
