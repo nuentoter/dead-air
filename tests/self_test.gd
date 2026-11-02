@@ -4,6 +4,7 @@ const Catalog = preload("res://scripts/content_catalog.gd")
 const GameState = preload("res://scripts/game_state.gd")
 const SpeechEngine = preload("res://scripts/speech_engine.gd")
 const SignalAudioEngine = preload("res://scripts/signal_audio_engine.gd")
+const ReceiverCapture = preload("res://scripts/receiver_capture.gd")
 
 func _initialize() -> void:
 	call_deferred("_run")
@@ -48,6 +49,21 @@ func _run() -> void:
 	for stamp in ["18:19", "18:21", "18:23"]:
 		assert(String(m09.get("body", "")).contains(stamp), "M-09 missing " + stamp)
 
+	var capture_engine = ReceiverCapture.new()
+	var audio_frames := PackedVector2Array()
+	audio_frames.resize(2205)
+	for i in range(audio_frames.size()):
+		audio_frames[i] = Vector2(0.1, 0.1)
+	capture_engine.ingest(audio_frames, 7.418, "CW")
+	assert(capture_engine.buffered_seconds() > 0.09, "Rolling monitor audio was not buffered.")
+	assert(capture_engine.start(true), "Could not start synthetic receiver PCM capture.")
+	capture_engine.ingest(audio_frames, 7.418, "CW")
+	var capture_result: Dictionary = capture_engine.stop()
+	assert(int(capture_result.get("samples", 0)) == 4410, "Pre-roll plus active PCM should have two 0.1 second blocks.")
+	assert(int(capture_result.get("pre_roll_samples", 0)) == 2205, "Pre-roll sample count incorrect.")
+	assert(not capture_engine.is_recording(), "Recording should stop.")
+	capture_engine.retune(10.0, "AM")
+	assert(is_zero_approx(capture_engine.buffered_seconds()), "Tuning to another channel must clear previous-channel buffer.")
 	var state := GameState.new()
 	# Each CI test runs on a disposable profile; isolate this test from UI-flow ending choices.
 	state.reset_defaults()
@@ -63,6 +79,12 @@ func _run() -> void:
 	var prior_event_count: int = state.data.get("retained_event_ids", []).size()
 	state.record_event("SIG-0004")
 	state.record_event("SIG-0004")
+	var monitor_record: Dictionary = state.add_pcm_capture(capture_result.get("pcm", PackedByteArray()), 22050, 7.418, "CW", int(capture_result.get("pre_roll_samples", 0)), "COMPLETE")
+	assert(not monitor_record.is_empty(), "Generated monitor PCM was not persisted.")
+	assert(String(monitor_record.get("source_type", "")) == "PLAYER SYNTHETIC MONITOR AUDIO", "Capture source mislabeled.")
+	assert(FileAccess.file_exists(String(monitor_record.get("audio_path", ""))), "PCM bytes missing from local storage.")
+	assert(String(monitor_record.get("event_id", "")) == "", "Synthetic monitor PCM must not be attributed to an authored event.")
+
 	assert(state.data.get("recording_records", []).size() >= 1, "Manual excerpt ledger was not created.")
 	var capture: Dictionary = state.data["recording_records"][-1]
 	assert(String(capture.get("source_type", "")) == "PLAYER EXCERPT ANNOTATION", "Manual excerpt provenance missing.")
