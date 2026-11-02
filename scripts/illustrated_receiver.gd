@@ -19,6 +19,8 @@ var waterfall: Control
 var record_indicator: ColorRect
 var hold_indicator: ColorRect
 var power_button: Button
+var diagnostic_label: Label
+var artwork: TextureRect
 var active_lights: Dictionary = {}
 var _last_powered := false
 var _last_layout_size := Vector2.ZERO
@@ -55,6 +57,8 @@ func _layout_rig() -> void:
 		return
 	var factor := maxf(0.001, minf(available.x / REFERENCE.x, available.y / REFERENCE.y))
 	_last_layout_size = available
+	if diagnostic_label != null:
+		diagnostic_label.text = "ARTWORK UNAVAILABLE — CHECK APK" if artwork == null or artwork.texture == null else ""
 	rig.scale = Vector2(factor, factor)
 	rig.position = (available - REFERENCE * factor) / 2.0
 
@@ -88,14 +92,15 @@ func _build() -> void:
 	rig.size = REFERENCE
 	rig.mouse_filter = Control.MOUSE_FILTER_PASS
 	add_child(rig)
-	var art := TextureRect.new()
-	art.texture = MASTER
-	art.size = REFERENCE
-	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	art.stretch_mode = TextureRect.STRETCH_SCALE
-	art.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	rig.add_child(art)
+	artwork = TextureRect.new()
+	artwork.name = "ReceiverArtwork"
+	artwork.texture = MASTER
+	artwork.size = REFERENCE
+	artwork.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	artwork.stretch_mode = TextureRect.STRETCH_SCALE
+	artwork.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	artwork.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	rig.add_child(artwork)
 
 	# Live waterfall occupies the central CRT aperture, underneath bezel controls.
 	waterfall = Waterfall.new()
@@ -149,6 +154,16 @@ func _build() -> void:
 	# Original Mk II has no separate step keys. Cycling step is available
 	# from the receiver's lower-left speaker/grille, with tooltip feedback.
 	_hit("CYCLE TUNING STEP", Rect2(93, 745, 171, 90), _cycle_step)
+
+	# Visible diagnostic if the artwork cannot be rendered on Android.
+	diagnostic_label = Label.new()
+	diagnostic_label.name = "ReceiverDiagnostics"
+	diagnostic_label.position = Vector2(300, 130)
+	diagnostic_label.size = Vector2(900, 50)
+	diagnostic_label.add_theme_font_size_override("font_size", 23)
+	diagnostic_label.add_theme_color_override("font_color", Color(1.0, 0.73, 0.31))
+	diagnostic_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	rig.add_child(diagnostic_label)
 
 	# Analysis stays an in-radio overlay; no separate screen or data fork.
 	analysis_panel = PanelContainer.new()
