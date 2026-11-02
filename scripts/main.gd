@@ -448,6 +448,8 @@ func _draw_receiver() -> void:
 	control_row.add_child(mode_select)
 	_button("APPLY", _apply_receiver_settings, control_row)
 	_button("SEEK NEXT", _seek_next, control_row)
+	_button("−1 kHz", _quick_tune.bind(-0.001), control_row)
+	_button("+1 kHz", _quick_tune.bind(0.001), control_row)
 	frequency_spin.value_changed.connect(_on_frequency_changed)
 	mode_select.item_selected.connect(_on_mode_changed)
 
@@ -608,6 +610,19 @@ func _toggle_receiver() -> void:
 	game.set_receiver(next_power, float(game.data.get("frequency_mhz", 10.0)), String(game.data.get("mode", "AM")))
 	status_message = "Receiver powered on. Retained events are unchanged." if next_power else "Receiver powered off. Archive and retained events remain available."
 	game.log_event(status_message)
+	_refresh()
+
+func _quick_tune(delta_mhz: float) -> void:
+	# A compact fallback tuner for landscape Android; the existing game state
+	# remains authoritative, and a retune interrupts live monitor recording.
+	var current := float(game.data.get("frequency_mhz", 10.0))
+	var next_frequency := snappedf(clampf(current + delta_mhz, 0.1, 30000.0), 0.001)
+	if absf(next_frequency - current) < 0.0000001:
+		return
+	_finish_monitor_recording("INTERRUPTED_TUNE")
+	monitor_capture.retune(next_frequency, String(game.data.get("mode", "AM")))
+	game.set_receiver(bool(game.data.get("receiver_power", false)), next_frequency, String(game.data.get("mode", "AM")))
+	status_message = "Receiver tuned to %.3f MHz." % next_frequency
 	_refresh()
 
 func _on_frequency_changed(value: float) -> void:
