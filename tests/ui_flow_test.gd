@@ -20,7 +20,10 @@ func _run() -> void:
 	if not _expect(illustration != null, "Illustrated receiver scene was not added to Godot."):
 		return
 	instance.call("_on_nav_pressed", "Receiver")
-	if not _expect(illustration.visible, "Illustrated receiver not visible when Receiver section opens."):
+	if not _expect(not illustration.visible, "Standard receiver should remain accessible from Receiver tab."):
+		return
+	instance.call("_return_to_illustrated_receiver")
+	if not _expect(illustration.visible, "Explicit illustrated receiver action did not display artwork."):
 		return
 	if not bool(game.data.get("receiver_power", false)):
 		illustration.call("_power")
