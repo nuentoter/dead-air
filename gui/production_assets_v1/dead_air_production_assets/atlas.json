@@ -1,0 +1,622 @@
+{
+  "schema": "dead-air-assets-v1",
+  "reference_resolution": [
+    1672,
+    941
+  ],
+  "coordinate_system": "pixel positions in approved 1672x941 concept",
+  "art_direction": "Approved 05/06 radio-instrument and investigation desk hybrid",
+  "sprites": [
+    {
+      "name": "navigation_panel",
+      "file": "hardware/navigation_panel.png",
+      "x": 95,
+      "y": 150,
+      "width": 180,
+      "height": 461,
+      "group": "hardware",
+      "hitbox": [
+        95,
+        150,
+        180,
+        461
+      ],
+      "notes": ""
+    },
+    {
+      "name": "site_monitor_frame",
+      "file": "hardware/site_monitor_frame.png",
+      "x": 282,
+      "y": 152,
+      "width": 195,
+      "height": 418,
+      "group": "hardware",
+      "hitbox": [
+        282,
+        152,
+        195,
+        418
+      ],
+      "notes": ""
+    },
+    {
+      "name": "main_waterfall_bezel",
+      "file": "hardware/main_waterfall_bezel.png",
+      "x": 478,
+      "y": 64,
+      "width": 730,
+      "height": 516,
+      "group": "hardware",
+      "hitbox": [
+        478,
+        64,
+        730,
+        516
+      ],
+      "notes": ""
+    },
+    {
+      "name": "signal_meter",
+      "file": "sprites/signal_meter.png",
+      "x": 1232,
+      "y": 55,
+      "width": 246,
+      "height": 159,
+      "group": "sprites",
+      "hitbox": [
+        1232,
+        55,
+        246,
+        159
+      ],
+      "notes": ""
+    },
+    {
+      "name": "indicator_bank",
+      "file": "hardware/indicator_bank.png",
+      "x": 1480,
+      "y": 57,
+      "width": 137,
+      "height": 152,
+      "group": "hardware",
+      "hitbox": [
+        1480,
+        57,
+        137,
+        152
+      ],
+      "notes": ""
+    },
+    {
+      "name": "rf_gain",
+      "file": "sprites/rf_gain.png",
+      "x": 1254,
+      "y": 228,
+      "width": 88,
+      "height": 105,
+      "group": "sprites",
+      "hitbox": [
+        1254,
+        228,
+        88,
+        105
+      ],
+      "notes": ""
+    },
+    {
+      "name": "af_gain",
+      "file": "sprites/af_gain.png",
+      "x": 1370,
+      "y": 228,
+      "width": 93,
+      "height": 104,
+      "group": "sprites",
+      "hitbox": [
+        1370,
+        228,
+        93,
+        104
+      ],
+      "notes": ""
+    },
+    {
+      "name": "squelch",
+      "file": "sprites/squelch.png",
+      "x": 1503,
+      "y": 224,
+      "width": 99,
+      "height": 105,
+      "group": "sprites",
+      "hitbox": [
+        1503,
+        224,
+        99,
+        105
+      ],
+      "notes": ""
+    },
+    {
+      "name": "tuning_dial",
+      "file": "sprites/tuning_dial.png",
+      "x": 1250,
+      "y": 342,
+      "width": 254,
+      "height": 254,
+      "group": "sprites",
+      "hitbox": [
+        1250,
+        342,
+        254,
+        254
+      ],
+      "notes": "Rotate visual around center [1377,469]; use drag gesture for tuning"
+    },
+    {
+      "name": "tuning_step_bank",
+      "file": "sprites/tuning_step_bank.png",
+      "x": 1501,
+      "y": 363,
+      "width": 116,
+      "height": 207,
+      "group": "sprites",
+      "hitbox": [
+        1501,
+        363,
+        116,
+        207
+      ],
+      "notes": ""
+    },
+    {
+      "name": "mode_bank",
+      "file": "sprites/mode_bank.png",
+      "x": 303,
+      "y": 585,
+      "width": 142,
+      "height": 156,
+      "group": "sprites",
+      "hitbox": [
+        303,
+        585,
+        142,
+        156
+      ],
+      "notes": ""
+    },
+    {
+      "name": "transport_deck",
+      "file": "sprites/transport_deck.png",
+      "x": 473,
+      "y": 579,
+      "width": 619,
+      "height": 146,
+      "group": "sprites",
+      "hitbox": [
+        473,
+        579,
+        619,
+        146
+      ],
+      "notes": ""
+    },
+    {
+      "name": "waterfall_mode_bank",
+      "file": "sprites/waterfall_mode_bank.png",
+      "x": 1090,
+      "y": 579,
+      "width": 132,
+      "height": 159,
+      "group": "sprites",
+      "hitbox": [
+        1090,
+        579,
+        132,
+        159
+      ],
+      "notes": ""
+    },
+    {
+      "name": "frequency_panel",
+      "file": "sprites/frequency_panel.png",
+      "x": 1240,
+      "y": 600,
+      "width": 344,
+      "height": 124,
+      "group": "sprites",
+      "hitbox": [
+        1240,
+        600,
+        344,
+        124
+      ],
+      "notes": ""
+    },
+    {
+      "name": "button_scan",
+      "file": "sprites/button_scan.png",
+      "x": 497,
+      "y": 604,
+      "width": 103,
+      "height": 106,
+      "group": "sprites",
+      "hitbox": [
+        497,
+        604,
+        103,
+        106
+      ],
+      "notes": ""
+    },
+    {
+      "name": "button_hold",
+      "file": "sprites/button_hold.png",
+      "x": 616,
+      "y": 604,
+      "width": 108,
+      "height": 105,
+      "group": "sprites",
+      "hitbox": [
+        616,
+        604,
+        108,
+        105
+      ],
+      "notes": ""
+    },
+    {
+      "name": "button_record",
+      "file": "sprites/button_record.png",
+      "x": 730,
+      "y": 604,
+      "width": 111,
+      "height": 105,
+      "group": "sprites",
+      "hitbox": [
+        730,
+        604,
+        111,
+        105
+      ],
+      "notes": ""
+    },
+    {
+      "name": "button_mark",
+      "file": "sprites/button_mark.png",
+      "x": 849,
+      "y": 604,
+      "width": 112,
+      "height": 108,
+      "group": "sprites",
+      "hitbox": [
+        849,
+        604,
+        112,
+        108
+      ],
+      "notes": ""
+    },
+    {
+      "name": "button_analyze",
+      "file": "sprites/button_analyze.png",
+      "x": 970,
+      "y": 604,
+      "width": 108,
+      "height": 110,
+      "group": "sprites",
+      "hitbox": [
+        970,
+        604,
+        108,
+        110
+      ],
+      "notes": ""
+    },
+    {
+      "name": "step_10khz",
+      "file": "sprites/step_10khz.png",
+      "x": 1516,
+      "y": 384,
+      "width": 91,
+      "height": 46,
+      "group": "sprites",
+      "hitbox": [
+        1516,
+        384,
+        91,
+        46
+      ],
+      "notes": ""
+    },
+    {
+      "name": "step_1khz",
+      "file": "sprites/step_1khz.png",
+      "x": 1516,
+      "y": 429,
+      "width": 91,
+      "height": 47,
+      "group": "sprites",
+      "hitbox": [
+        1516,
+        429,
+        91,
+        47
+      ],
+      "notes": ""
+    },
+    {
+      "name": "step_100hz",
+      "file": "sprites/step_100hz.png",
+      "x": 1516,
+      "y": 478,
+      "width": 91,
+      "height": 47,
+      "group": "sprites",
+      "hitbox": [
+        1516,
+        478,
+        91,
+        47
+      ],
+      "notes": ""
+    },
+    {
+      "name": "step_10hz",
+      "file": "sprites/step_10hz.png",
+      "x": 1516,
+      "y": 527,
+      "width": 91,
+      "height": 43,
+      "group": "sprites",
+      "hitbox": [
+        1516,
+        527,
+        91,
+        43
+      ],
+      "notes": ""
+    },
+    {
+      "name": "nav_radio",
+      "file": "sprites/nav_radio.png",
+      "x": 102,
+      "y": 164,
+      "width": 165,
+      "height": 49,
+      "group": "sprites",
+      "hitbox": [
+        102,
+        164,
+        165,
+        49
+      ],
+      "notes": ""
+    },
+    {
+      "name": "nav_case_files",
+      "file": "sprites/nav_case_files.png",
+      "x": 102,
+      "y": 217,
+      "width": 165,
+      "height": 53,
+      "group": "sprites",
+      "hitbox": [
+        102,
+        217,
+        165,
+        53
+      ],
+      "notes": ""
+    },
+    {
+      "name": "nav_evidence",
+      "file": "sprites/nav_evidence.png",
+      "x": 102,
+      "y": 276,
+      "width": 165,
+      "height": 51,
+      "group": "sprites",
+      "hitbox": [
+        102,
+        276,
+        165,
+        51
+      ],
+      "notes": ""
+    },
+    {
+      "name": "nav_recordings",
+      "file": "sprites/nav_recordings.png",
+      "x": 102,
+      "y": 334,
+      "width": 165,
+      "height": 53,
+      "group": "sprites",
+      "hitbox": [
+        102,
+        334,
+        165,
+        53
+      ],
+      "notes": ""
+    },
+    {
+      "name": "nav_timeline",
+      "file": "sprites/nav_timeline.png",
+      "x": 102,
+      "y": 390,
+      "width": 165,
+      "height": 53,
+      "group": "sprites",
+      "hitbox": [
+        102,
+        390,
+        165,
+        53
+      ],
+      "notes": ""
+    },
+    {
+      "name": "nav_map",
+      "file": "sprites/nav_map.png",
+      "x": 102,
+      "y": 446,
+      "width": 165,
+      "height": 50,
+      "group": "sprites",
+      "hitbox": [
+        102,
+        446,
+        165,
+        50
+      ],
+      "notes": ""
+    },
+    {
+      "name": "nav_archive",
+      "file": "sprites/nav_archive.png",
+      "x": 102,
+      "y": 502,
+      "width": 165,
+      "height": 50,
+      "group": "sprites",
+      "hitbox": [
+        102,
+        502,
+        165,
+        50
+      ],
+      "notes": ""
+    },
+    {
+      "name": "nav_notes",
+      "file": "sprites/nav_notes.png",
+      "x": 102,
+      "y": 557,
+      "width": 165,
+      "height": 50,
+      "group": "sprites",
+      "hitbox": [
+        102,
+        557,
+        165,
+        50
+      ],
+      "notes": ""
+    },
+    {
+      "name": "waterfall_blank",
+      "file": "displays/waterfall_blank.png",
+      "x": 511,
+      "y": 136,
+      "width": 612,
+      "height": 352,
+      "group": "display",
+      "notes": "Programmatically painted dynamic content overlays this screen; no pre-baked text"
+    },
+    {
+      "name": "waterfall_status_blank",
+      "file": "displays/waterfall_status_blank.png",
+      "x": 507,
+      "y": 97,
+      "width": 670,
+      "height": 38,
+      "group": "display",
+      "notes": "Programmatically painted dynamic content overlays this screen; no pre-baked text"
+    },
+    {
+      "name": "signal_waveform_blank",
+      "file": "displays/signal_waveform_blank.png",
+      "x": 508,
+      "y": 490,
+      "width": 555,
+      "height": 61,
+      "group": "display",
+      "notes": "Programmatically painted dynamic content overlays this screen; no pre-baked text"
+    },
+    {
+      "name": "site_monitor_blank",
+      "file": "displays/site_monitor_blank.png",
+      "x": 295,
+      "y": 202,
+      "width": 171,
+      "height": 189,
+      "group": "display",
+      "notes": "Programmatically painted dynamic content overlays this screen; no pre-baked text"
+    },
+    {
+      "name": "frequency_readout_blank",
+      "file": "displays/frequency_readout_blank.png",
+      "x": 1280,
+      "y": 639,
+      "width": 261,
+      "height": 53,
+      "group": "display",
+      "notes": "Programmatically painted dynamic content overlays this screen; no pre-baked text"
+    }
+  ],
+  "button_states": {
+    "scan": [
+      "sprites/button_scan_off.png",
+      "sprites/button_scan_on.png",
+      "sprites/button_scan_pressed.png"
+    ],
+    "hold": [
+      "sprites/button_hold_off.png",
+      "sprites/button_hold_on.png",
+      "sprites/button_hold_pressed.png"
+    ],
+    "record": [
+      "sprites/button_record_off.png",
+      "sprites/button_record_on.png",
+      "sprites/button_record_pressed.png"
+    ],
+    "mark": [
+      "sprites/button_mark_off.png",
+      "sprites/button_mark_on.png",
+      "sprites/button_mark_pressed.png"
+    ],
+    "analyze": [
+      "sprites/button_analyze_off.png",
+      "sprites/button_analyze_on.png",
+      "sprites/button_analyze_pressed.png"
+    ]
+  },
+  "screens": {
+    "waterfall": [
+      511,
+      136,
+      1123,
+      488
+    ],
+    "waterfall_status": [
+      507,
+      97,
+      1177,
+      135
+    ],
+    "signal_waveform": [
+      508,
+      490,
+      1063,
+      551
+    ],
+    "site_monitor": [
+      295,
+      202,
+      466,
+      391
+    ],
+    "frequency_readout": [
+      1280,
+      639,
+      1541,
+      692
+    ]
+  },
+  "constraints": [
+    "Source is concept illustration; manual retouch required before final release.",
+    "No Blackwood narrative text should be used in functional game panels.",
+    "Dynamic data and text should be rendered by game engine, never baked into source sprites.",
+    "Avoid invented glitch mechanics; waterfall should be consistent with the simulated signal source."
+  ]
+}
