@@ -36,6 +36,12 @@ var _dial_down := false
 var _dial_dragged := false
 var _dial_total := 0.0
 
+func is_artwork_ready() -> bool:
+	return artwork != null and artwork.texture != null and artwork.texture.get_width() > 0 and artwork.texture.get_height() > 0
+
+func _exit_illustration() -> void:
+	host._on_nav_pressed("Receiver")
+
 func setup(main_control: Control) -> void:
 	host = main_control
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -113,6 +119,16 @@ func _build() -> void:
 	artwork.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	artwork.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	rig.add_child(artwork)
+
+	# Escape hatch remains visible even when a handset fails to draw the artwork.
+	var exit_button := Button.new()
+	exit_button.name = "ExitIllustration"
+	exit_button.text = "BACK TO RECEIVER"
+	exit_button.position = Vector2(1180, 10)
+	exit_button.size = Vector2(430, 84)
+	exit_button.add_theme_font_size_override("font_size", 27)
+	exit_button.pressed.connect(_exit_illustration)
+	rig.add_child(exit_button)
 
 	# Live waterfall occupies the central CRT aperture, underneath bezel controls.
 	waterfall = Waterfall.new()
