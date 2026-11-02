@@ -233,6 +233,11 @@ func refresh_from_game() -> void:
 		waterfall.powered = on
 		waterfall.frozen = hold_display
 		waterfall.frequency_mhz = freq
+		# The authored event is only highlighted when tuned near its actual frequency.
+		var event_frequency := float(event.get("frequency_mhz", -1.0))
+		var proximity := absf(freq - event_frequency)
+		waterfall.signal_strength = clampf(float(event.get("strength", 0.65)), 0.0, 1.0) if on and proximity < 0.015 else 0.0
+		waterfall.signal_offset = clampf((event_frequency - freq) * 8.0, -0.38, 0.38)
 		hold_indicator.color = Color(0.25, 1.0, 0.35) if hold_display else Color(0.03, 0.11, 0.04)
 		record_indicator.color = Color(1.0, 0.16, 0.09) if host.monitor_capture.is_recording() else Color(0.03, 0.11, 0.04)
 	header_label.text = ("RX ON" if on else "RX OFF") + "   SITE 04   " + mode + "   " + _step_name() + " STEP   AGC " + ("ON" if bool(controls.get("agc", true)) else "OFF") + "   NB " + ("ON" if bool(controls.get("nb", true)) else "OFF")
