@@ -5,6 +5,7 @@ const GameState = preload("res://scripts/game_state.gd")
 const SpeechEngine = preload("res://scripts/speech_engine.gd")
 const SignalAudioEngine = preload("res://scripts/signal_audio_engine.gd")
 const CaptureEngine = preload("res://scripts/receiver_capture.gd")
+const IllustratedReceiver = preload("res://scripts/illustrated_receiver.gd")
 
 const SECTIONS = ["Receiver", "Recordings", "Archive", "Notebook", "Assignments", "Messages"]
 const REPORT_SOURCE_OPTIONS := ["SIG-0004", "SIG-0005", "M-02", "M-05", "M-06A", "M-07", "M-08", "M-09"]
@@ -81,6 +82,7 @@ class WaterfallPlot extends Control:
 var game
 var monitor_capture = CaptureEngine.new()
 var root_column: VBoxContainer
+var illustrated_receiver: Control
 var body: VBoxContainer
 var status_label: Label
 var text_scale_label: Label
@@ -110,6 +112,28 @@ func _ready() -> void:
 	if not String(game.load_notice).is_empty():
 		status_message = String(game.load_notice)
 	_build_shell()
+	_setup_illustrated_receiver()
+	_refresh()
+
+func _setup_illustrated_receiver() -> void:
+	illustrated_receiver = IllustratedReceiver.new()
+	illustrated_receiver.name = "IllustratedReceiver"
+	add_child(illustrated_receiver)
+	illustrated_receiver.setup(self)
+	_set_receiver_view(String(game.data.get("current_section", "Receiver")) == "Receiver")
+
+func _set_receiver_view(show_art: bool) -> void:
+	if illustrated_receiver != null:
+		illustrated_receiver.visible = show_art
+	if root_column != null:
+		root_column.visible = not show_art
+	if show_art and illustrated_receiver != null:
+		illustrated_receiver.refresh_from_game()
+
+func _return_to_illustrated_receiver() -> void:
+	game.data["current_section"] = "Receiver"
+	game.save_game()
+	_set_receiver_view(true)
 	_refresh()
 
 func _process(_delta: float) -> void:
@@ -189,6 +213,11 @@ func _build_shell() -> void:
 	shift.add_theme_font_size_override("font_size", 13)
 	shift.add_theme_color_override("font_color", MUTED)
 	header.add_child(shift)
+	var art_button := Button.new()
+	art_button.text = "ILLUSTRATED RECEIVER"
+	art_button.custom_minimum_size = Vector2(198, 44)
+	art_button.pressed.connect(_return_to_illustrated_receiver)
+	header.add_child(art_button)
 
 	var nav := HBoxContainer.new()
 	nav.add_theme_constant_override("separation", 6)
@@ -302,6 +331,7 @@ func _change_text_scale(delta: float) -> void:
 func _on_nav_pressed(section: String) -> void:
 	game.data["current_section"] = section
 	game.save_game()
+	_set_receiver_view(section == "Receiver")
 	_refresh()
 
 func _heading(title: String, subtitle: String = "") -> void:
