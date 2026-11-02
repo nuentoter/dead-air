@@ -40,7 +40,7 @@ def main():
     assert "quickLaunch" in parser.ids and "modal" in parser.ids, "Accessible touch controls or dialog missing"
     assert "7418000" in html, "Canonical NR-041 simulation frequency not in receiver visual prototype"
     assert "SIMULATED RECORDING" in html and "audioCaptured:false" in html, "Browser metadata must not claim audio capture"
-    resources = set(parser.resources) | set(re.findall(r'url\\(["\\\']?([^)"\\\']+)["\\\']?\\)', html))
+    resources = set(parser.resources) | set(re.findall(r"url\\(['\\\"]?([^)'\\\"]+)['\\\"]?\\)", html))
     for name in resources:
         if name.startswith(("http:", "https:", "data:")):
             raise AssertionError(f"Unexpected external/embedded resource: {name}")
