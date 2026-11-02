@@ -135,7 +135,6 @@ func _hit(label: String, area: Rect2, callback: Callable) -> Button:
 	var button := Button.new()
 	button.text = ""
 	button.tooltip_text = label
-	button.accessibility_name = label
 	button.position = area.position
 	button.size = area.size
 	button.focus_mode = Control.FOCUS_ALL
