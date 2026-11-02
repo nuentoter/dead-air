@@ -185,8 +185,9 @@ func _update_receiver_audio() -> void:
 	var rf_gain := clampf(float(controls.get("rf_gain", 55)), 0.0, 100.0) / 55.0
 	var squelch := clampf(float(controls.get("squelch", 20)), 0.0, 100.0)
 	var nb_factor := 0.76 if bool(controls.get("nb", true)) else 1.0
+	var agc_factor := 1.0 / maxf(0.55, rf_gain) if bool(controls.get("agc", true)) else 1.0
 	for i in range(frames):
-		var noise := randf_range(-1.0, 1.0) * 0.16 * rf_gain * nb_factor * (1.0 - squelch / 120.0)
+		var noise := randf_range(-1.0, 1.0) * 0.16 * rf_gain * agc_factor * nb_factor * (1.0 - squelch / 120.0)
 		audio_phase += 2.0 * PI * 73.0 / 22050.0
 		var hum := sin(audio_phase) * 0.018
 		var sample := clampf(noise + hum, -0.2, 0.2)
