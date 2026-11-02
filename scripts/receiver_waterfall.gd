@@ -11,7 +11,6 @@ var rows: Array[PackedFloat32Array] = []
 const COLS := 128
 const ROWS := 68
 const FRAME := 0.10
-const MAX_COLUMNS := 128
 var _frame_counter := 0
 
 func _ready() -> void:
@@ -51,13 +50,22 @@ func _draw() -> void:
 		return
 	var cw := size.x / float(COLS)
 	var rh := size.y / float(ROWS)
+	# Draw adjacent pixels of similar intensity as horizontal runs.
+	# This greatly reduces draw commands over the old per-cell rendering.
 	for y in rows.size():
-		for x in COLS:
-			var v := rows[y][x]
+		var row: PackedFloat32Array = rows[y]
+		var x := 0
+		while x < COLS:
+			var level := mini(7, int(row[x] * 8.0))
+			var finish := x + 1
+			while finish < COLS and mini(7, int(row[finish] * 8.0)) == level:
+				finish += 1
+			var v := (float(level) + 0.5) / 8.0
 			var tint := Color(0.018 + v * 0.50, 0.055 + v * 0.90, 0.065 + v * 0.25, 1.0)
-			if v > 0.77:
-				tint = Color(0.63 + (v - 0.77), 0.95, 0.28, 1.0)
-			draw_rect(Rect2(float(x) * cw, float(y) * rh, cw + 0.35, rh + 0.35), tint, true)
+			if level >= 6:
+				tint = Color(0.63 + maxf(0.0, v - 0.77), 0.95, 0.28, 1.0)
+			draw_rect(Rect2(float(x) * cw, float(y) * rh, float(finish - x) * cw + 0.35, rh + 0.35), tint, true)
+			x = finish
 	# Graticule is screen-relative so the receiver remains readable at Android sizes.
 	for division in range(1, 8):
 		var gx := size.x * float(division) / 8.0
