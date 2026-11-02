@@ -33,6 +33,21 @@ func _run() -> void:
 		return
 	if not _expect(rig.get_node_or_null("Hit_CASE_FILES___ASSIGNMENTS") != null and rig.get_node_or_null("Hit_NOTES") != null, "Left-hand navigation buttons missing."):
 		return
+	(rig.get_node("Hit_RF_GAIN") as Button).pressed.emit()
+	if not _expect(int(game.data.get("receiver_controls", {}).get("rf_gain", 0)) == 65, "RF hardware knob was not connected to game state."):
+		return
+	(rig.get_node("Hit_AF_GAIN") as Button).pressed.emit()
+	if not _expect(int(game.data.get("receiver_controls", {}).get("af_gain", 0)) == 65, "AF hardware knob was not connected to game state."):
+		return
+	(rig.get_node("Hit_SQUELCH") as Button).pressed.emit()
+	if not _expect(int(game.data.get("receiver_controls", {}).get("squelch", 0)) == 30, "Squelch hardware knob was not connected to game state."):
+		return
+	(rig.get_node("Hit_AGC") as Button).pressed.emit()
+	if not _expect(not bool(game.data.get("receiver_controls", {}).get("agc", true)), "AGC hardware toggle was not connected."):
+		return
+	(rig.get_node("Hit_WATERFALL_PEAK") as Button).pressed.emit()
+	if not _expect(String(illustration.get("waterfall_mode")) == "PEAK", "Waterfall hardware mode switch was not connected."):
+		return
 	(rig.get_node("Hit_STEP_100_Hz") as Button).pressed.emit()
 	if not _expect(int(illustration.get("step_hz")) == 100, "STEP 100 Hz hardware switch did not fire."):
 		return
