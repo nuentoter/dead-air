@@ -2,6 +2,7 @@ extends Control
 ## Android workstation: every interactive area follows the photographed controls.
 ## Authoritative records, receiver settings and recording flow live in main.gd.
 const MASTER = preload("res://gui/graphite_green/graphite_green_receiver.png")
+const Waterfall = preload("res://scripts/receiver_waterfall.gd")
 const REFERENCE := Vector2(1671.0, 941.0)
 const GREEN := Color(0.68, 1.0, 0.73)
 const DARK := Color(0.005, 0.033, 0.020, 0.97)
@@ -14,6 +15,9 @@ var event_label: Label
 var signal_label: Label
 var feedback_label: Label
 var recording_button: Button
+var waterfall: Control
+var record_indicator: ColorRect
+var hold_indicator: ColorRect
 var power_button: Button
 var step_hz := 100
 var hold_display := false
@@ -80,6 +84,13 @@ func _build() -> void:
 	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	rig.add_child(art)
 
+	# Live waterfall occupies the central CRT aperture, underneath bezel controls.
+	waterfall = Waterfall.new()
+	waterfall.name = "LiveWaterfall"
+	waterfall.position = Vector2(322, 248)
+	waterfall.size = Vector2(864, 322)
+	rig.add_child(waterfall)
+
 	# The approved 16:9 pixel art is the chassis; gameplay remains in main.gd.
 	# These readouts are recomputed from persisted Godot receiver state.
 	header_label = _readout(Rect2(0, 0, 1, 1), 12)
@@ -111,6 +122,8 @@ func _build() -> void:
 	_hit("HOLD", Rect2(1402, 337, 188, 82), _hold)
 	_hit("SIGNAL LOG", Rect2(1402, 440, 188, 85), _navigate.bind("Recordings"))
 	recording_button = _hit("RECORD / STOP", Rect2(1402, 548, 188, 85), _record)
+	hold_indicator = _indicator(Rect2(1574, 350, 9, 9))
+	record_indicator = _indicator(Rect2(1574, 566, 9, 9))
 
 	# Bottom hardware tuning arrows and modulation row.
 	_hit("TUNE DOWN", Rect2(295, 747, 91, 80), _tune.bind(-1))
@@ -189,6 +202,15 @@ func _hit(caption: String, area: Rect2, handler: Callable) -> Button:
 	rig.add_child(button)
 	return button
 
+func _indicator(area: Rect2) -> ColorRect:
+	var light := ColorRect.new()
+	light.position = area.position
+	light.size = area.size
+	light.color = Color(0.05, 0.11, 0.06, 0.8)
+	light.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	rig.add_child(light)
+	return light
+
 func _process(delta: float) -> void:
 	if not visible or host == null or host.game == null:
 		return
@@ -207,6 +229,12 @@ func refresh_from_game() -> void:
 	var event_id := String(data.get("selected_event_id", "SIG-0001"))
 	var event: Dictionary = host._find_event(event_id)
 	var controls: Dictionary = data.get("receiver_controls", {})
+	if waterfall != null:
+		waterfall.powered = on
+		waterfall.frozen = hold_display
+		waterfall.frequency_mhz = freq
+		hold_indicator.color = Color(0.25, 1.0, 0.35) if hold_display else Color(0.03, 0.11, 0.04)
+		record_indicator.color = Color(1.0, 0.16, 0.09) if host.monitor_capture.is_recording() else Color(0.03, 0.11, 0.04)
 	header_label.text = ("RX ON" if on else "RX OFF") + "   SITE 04   " + mode + "   " + _step_name() + " STEP   AGC " + ("ON" if bool(controls.get("agc", true)) else "OFF") + "   NB " + ("ON" if bool(controls.get("nb", true)) else "OFF")
 	freq_label.text = "%.3f MHz" % freq
 	event_label.text = "NRMS  SITE 04\n\nRETAINED RECORD\n" + event_id + "\n" + String(event.get("time_label", "--")) + "\n" + String(event.get("identifier", ""))
@@ -335,7 +363,7 @@ func _select_waterfall_mode(mode: String) -> void:
 
 func _hold() -> void:
 	hold_display = not hold_display
-	host.status_message = "Display HOLD selected (waterfall artwork is static in this test build)." if hold_display else "Display HOLD cleared."
+	host.status_message = "Waterfall frozen." if hold_display else "Live waterfall resumed."
 	refresh_from_game()
 
 func _record() -> void:
