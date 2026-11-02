@@ -52,3 +52,11 @@
 3. Improve receiver interaction and selected-event clarity using deterministic authored data; keep audio synthetic, optional, and nonessential.
 4. Add the next main-story content only after its evidence dependencies and recovery paths are implemented.
 5. Keep physical-device validation marked as unverified; continue using CI and static/layout-oriented checks rather than treating owner testing as a prerequisite for development.
+
+## November 2026 design-to-implementation pass
+- Project owner approved provisional design defaults and authorized pushing changes to the existing repository.
+- Manual recording now writes an immutable-provenance **player excerpt annotation** with a stable REC ID and original institutional-source label. This is **not a new live audio/PCM capture**; the active 90-second buffer and 30-second pre-roll remain specified targets awaiting runtime implementation.
+- Three selectable administrative outcomes are exposed after the first submitted report: closure, preservation, and independent review/disclosure. Choice and epilogue persist locally; every outcome leaves the case unresolved and preserves the submitted reports.
+- Optional Silent Site documents SS-01–SS-08 are available in the archive as a separate unresolved records chain; no established link to NR-041 or proof of destruction.
+- Regression checks now cover report-end disposition, save persistence, manual excerpt provenance, and the ending UI; consult CI for the actual outcome.
+- **Still outstanding:** live rolling audio buffer/pre-roll and interruptions, full simulated shift clock, additional later-story authored content, full ending scene treatment, actual Android device usability/lifecycle checks, and release signing. Never describe these as complete.
