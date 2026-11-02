@@ -26,6 +26,15 @@ func _run() -> void:
 		push_error("Session signal marks were not recorded")
 		quit(1)
 		return
+	root_game.call("_open_comparison_source", "SIG-0001")
+	if String(tuning_game.data.get("selected_event_id", "")) != "SIG-0001":
+		push_error("Comparison source navigation did not open selected signal")
+		quit(1)
+		return
+	if (root_game.get("session_signal_marks") as Array).size() != 2:
+		push_error("Comparison source navigation unexpectedly cleared marks")
+		quit(1)
+		return
 	var notes_before: int = tuning_game.data.get("notes", []).size()
 	root_game.call("_save_comparison_note")
 	var saved_notes: Array = tuning_game.data.get("notes", [])
