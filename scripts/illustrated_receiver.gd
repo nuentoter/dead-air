@@ -17,6 +17,7 @@ var recording_button: Button
 var power_button: Button
 var step_hz := 100
 var hold_display := false
+var waterfall_mode := "LIVE"
 var analysis_panel: PanelContainer
 var analysis_label: Label
 var analysis_visible := false
@@ -120,6 +121,16 @@ func _build() -> void:
 	]:
 		_hit("STEP " + str(entry[0]) + " Hz", Rect2(1515, int(entry[1]), 93, 45), _set_step.bind(int(entry[0])))
 
+	# On-photo RF/AF/SQUELCH knobs: tap to change their saved simulated
+	# audio controls. Their visible instrument readout reflects each change.
+	_hit("RF GAIN", Rect2(1245, 217, 108, 115), _adjust_knob.bind("rf_gain"))
+	_hit("AF GAIN", Rect2(1360, 217, 106, 115), _adjust_knob.bind("af_gain"))
+	_hit("SQUELCH", Rect2(1494, 217, 109, 115), _adjust_knob.bind("squelch"))
+	_hit("AGC", Rect2(977, 97, 83, 39), _toggle_feature.bind("agc"))
+	_hit("NB", Rect2(1065, 97, 93, 39), _toggle_feature.bind("nb"))
+	for item in [["LIVE", 608], ["HISTORY", 640], ["PEAK", 672], ["AVERAGE", 702]]:
+		_hit("WATERFALL " + String(item[0]), Rect2(1100, int(item[1]), 120, 28), _select_waterfall_mode.bind(String(item[0])))
+
 	# Tuning dial: tap left/right side or swipe/drag to tune. A real touch
 	# drag is handled by gui_input; there are no invisible off-knob +/- zones.
 	var dial := Control.new()
@@ -214,10 +225,11 @@ func refresh_from_game() -> void:
 	var freq := float(data.get("frequency_mhz", 10.0))
 	var event_id := String(data.get("selected_event_id", "SIG-0001"))
 	var event: Dictionary = host._find_event(event_id)
-	header_label.text = ("RX ON" if on else "RX OFF") + "   SITE 04   " + mode + "   STEP " + _step_name() + "   " + ("REC" if host.monitor_capture.is_recording() else "MONITOR")
+	var controls: Dictionary = data.get("receiver_controls", {})
+	header_label.text = ("RX ON" if on else "RX OFF") + "   SITE 04   " + mode + "   " + _step_name() + " STEP   AGC " + ("ON" if bool(controls.get("agc", true)) else "OFF") + "   NB " + ("ON" if bool(controls.get("nb", true)) else "OFF")
 	freq_label.text = "%.3f MHz" % freq
 	event_label.text = "NRMS  SITE 04\n\nRETAINED RECORD\n" + event_id + "\n" + String(event.get("time_label", "--")) + "\n" + String(event.get("identifier", ""))
-	signal_label.text = String(event.get("kind", "UNKNOWN")) + "  /  " + ("RECEIVER ON" if on else "RECEIVER OFF") + "\nRECORD STATUS: " + ("ACTIVE" if host.monitor_capture.is_recording() else "IDLE")
+	signal_label.text = String(event.get("kind", "UNKNOWN")) + " / " + waterfall_mode + (" / HOLD" if hold_display else "") + "\nRF %d   AF %d   SQ %d   " % [int(controls.get("rf_gain", 55)), int(controls.get("af_gain", 55)), int(controls.get("squelch", 20))] + ("RECORDING" if host.monitor_capture.is_recording() else "MONITOR")
 	feedback_label.text = host.status_message.left(52)
 	recording_button.tooltip_text = "STOP MONITOR RECORDING" if host.monitor_capture.is_recording() else "RECORD MONITOR (+30s)"
 	if analysis_visible:
@@ -319,6 +331,26 @@ func _apply_drag() -> void:
 	_dial_dragged = true
 	_dial_total -= float(moves) * 11.0
 	_tune(moves)
+
+func _adjust_knob(name: String) -> void:
+	var controls: Dictionary = host.game.data.get("receiver_controls", {})
+	var current := int(controls.get(name, 50))
+	var next_value := (current + 10) % 110
+	host._set_receiver_control(name, next_value)
+	host.status_message = name.to_upper().replace("_", " ") + ": " + str(next_value) + "%"
+	refresh_from_game()
+
+func _toggle_feature(name: String) -> void:
+	var controls: Dictionary = host.game.data.get("receiver_controls", {})
+	var next_value := not bool(controls.get(name, true))
+	host._set_receiver_control(name, next_value)
+	host.status_message = name.to_upper() + (" ON" if next_value else " OFF") + " (synthetic monitor)"
+	refresh_from_game()
+
+func _select_waterfall_mode(mode: String) -> void:
+	waterfall_mode = mode
+	host.status_message = "Waterfall " + mode + " selected. Photograph is static in this test build."
+	refresh_from_game()
 
 func _hold() -> void:
 	hold_display = not hold_display
