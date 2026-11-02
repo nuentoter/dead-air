@@ -20,6 +20,7 @@ var record_indicator: ColorRect
 var hold_indicator: ColorRect
 var power_button: Button
 var active_lights: Dictionary = {}
+var _last_powered := false
 var step_hz := 100
 var hold_display := false
 var waterfall_mode := "LIVE"
@@ -118,7 +119,7 @@ func _build() -> void:
 	_hit("RADIO POWER", Rect2(1258, 214, 120, 93), _power)
 	_hit("SEEK", Rect2(1258, 323, 120, 89), _seek)
 	_hit("ANALYZE", Rect2(1258, 432, 120, 91), _analyze)
-	_hit("RECEIVER SETTINGS", Rect2(1258, 541, 120, 90), _navigate.bind("Settings"))
+	_hit("TUNING STEP", Rect2(1258, 541, 120, 90), _cycle_step)
 	_hit("SCAN", Rect2(1402, 227, 188, 86), _seek)
 	_hit("HOLD", Rect2(1402, 337, 188, 82), _hold)
 	_hit("SIGNAL LOG", Rect2(1402, 440, 188, 85), _navigate.bind("Recordings"))
@@ -233,6 +234,9 @@ func refresh_from_game() -> void:
 	var event: Dictionary = host._find_event(event_id)
 	var controls: Dictionary = data.get("receiver_controls", {})
 	if waterfall != null:
+		if _last_powered != on:
+			waterfall.queue_redraw()
+			_last_powered = on
 		waterfall.powered = on
 		waterfall.frozen = hold_display
 		waterfall.frequency_mhz = freq
@@ -369,7 +373,7 @@ func _toggle_feature(name: String) -> void:
 
 func _select_waterfall_mode(mode: String) -> void:
 	waterfall_mode = mode
-	host.status_message = "Waterfall " + mode + " selected. Photograph is static in this test build."
+	host.status_message = "Waterfall display mode selected: " + mode + "."
 	refresh_from_game()
 
 func _hold() -> void:
