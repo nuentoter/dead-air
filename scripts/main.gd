@@ -581,7 +581,7 @@ func _select_event(event_id: String) -> void:
 
 func _record_selected_event(event_id: String) -> void:
 	game.record_event(event_id)
-	status_message = event_id + " manually recorded. Automatic retention and manual recording are separate."
+	status_message = event_id + " excerpt annotated and filed. No live PCM was captured; institutional original unchanged."
 	_refresh()
 
 func _open_recordings(event_id: String) -> void:
@@ -591,15 +591,20 @@ func _open_recordings(event_id: String) -> void:
 	_refresh()
 
 func _draw_recordings() -> void:
-	_heading("RECORDINGS", "Retained reception events are available even when the receiver is off.")
+	_heading("RECORDINGS", "Institutional retained events remain available while the receiver is off.")
+	_add_text("Current prototype: MANUAL RECORD files a player excerpt annotation, not a new PCM capture. The active-channel 90-second buffer and 30-second pre-roll are approved design targets, not yet live capture controls.", 12, WARNING)
 	for event in Catalog.EVENTS:
 		var event_id := String(event.get("id", ""))
 		var manually_recorded: bool = game.data.get("recorded_event_ids", []).has(event_id)
-		var prefix := "MANUAL RECORD" if manually_recorded else "AUTO-RETAINED"
+		var prefix := "PLAYER EXCERPT" if manually_recorded else "INSTITUTIONAL RETAINED"
 		var row := _row()
 		_button(event_id + "  /  " + prefix, _select_event_from_recordings.bind(event_id), row)
 		_add_text("%.3f MHz %s — %s" % [float(event.get("frequency_mhz", 0.0)), String(event.get("mode", "")), String(event.get("time_label", ""))], 13, MUTED, row)
 		if String(game.data.get("selected_event_id", "")) == event_id:
+			if manually_recorded:
+				for record in game.data.get("recording_records", []):
+					if String(record.get("event_id", "")) == event_id:
+						_add_text("Player record: " + String(record.get("id", "")) + "  /  " + String(record.get("audio_capture_status", "")), 12, WARNING)
 			_add_text(String(event.get("transcript", "")), 15, TEXT)
 			_button("PLAY SIGNAL AUDIO", _play_selected_signal)
 			_button("READ TEXT", _speak_selected_transcript)
@@ -1058,7 +1063,25 @@ func _draw_messages() -> void:
 		_add_text(String(response.get("body", "")), 15, TEXT)
 		_add_text("Administrative status: accepted for filing. Case status: unresolved.", 12, WARNING)
 		_button("OPEN REPORT / ADDENDUM FORM", _open_report_assignment)
+		_add_text("FINAL ADMINISTRATIVE DISPOSITION", 15, ACCENT)
+		var disposition := String(game.data.get("ending_disposition", ""))
+		if disposition.is_empty():
+			_add_text("Choose a record-handling outcome. This is an administrative choice; all three leave the source and chronology unresolved.", 12, MUTED)
+			var ending_row := _row()
+			_button("CLOSE WORK ORDER", _choose_ending.bind("CLOSURE"), ending_row)
+			_button("PRESERVE RECORDS", _choose_ending.bind("PRESERVATION"), ending_row)
+			_button("REQUEST INDEPENDENT REVIEW", _choose_ending.bind("DISCLOSURE"), ending_row)
+		else:
+			_add_text("Disposition: " + disposition + "  /  Case: UNRESOLVED", 13, ACCENT)
+			_add_text(game.ending_epilogue(), 15, TEXT)
 		_add_text("SHIFT CLOSED — RECORDS RETAINED — SOURCE UNRESOLVED", 17, ACCENT)
+
+func _choose_ending(disposition: String) -> void:
+	if game.choose_ending(disposition):
+		status_message = "Disposition filed: " + disposition + ". The original reports and evidence remain unchanged."
+	else:
+		status_message = "Disposition not available or already filed."
+	_refresh()
 
 func _open_report_assignment() -> void:
 	selected_assignment_id = "A-006"
