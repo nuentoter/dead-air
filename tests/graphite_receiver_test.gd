@@ -14,6 +14,11 @@ func _run() -> void:
 	await process_frame
 	root_game.call("_on_nav_pressed", "Receiver")
 	var tuning_game = root_game.get("game")
+	root_game.call("_tune_to_retained_event", "SIG-0003")
+	if not is_equal_approx(float(tuning_game.data.get("frequency_mhz", 0.0)), 14.070) or String(tuning_game.data.get("mode", "")) != "USB":
+		push_error("Retained event direct tuning did not select 14.070 MHz USB")
+		quit(1)
+		return
 	var original_mhz := float(tuning_game.data.get("frequency_mhz", 10.0))
 	root_game.call("_quick_tune", 0.001)
 	if not is_equal_approx(float(tuning_game.data.get("frequency_mhz", 10.0)), original_mhz + 0.001):
