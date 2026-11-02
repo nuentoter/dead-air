@@ -90,6 +90,7 @@ var text_scale_label: Label
 var selected_document_id := ""
 var selected_assignment_id := "A-001"
 var archive_query := ""
+var session_signal_marks: Array[String] = []
 var archive_search_input: LineEdit
 var note_source_select: OptionButton
 var note_class_select: OptionButton
@@ -485,12 +486,15 @@ func _draw_receiver() -> void:
 		_button("READ TEXT", _speak_selected_transcript, action_row)
 		_button("STOP AUDIO", _stop_audio, action_row)
 
-	_add_text("RETAINED EVENT INDEX", 13, ACCENT)
+	_add_text("RETAINED EVENT INDEX / SESSION MARKS", 13, ACCENT)
+	_add_text("Marks are temporary investigator selections, not institutional evidence.", 11, MUTED)
 	for event in Catalog.EVENTS:
 		var label := "%s   %.3f MHz %s   %s" % [String(event.get("id", "")), float(event.get("frequency_mhz", 0.0)), String(event.get("mode", "")), String(event.get("kind", ""))]
 		var event_row := _row()
 		_button(label, _select_event.bind(String(event.get("id", ""))), event_row)
 		_button("TUNE", _tune_to_retained_event.bind(String(event.get("id", ""))), event_row)
+		var event_id := String(event.get("id", ""))
+		_button("UNMARK" if session_signal_marks.has(event_id) else "MARK", _toggle_session_mark.bind(event_id), event_row)
 
 func _draw_tuned_event_matches() -> void:
 	_add_text("TUNED EVENT CHECK", 13, ACCENT)
@@ -691,6 +695,16 @@ func _tune_to_retained_event(event_id: String) -> void:
 	game.select_event(event_id)
 	game.set_receiver(bool(game.data.get("receiver_power", false)), frequency, mode)
 	status_message = "Tuned to retained channel %s: %.3f MHz %s. No new reception claimed." % [event_id, frequency, mode]
+	_refresh()
+
+func _toggle_session_mark(event_id: String) -> void:
+	if _find_event(event_id).is_empty():
+		return
+	if session_signal_marks.has(event_id):
+		session_signal_marks.erase(event_id)
+	else:
+		session_signal_marks.append(event_id)
+	status_message = "Session signal marks updated. No evidence records modified."
 	_refresh()
 
 func _select_event(event_id: String) -> void:
