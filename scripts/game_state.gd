@@ -34,6 +34,7 @@ func reset_defaults() -> void:
 		"retained_event_ids": ["SIG-0001", "SIG-0002", "SIG-0003", "SIG-0004", "SIG-0005"],
 		"inspected_event_ids": [],
 		"recorded_event_ids": [],
+		"receiver_controls": {"rf_gain": 55, "af_gain": 55, "squelch": 20, "agc": true, "nb": true},
 		"recording_records": [],
 		"next_recording_id": 1,
 		"ending_disposition": "",
@@ -80,7 +81,7 @@ func _ensure_defaults() -> void:
 	var defaults := {
 		"current_section": "Receiver", "receiver_power": false, "frequency_mhz": 10.0,
 		"mode": "AM", "selected_event_id": "SIG-0001", "retained_event_ids": [],
-		"inspected_event_ids": [], "recorded_event_ids": [], "recording_records": [], "next_recording_id": 1, "ending_disposition": "", "ending_history": [], "documents_read": [], "notes": [], "reports": [],
+		"inspected_event_ids": [], "recorded_event_ids": [], "receiver_controls": {"rf_gain": 55, "af_gain": 55, "squelch": 20, "agc": true, "nb": true}, "recording_records": [], "next_recording_id": 1, "ending_disposition": "", "ending_history": [], "documents_read": [], "notes": [], "reports": [],
 		"assignments": {}, "messages_seen": [], "settings": {"text_scale": 1.0, "audio_enabled": true, "speech_rate": 1.0},
 		"event_log": [], "next_note_id": 1, "next_report_id": 1,
 		"note_draft": "", "note_draft_classification": "UNCLASSIFIED", "communications_comparison_reviewed": false, "report_draft": "The retained records establish a repeated identifier and conflicting chronology. The available material does not establish a common transmitter or explain the source-clock difference.",
