@@ -86,7 +86,7 @@ func _run() -> void:
 	assert(String(monitor_record.get("event_id", "")) == "", "Synthetic monitor PCM must not be attributed to an authored event.")
 
 	assert(state.data.get("recording_records", []).size() >= 1, "Manual excerpt ledger was not created.")
-	var capture: Dictionary = state.data["recording_records"][-1]
+	var capture: Dictionary = state.data["recording_records"][0] # Excerpt is first; generated monitor capture was appended second.
 	assert(String(capture.get("source_type", "")) == "PLAYER EXCERPT ANNOTATION", "Manual excerpt provenance missing.")
 	assert(String(capture.get("audio_capture_status", "")) == "NOT RECORDED AS PCM", "Do not represent synthetic excerpts as PCM captures.")
 	assert(state.data.get("retained_event_ids", []).size() == prior_event_count, "Manual annotation altered institutional retention.")
