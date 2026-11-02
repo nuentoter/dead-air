@@ -13,6 +13,13 @@ func _run() -> void:
 	root.add_child(root_game)
 	await process_frame
 	root_game.call("_on_nav_pressed", "Receiver")
+	var tuning_game = root_game.get("game")
+	var original_mhz := float(tuning_game.data.get("frequency_mhz", 10.0))
+	root_game.call("_quick_tune", 0.001)
+	if not is_equal_approx(float(tuning_game.data.get("frequency_mhz", 10.0)), original_mhz + 0.001):
+		push_error("Standard Android receiver 1 kHz tune failed")
+		quit(1)
+		return
 	var standard_receiver: Control = root_game.get("illustrated_receiver") as Control
 	if standard_receiver == null:
 		push_error("Illustrated receiver was not instantiated")
