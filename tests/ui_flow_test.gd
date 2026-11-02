@@ -16,6 +16,25 @@ func _run() -> void:
 	instance.call("_select_assignment", "A-006")
 	await process_frame
 	var game = instance.get("game")
+	var illustration: Control = instance.get_node_or_null("IllustratedReceiver")
+	if not _expect(illustration != null, "Illustrated receiver scene was not added to Godot."):
+		return
+	instance.call("_on_nav_pressed", "Receiver")
+	if not _expect(illustration.visible, "Illustrated receiver not visible when Receiver section opens."):
+		return
+	if not bool(game.data.get("receiver_power", false)):
+		illustration.call("_power")
+	var frequency_before: float = float(game.data.get("frequency_mhz", 10.0))
+	illustration.call("_tune", 1)
+	if not _expect(float(game.data.get("frequency_mhz", 10.0)) > frequency_before, "Illustrated tuner did not modify authoritative game frequency."):
+		return
+	illustration.call("_cycle_mode")
+	if not _expect(String(game.data.get("mode", "AM")) != "AM", "Illustrated mode control did not modify game state."):
+		return
+	instance.call("_on_nav_pressed", "Assignments")
+	instance.call("_select_assignment", "A-006")
+	if not _expect(not illustration.visible, "Evidence work panel must cover illustrated receiver while navigating."):
+		return
 	var initial_report_count: int = game.data.get("reports", []).size()
 	if not _expect(_tree_contains_text(instance, "OPEN  /  M-02 opened"), "A-006 progress checklist should show unopened evidence before review."):
 		return
