@@ -29,7 +29,7 @@ func _run() -> void:
 			quit(1)
 			return
 	var plot: Control = rig.get_node("LiveWaterfall")
-	if plot.get("rows") == null or int(plot.get("COLS")) != 128:
+	if plot.get("rows") == null or plot.size.x <= 0.0 or plot.size.y <= 0.0:
 		push_error("Waterfall renderer was not initialized")
 		quit(1)
 		return
