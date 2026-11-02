@@ -5,6 +5,8 @@ var frequency_mhz := 7.285
 var powered := false
 var frozen := false
 var elapsed := 0.0
+var signal_strength := 0.0
+var signal_offset := 0.0
 var rows: Array[PackedFloat32Array] = []
 const COLS := 128
 const ROWS := 68
@@ -29,9 +31,10 @@ func _process(delta: float) -> void:
 		var x := float(i) / float(COLS - 1)
 		var noise := 0.06 + 0.11 * absf(sin(float(i) * 7.39 + t * 0.77) * cos(float(i) * 1.87 - t))
 		var center := 0.5 + 0.19 * sin(frequency_mhz * 1.713)
-		var narrow := exp(-pow((x - center) / 0.018, 2.0))
+		var narrow := exp(-pow((x - center) / 0.018, 2.0)) * (0.08 + 0.92 * signal_strength)
+		var event_peak := exp(-pow((x - (0.5 + signal_offset)) / 0.012, 2.0)) * signal_strength
 		var side := exp(-pow((x - (center + 0.16)) / 0.035, 2.0)) * 0.35
-		row[i] = clampf(noise + narrow * 0.83 + side, 0.0, 1.0)
+		row[i] = clampf(noise + narrow * 0.83 + side * signal_strength + event_peak * 0.65, 0.0, 1.0)
 	rows.push_front(row)
 	if rows.size() > ROWS:
 		rows.pop_back()
