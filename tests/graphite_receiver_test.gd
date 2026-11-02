@@ -23,7 +23,7 @@ func _run() -> void:
 		push_error("Graphite chassis not mounted")
 		quit(1)
 		return
-	for control_name in ["LiveWaterfall", "Hit_MODE_USB", "Hit_MODE_CW", "Hit_TUNE_DOWN", "Hit_TUNE_UP", "Hit_RECORD___STOP", "Hit_HOLD", "Hit_SCAN", "Hit_ARCHIVE", "Hit_NOTEBOOK"]:
+	for control_name in ["LiveWaterfall", "Hit_MODE_USB", "Hit_MODE_CW", "Hit_TUNE_DOWN", "Hit_TUNE_UP", "Hit_RECORD___STOP", "Hit_HOLD", "Hit_SCAN", "Hit_ARCHIVE", "Hit_NOTEBOOK", "Hit_TUNING_STEP"]:
 		if rig.get_node_or_null(control_name) == null:
 			push_error("Missing receiver control: " + control_name)
 			quit(1)
@@ -40,6 +40,12 @@ func _run() -> void:
 		return
 	if (lamps["USB"] as ColorRect).color.g < 0.9 or (lamps["POWER"] as ColorRect).color.g < 0.9:
 		push_error("Active receiver lamps did not illuminate")
+		quit(1)
+		return
+	var previous_step: int = int(receiver.get("step_hz"))
+	(rig.get_node("Hit_TUNING_STEP") as Button).pressed.emit()
+	if int(receiver.get("step_hz")) == previous_step:
+		push_error("Step selector did not cycle")
 		quit(1)
 		return
 	receiver.call("_set_step", 1000)
