@@ -1,0 +1,22 @@
+name: Receiver GUI asset checks
+on:
+  push:
+    paths:
+      - "gui/**"
+      - "tests/gui_smoke.py"
+      - ".github/workflows/gui-check.yml"
+  pull_request:
+    paths:
+      - "gui/**"
+      - "tests/gui_smoke.py"
+      - ".github/workflows/gui-check.yml"
+  workflow_dispatch:
+
+jobs:
+  gui-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate browser syntax and referenced artwork
+        run: python3 tests/gui_smoke.py
