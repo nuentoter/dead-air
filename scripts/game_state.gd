@@ -220,6 +220,38 @@ func record_event(event_id: String) -> void:
 	log_event("Manual excerpt annotation " + record_id + " filed for " + event_id + ". Original institutional record unchanged.")
 	save_game()
 
+
+func add_pcm_capture(pcm: PackedByteArray, sample_rate: int, frequency_mhz: float, mode: String, pre_roll_samples: int, status: String) -> Dictionary:
+	# This records locally generated receiver-monitor audio only.
+	if pcm.is_empty() or sample_rate <= 0:
+		return {}
+	var rec_id := "REC-%04d" % int(data.get("next_recording_id", 1))
+	var relative_path := "user://captures/" + rec_id + ".pcm"
+	if DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("user://captures")) != OK:
+		return {}
+	var file := FileAccess.open(relative_path, FileAccess.WRITE)
+	if file == null:
+		return {}
+	file.store_buffer(pcm)
+	file.close()
+	var record := {
+		"id": rec_id, "source_type": "PLAYER SYNTHETIC MONITOR AUDIO",
+		"original_source_type": "LOCAL PROCEDURAL RECEIVER", "audio_capture_status": status,
+		"audio_path": relative_path, "sample_rate": sample_rate,
+		"sample_count": int(pcm.size() / 2),
+		"duration_seconds": float(pcm.size()) / float(sample_rate * 2),
+		"pre_roll_seconds": float(pre_roll_samples) / float(sample_rate),
+		"frequency_mhz": frequency_mhz, "mode": mode,
+		"event_id": "",
+		"provenance_note": "Recorded from local synthetic receiver monitor output. Does not capture institutional authored audio, an RF signal, or microphone input."
+	}
+	data["recording_records"].append(record)
+	data["next_recording_id"] = int(data.get("next_recording_id", 1)) + 1
+	log_event("Synthetic receiver monitor recording " + rec_id + " filed (" + status + ").")
+	save_game()
+	return record
+
+
 func choose_ending(disposition: String) -> bool:
 	if not ["CLOSURE", "PRESERVATION", "DISCLOSURE"].has(disposition):
 		return false
