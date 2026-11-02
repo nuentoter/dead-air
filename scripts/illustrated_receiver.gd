@@ -65,91 +65,91 @@ func _readout(area: Rect2, font_size: int, centered: bool = false) -> Label:
 	return label
 
 func _build() -> void:
-    _mask_full_background()
-    rig = Control.new()
-    rig.name = "IllustratedRig"
-    rig.size = REFERENCE
-    rig.mouse_filter = Control.MOUSE_FILTER_PASS
-    add_child(rig)
-    var art := TextureRect.new()
-    art.texture = MASTER
-    art.size = REFERENCE
-    art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-    art.stretch_mode = TextureRect.STRETCH_SCALE
-    art.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-    art.mouse_filter = Control.MOUSE_FILTER_IGNORE
-    rig.add_child(art)
+	_mask_full_background()
+	rig = Control.new()
+	rig.name = "IllustratedRig"
+	rig.size = REFERENCE
+	rig.mouse_filter = Control.MOUSE_FILTER_PASS
+	add_child(rig)
+	var art := TextureRect.new()
+	art.texture = MASTER
+	art.size = REFERENCE
+	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	art.stretch_mode = TextureRect.STRETCH_SCALE
+	art.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	rig.add_child(art)
 
-    # The approved 16:9 pixel art is the chassis; gameplay remains in main.gd.
-    # These readouts are recomputed from persisted Godot receiver state.
-    header_label = _readout(Rect2(0, 0, 1, 1), 12)
-    header_label.visible = false
-    event_label = _readout(Rect2(0, 0, 1, 1), 12)
-    event_label.visible = false
-    signal_label = _readout(Rect2(0, 0, 1, 1), 12)
-    signal_label.visible = false
-    feedback_label = _readout(Rect2(281, 163, 870, 30), 17)
-    feedback_label.visible = false
+	# The approved 16:9 pixel art is the chassis; gameplay remains in main.gd.
+	# These readouts are recomputed from persisted Godot receiver state.
+	header_label = _readout(Rect2(0, 0, 1, 1), 12)
+	header_label.visible = false
+	event_label = _readout(Rect2(0, 0, 1, 1), 12)
+	event_label.visible = false
+	signal_label = _readout(Rect2(0, 0, 1, 1), 12)
+	signal_label.visible = false
+	feedback_label = _readout(Rect2(281, 163, 870, 30), 17)
+	feedback_label.visible = false
 
-    # Hide the baked sample frequency only; preserve frame and adjacent buttons.
-    _mask(Rect2(396, 745, 426, 73), Color(0.006, 0.025, 0.018, 1.0))
-    freq_label = _readout(Rect2(409, 752, 396, 59), 39, true)
+	# Hide the baked sample frequency only; preserve frame and adjacent buttons.
+	_mask(Rect2(396, 745, 426, 73), Color(0.006, 0.025, 0.018, 1.0))
+	freq_label = _readout(Rect2(409, 752, 396, 59), 39, true)
 
-    # Five left icon keys are the radio investigation navigation.
-    power_button = _hit("RADIO / POWER", Rect2(97, 208, 141, 96), _power)
-    _hit("ARCHIVE", Rect2(97, 320, 141, 94), _navigate.bind("Archive"))
-    _hit("RECORDINGS", Rect2(97, 427, 141, 96), _navigate.bind("Recordings"))
-    _hit("ASSIGNMENTS", Rect2(97, 536, 141, 97), _navigate.bind("Assignments"))
-    _hit("NOTEBOOK", Rect2(97, 643, 141, 92), _navigate.bind("Notebook"))
+	# Five left icon keys are the radio investigation navigation.
+	power_button = _hit("RADIO / POWER", Rect2(97, 208, 141, 96), _power)
+	_hit("ARCHIVE", Rect2(97, 320, 141, 94), _navigate.bind("Archive"))
+	_hit("RECORDINGS", Rect2(97, 427, 141, 96), _navigate.bind("Recordings"))
+	_hit("ASSIGNMENTS", Rect2(97, 536, 141, 97), _navigate.bind("Assignments"))
+	_hit("NOTEBOOK", Rect2(97, 643, 141, 92), _navigate.bind("Notebook"))
 
-    # Right column: utility buttons and real receiver actions.
-    _hit("RADIO POWER", Rect2(1258, 214, 120, 93), _power)
-    _hit("SEEK", Rect2(1258, 323, 120, 89), _seek)
-    _hit("ANALYZE", Rect2(1258, 432, 120, 91), _analyze)
-    _hit("RECEIVER SETTINGS", Rect2(1258, 541, 120, 90), _navigate.bind("Settings"))
-    _hit("SCAN", Rect2(1402, 227, 188, 86), _seek)
-    _hit("HOLD", Rect2(1402, 337, 188, 82), _hold)
-    _hit("SIGNAL LOG", Rect2(1402, 440, 188, 85), _navigate.bind("Recordings"))
-    recording_button = _hit("RECORD / STOP", Rect2(1402, 548, 188, 85), _record)
+	# Right column: utility buttons and real receiver actions.
+	_hit("RADIO POWER", Rect2(1258, 214, 120, 93), _power)
+	_hit("SEEK", Rect2(1258, 323, 120, 89), _seek)
+	_hit("ANALYZE", Rect2(1258, 432, 120, 91), _analyze)
+	_hit("RECEIVER SETTINGS", Rect2(1258, 541, 120, 90), _navigate.bind("Settings"))
+	_hit("SCAN", Rect2(1402, 227, 188, 86), _seek)
+	_hit("HOLD", Rect2(1402, 337, 188, 82), _hold)
+	_hit("SIGNAL LOG", Rect2(1402, 440, 188, 85), _navigate.bind("Recordings"))
+	recording_button = _hit("RECORD / STOP", Rect2(1402, 548, 188, 85), _record)
 
-    # Bottom hardware tuning arrows and modulation row.
-    _hit("TUNE DOWN", Rect2(295, 747, 91, 80), _tune.bind(-1))
-    _hit("TUNE UP", Rect2(833, 747, 93, 80), _tune.bind(1))
-    for item in [["AM", 970], ["USB", 1080], ["LSB", 1193], ["CW", 1304], ["FM", 1414]]:
-        _hit("MODE " + String(item[0]), Rect2(int(item[1]), 740, 104, 89), _set_mode.bind(String(item[0])))
+	# Bottom hardware tuning arrows and modulation row.
+	_hit("TUNE DOWN", Rect2(295, 747, 91, 80), _tune.bind(-1))
+	_hit("TUNE UP", Rect2(833, 747, 93, 80), _tune.bind(1))
+	for item in [["AM", 970], ["USB", 1080], ["LSB", 1193], ["CW", 1304], ["FM", 1414]]:
+		_hit("MODE " + String(item[0]), Rect2(int(item[1]), 740, 104, 89), _set_mode.bind(String(item[0])))
 
-    # Original Mk II has no separate step keys. Cycling step is available
-    # from the receiver's lower-left speaker/grille, with tooltip feedback.
-    _hit("CYCLE TUNING STEP", Rect2(93, 745, 171, 90), _cycle_step)
+	# Original Mk II has no separate step keys. Cycling step is available
+	# from the receiver's lower-left speaker/grille, with tooltip feedback.
+	_hit("CYCLE TUNING STEP", Rect2(93, 745, 171, 90), _cycle_step)
 
-    # Analysis stays an in-radio overlay; no separate screen or data fork.
-    analysis_panel = PanelContainer.new()
-    analysis_panel.name = "RadioAnalysis"
-    analysis_panel.position = Vector2(278, 205)
-    analysis_panel.size = Vector2(914, 479)
-    var style := StyleBoxFlat.new()
-    style.bg_color = Color(0.015, 0.025, 0.023, 0.985)
-    style.border_color = Color(0.37, 0.95, 0.43)
-    style.set_border_width_all(4)
-    style.set_content_margin_all(18)
-    analysis_panel.add_theme_stylebox_override("panel", style)
-    rig.add_child(analysis_panel)
-    var contents := VBoxContainer.new()
-    contents.add_theme_constant_override("separation", 12)
-    analysis_panel.add_child(contents)
-    analysis_label = Label.new()
-    analysis_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    analysis_label.custom_minimum_size = Vector2(850, 365)
-    analysis_label.add_theme_color_override("font_color", Color(0.65, 1.0, 0.68))
-    analysis_label.add_theme_font_size_override("font_size", 24)
-    contents.add_child(analysis_label)
-    var actions := HBoxContainer.new()
-    contents.add_child(actions)
-    _action(actions, "PLAY SIGNAL", _play_signal)
-    _action(actions, "READ TEXT", _read_signal)
-    _action(actions, "CLOSE", _close_analysis)
-    analysis_panel.visible = false
-    refresh_from_game()
+	# Analysis stays an in-radio overlay; no separate screen or data fork.
+	analysis_panel = PanelContainer.new()
+	analysis_panel.name = "RadioAnalysis"
+	analysis_panel.position = Vector2(278, 205)
+	analysis_panel.size = Vector2(914, 479)
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.015, 0.025, 0.023, 0.985)
+	style.border_color = Color(0.37, 0.95, 0.43)
+	style.set_border_width_all(4)
+	style.set_content_margin_all(18)
+	analysis_panel.add_theme_stylebox_override("panel", style)
+	rig.add_child(analysis_panel)
+	var contents := VBoxContainer.new()
+	contents.add_theme_constant_override("separation", 12)
+	analysis_panel.add_child(contents)
+	analysis_label = Label.new()
+	analysis_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	analysis_label.custom_minimum_size = Vector2(850, 365)
+	analysis_label.add_theme_color_override("font_color", Color(0.65, 1.0, 0.68))
+	analysis_label.add_theme_font_size_override("font_size", 24)
+	contents.add_child(analysis_label)
+	var actions := HBoxContainer.new()
+	contents.add_child(actions)
+	_action(actions, "PLAY SIGNAL", _play_signal)
+	_action(actions, "READ TEXT", _read_signal)
+	_action(actions, "CLOSE", _close_analysis)
+	analysis_panel.visible = false
+	refresh_from_game()
 
 func _mask_full_background() -> void:
 	var shade := ColorRect.new()
