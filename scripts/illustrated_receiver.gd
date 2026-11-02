@@ -21,6 +21,7 @@ var hold_indicator: ColorRect
 var power_button: Button
 var active_lights: Dictionary = {}
 var _last_powered := false
+var _last_layout_size := Vector2.ZERO
 var step_hz := 100
 var hold_display := false
 var waterfall_mode := "LIVE"
@@ -35,6 +36,10 @@ var _dial_total := 0.0
 func setup(main_control: Control) -> void:
 	host = main_control
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	# Control is created at runtime: ensure its rect fills the viewport even
+	# before the first Android resize notification.
+	position = Vector2.ZERO
+	size = get_viewport_rect().size
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	_build()
 	resized.connect(_layout_rig)
@@ -43,9 +48,15 @@ func setup(main_control: Control) -> void:
 func _layout_rig() -> void:
 	if rig == null:
 		return
-	var factor := minf(size.x / REFERENCE.x, size.y / REFERENCE.y)
+	var available := size
+	if available.x < 1.0 or available.y < 1.0:
+		available = get_viewport_rect().size
+	if available.x < 1.0 or available.y < 1.0:
+		return
+	var factor := maxf(0.001, minf(available.x / REFERENCE.x, available.y / REFERENCE.y))
+	_last_layout_size = available
 	rig.scale = Vector2(factor, factor)
-	rig.position = (size - REFERENCE * factor) / 2.0
+	rig.position = (available - REFERENCE * factor) / 2.0
 
 func _mask(area: Rect2, color: Color = DARK) -> ColorRect:
 	var rect := ColorRect.new()
@@ -216,6 +227,8 @@ func _indicator(area: Rect2) -> ColorRect:
 	return light
 
 func _process(delta: float) -> void:
+	if visible and (rig == null or rig.scale.x < 0.01 or size.distance_to(_last_layout_size) > 2.0):
+		_layout_rig()
 	if not visible or host == null or host.game == null:
 		return
 	_clock += delta
