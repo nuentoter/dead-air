@@ -132,7 +132,7 @@ func _set_receiver_view(show_art: bool) -> void:
 	if root_column != null:
 		root_column.visible = not can_show
 	if show_art and not can_show:
-		status_message = "Illustrated receiver unavailable. Standard receiver remains active."
+		status_message = "Illustrated receiver unavailable: " + (String(illustrated_receiver.call("artwork_diagnostic")) if illustrated_receiver != null and illustrated_receiver.has_method("artwork_diagnostic") else "receiver script missing")
 	if can_show:
 		illustrated_receiver.refresh_from_game()
 
