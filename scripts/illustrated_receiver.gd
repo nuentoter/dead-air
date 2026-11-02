@@ -273,7 +273,7 @@ func _tune(steps: int) -> void:
 		return
 	var frequency := float(host.game.data.get("frequency_mhz", 10.0))
 	var next_frequency := clampf(frequency + float(steps * step_hz) / 1000000.0, 0.1, 30000.0)
-	if is_equal_approx(frequency, next_frequency):
+	if absf(frequency - next_frequency) < 0.0000001:
 		return
 	host._finish_monitor_recording("INTERRUPTED_TUNE")
 	host.monitor_capture.retune(next_frequency, String(host.game.data.get("mode", "AM")))
