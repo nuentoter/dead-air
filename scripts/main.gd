@@ -83,6 +83,7 @@ var game
 var monitor_capture = CaptureEngine.new()
 var root_column: VBoxContainer
 var illustrated_receiver: Control
+var illustrated_mode_requested := false
 var body: VBoxContainer
 var status_label: Label
 var text_scale_label: Label
@@ -120,14 +121,19 @@ func _setup_illustrated_receiver() -> void:
 	illustrated_receiver.name = "IllustratedReceiver"
 	add_child(illustrated_receiver)
 	illustrated_receiver.setup(self)
-	_set_receiver_view(String(game.data.get("current_section", "Receiver")) == "Receiver")
+	_set_receiver_view(false)
 
 func _set_receiver_view(show_art: bool) -> void:
+	# The regular receiver remains the safe default on Android.
+	# Illustrated mode requires an explicit request and a loaded artwork texture.
+	var can_show := show_art and illustrated_receiver != null and illustrated_receiver.has_method("is_artwork_ready") and bool(illustrated_receiver.call("is_artwork_ready"))
 	if illustrated_receiver != null:
-		illustrated_receiver.visible = show_art
+		illustrated_receiver.visible = can_show
 	if root_column != null:
-		root_column.visible = not show_art
-	if show_art and illustrated_receiver != null:
+		root_column.visible = not can_show
+	if show_art and not can_show:
+		status_message = "Illustrated receiver unavailable. Standard receiver remains active."
+	if can_show:
 		illustrated_receiver.refresh_from_game()
 
 func _return_to_illustrated_receiver() -> void:
@@ -354,7 +360,7 @@ func _change_text_scale(delta: float) -> void:
 func _on_nav_pressed(section: String) -> void:
 	game.data["current_section"] = section
 	game.save_game()
-	_set_receiver_view(section == "Receiver")
+	_set_receiver_view(false)
 	_refresh()
 
 func _heading(title: String, subtitle: String = "") -> void:
