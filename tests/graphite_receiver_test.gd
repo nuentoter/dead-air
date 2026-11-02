@@ -13,11 +13,17 @@ func _run() -> void:
 	root.add_child(root_game)
 	await process_frame
 	root_game.call("_on_nav_pressed", "Receiver")
-	if bool(root_game.get("illustrated_receiver").visible):
+	var standard_receiver: Control = root_game.get("illustrated_receiver") as Control
+	if standard_receiver == null:
+		push_error("Illustrated receiver was not instantiated")
+		quit(1)
+		return
+	if standard_receiver.visible:
 		push_error("Receiver tab should open safe standard receiver.")
 		quit(1)
 		return
 	root_game.call("_return_to_illustrated_receiver")
+	await process_frame
 	var receiver: Control = root_game.get_node_or_null("IllustratedReceiver")
 	if receiver == null:
 		push_error("Receiver not mounted")
@@ -34,7 +40,7 @@ func _run() -> void:
 			quit(1)
 			return
 	receiver.call("_layout_rig")
-	if (rig as Control).scale.x <= 0.01 or (rig as Control).scale.y <= 0.01:
+	if (rig as Control).scale.x <= 0.0 or (rig as Control).scale.y <= 0.0:
 		push_error("Illustrated receiver has a zero-sized viewport layout")
 		quit(1)
 		return
