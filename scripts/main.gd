@@ -91,6 +91,7 @@ var selected_document_id := ""
 var selected_assignment_id := "A-001"
 var archive_query := ""
 var session_signal_marks: Array[String] = []
+var receiver_details_expanded := false
 var archive_search_input: LineEdit
 var note_source_select: OptionButton
 var note_class_select: OptionButton
@@ -421,6 +422,10 @@ func _find_document(document_id: String) -> Dictionary:
 			return document
 	return {}
 
+func _toggle_receiver_details() -> void:
+	receiver_details_expanded = not receiver_details_expanded
+	_refresh()
+
 func _draw_receiver() -> void:
 	_heading("RECEIVER", "Curated offline signal simulation. This is not a live radio or SDR.")
 	var control_row := _row()
@@ -464,8 +469,13 @@ func _draw_receiver() -> void:
 		_add_text("Buffered: %.1fs / 90s. No microphone or RF input." % monitor_capture.buffered_seconds(), 12, MUTED, capture_row)
 	var live_state := "RX ON" if bool(game.data.get("receiver_power", false)) else "RX OFF — retained events remain available"
 	_add_text(live_state, 13, ACCENT if bool(game.data.get("receiver_power", false)) else WARNING)
-	_draw_waterfall()
-	_draw_tuned_event_matches()
+	# Keep the active tuning controls and selected signal at the top on phones.
+	# The large historic plot and match list are available on demand.
+	var details_toggle := _button("HIDE EXTENDED DISPLAY" if receiver_details_expanded else "SHOW WATERFALL / MATCHES", _toggle_receiver_details)
+	details_toggle.custom_minimum_size = Vector2(260, 56)
+	if receiver_details_expanded:
+		_draw_waterfall()
+		_draw_tuned_event_matches()
 
 	var selected := _find_event(String(game.data.get("selected_event_id", "SIG-0001")))
 	if not selected.is_empty():
