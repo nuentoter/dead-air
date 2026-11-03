@@ -110,6 +110,10 @@ var status_message := "LOCAL SIMULATION — no network or microphone access."
 func _ready() -> void:
 	_setup_receiver_audio()
 	game = GameState.new()
+	for stored_id in game.data.get("investigator_signal_marks", []):
+		var candidate_id := String(stored_id)
+		if not _find_event(candidate_id).is_empty() and not session_signal_marks.has(candidate_id) and session_signal_marks.size() < 4:
+			session_signal_marks.append(candidate_id)
 	audio_enabled = bool(game.data.get("settings", {}).get("audio_enabled", true))
 	receiver_audio.volume_db = _receiver_volume_db() if audio_enabled else -80.0
 	if not String(game.load_notice).is_empty():
@@ -498,7 +502,7 @@ func _draw_receiver() -> void:
 
 	_draw_session_signal_comparison()
 	_add_text("RETAINED EVENT INDEX / SESSION MARKS", 13, ACCENT)
-	_add_text("Marks are temporary investigator selections, not institutional evidence.", 11, MUTED)
+	_add_text("Marks are saved investigator selections, not institutional evidence.", 11, MUTED)
 	for event in Catalog.EVENTS:
 		var label := "%s   %.3f MHz %s   %s" % [String(event.get("id", "")), float(event.get("frequency_mhz", 0.0)), String(event.get("mode", "")), String(event.get("kind", ""))]
 		var event_row := _row()
@@ -712,7 +716,7 @@ func _draw_session_signal_comparison() -> void:
 	if session_signal_marks.is_empty():
 		return
 	_add_text("SIGNAL COMPARISON / INVESTIGATOR WORKSPACE", 14, ACCENT)
-	_add_text("Selections are not evidence of common origin, identity, or timing.", 11, WARNING)
+	_add_text("Your marked selections persist locally; they are not evidence of common origin, identity, or timing.", 11, WARNING)
 	var marked_events: Array[Dictionary] = []
 	for event_id in session_signal_marks:
 		var event: Dictionary = _find_event(event_id)
@@ -785,6 +789,8 @@ func _save_comparison_note() -> void:
 
 func _clear_session_marks() -> void:
 	session_signal_marks.clear()
+	game.data["investigator_signal_marks"] = session_signal_marks.duplicate()
+	game.save_game()
 	status_message = "Session selections cleared; retained records unchanged."
 	_refresh()
 
@@ -799,7 +805,9 @@ func _toggle_session_mark(event_id: String) -> void:
 			_refresh()
 			return
 		session_signal_marks.append(event_id)
-	status_message = "Session signal marks updated. No evidence records modified."
+	game.data["investigator_signal_marks"] = session_signal_marks.duplicate()
+	game.save_game()
+	status_message = "Investigator marks saved. No evidence records modified."
 	_refresh()
 
 func _select_event(event_id: String) -> void:
