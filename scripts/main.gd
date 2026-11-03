@@ -725,11 +725,15 @@ func _draw_session_signal_comparison() -> void:
 		var open_comparison_source := _button("OPEN " + String(event.get("id", "")), _open_comparison_source.bind(String(event.get("id", ""))))
 		open_comparison_source.custom_minimum_size.y = 56.0
 	if marked_events.size() >= 2:
-		var a: Dictionary = marked_events[0]
-		var b: Dictionary = marked_events[1]
-		var separation_khz := absf(float(a.get("frequency_mhz", 0.0)) - float(b.get("frequency_mhz", 0.0))) * 1000.0
-		_add_text("First pair: %.1f kHz apart | same mode: %s" % [separation_khz, "YES" if String(a.get("mode", "")) == String(b.get("mode", "")) else "NO"], 12, ACCENT)
-		_add_text("Displayed times may use different date bases. Do not infer simultaneity.", 11, WARNING)
+		_add_text("PAIRWISE FREQUENCY / MODE REVIEW", 13, ACCENT)
+		for a_index in range(marked_events.size() - 1):
+			for b_index in range(a_index + 1, marked_events.size()):
+				var a: Dictionary = marked_events[a_index]
+				var b: Dictionary = marked_events[b_index]
+				var separation_khz := absf(float(a.get("frequency_mhz", 0.0)) - float(b.get("frequency_mhz", 0.0))) * 1000.0
+				var same_mode := String(a.get("mode", "")) == String(b.get("mode", "")
+				_add_text("%s / %s: %.1f kHz apart; mode %s" % [String(a.get("id", "")), String(b.get("id", "")), separation_khz, "MATCH" if same_mode else "DIFFERS"], 12, TEXT)
+		_add_text("Printed times have potentially different date bases. Frequency or mode similarity does not prove common origin.", 11, WARNING)
 	var comparison_actions := _row()
 	var save_comparison_button := _button("SAVE AS INVESTIGATOR NOTE", _save_comparison_note, comparison_actions)
 	save_comparison_button.custom_minimum_size.y = 56.0
@@ -790,6 +794,10 @@ func _toggle_session_mark(event_id: String) -> void:
 	if session_signal_marks.has(event_id):
 		session_signal_marks.erase(event_id)
 	else:
+		if session_signal_marks.size() >= 4:
+			status_message = "Compare up to four signals; unmark one before adding another."
+			_refresh()
+			return
 		session_signal_marks.append(event_id)
 	status_message = "Session signal marks updated. No evidence records modified."
 	_refresh()
