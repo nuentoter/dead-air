@@ -741,6 +741,8 @@ func _draw_session_signal_comparison() -> void:
 	var comparison_actions := _row()
 	var save_comparison_button := _button("SAVE AS INVESTIGATOR NOTE", _save_comparison_note, comparison_actions)
 	save_comparison_button.custom_minimum_size.y = 56.0
+	var notebook_button := _button("OPEN NOTEBOOK", _open_investigator_notebook, comparison_actions)
+	notebook_button.custom_minimum_size.y = 56.0
 	var clear_comparison_button := _button("CLEAR MARKS", _clear_session_marks, comparison_actions)
 	clear_comparison_button.custom_minimum_size.y = 56.0
 
@@ -752,6 +754,9 @@ func _open_comparison_source(event_id: String) -> void:
 	game.select_event(event_id)
 	status_message = "Opened retained comparison source " + event_id + ". Session marks remain unchanged."
 	_refresh()
+
+func _open_investigator_notebook() -> void:
+	_on_nav_pressed("Notebook")
 
 func _save_comparison_note() -> void:
 	if session_signal_marks.size() < 2:
@@ -783,7 +788,8 @@ func _save_comparison_note() -> void:
 	var separation_khz := absf(float(valid[0].get("frequency_mhz", 0.0)) - float(valid[1].get("frequency_mhz", 0.0))) * 1000.0
 	lines.append("First pair separation: %.1f kHz. Mode match: %s." % [separation_khz, "yes" if String(valid[0].get("mode", "")) == String(valid[1].get("mode", "")) else "no"])
 	lines.append("Interpretation pending. Different date/time bases cannot be assumed to align.")
-	game.add_note("\n".join(lines), "", "WORKING HYPOTHESIS")
+	# Link the first retained source for one-tap reopening; all marked IDs remain in note text.
+	game.add_note("\n".join(lines), String(valid[0].get("id", "")), "WORKING HYPOTHESIS")
 	status_message = "Investigator comparison saved in Notebook as WORKING HYPOTHESIS."
 	_refresh()
 
