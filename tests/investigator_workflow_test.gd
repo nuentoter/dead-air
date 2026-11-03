@@ -35,6 +35,9 @@ func _run() -> void:
 		return
 	if not _check((game.data.get("investigator_signal_marks", []) as Array).size() == 2, "Marks were not saved in game data"):
 		return
+	var reloaded_state = load("res://scripts/game_state.gd").new()
+	if not _check((reloaded_state.data.get("investigator_signal_marks", []) as Array).size() == 2, "Investigator marks did not survive save/reload"):
+		return
 	var notes_before: int = game.data.get("notes", []).size()
 	app.call("_save_comparison_note")
 	var notes: Array = game.data.get("notes", [])
