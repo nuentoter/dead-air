@@ -6,6 +6,7 @@ const SpeechEngine = preload("res://scripts/speech_engine.gd")
 const SignalAudioEngine = preload("res://scripts/signal_audio_engine.gd")
 const CaptureEngine = preload("res://scripts/receiver_capture.gd")
 const IllustratedReceiver = preload("res://scripts/illustrated_receiver.gd")
+const LiveWaterfall = preload("res://scripts/receiver_waterfall.gd")
 
 const SECTIONS = ["Receiver", "Recordings", "Archive", "Notebook", "Assignments", "Messages"]
 const REPORT_SOURCE_OPTIONS := ["SIG-0004", "SIG-0005", "M-02", "M-05", "M-06A", "M-07", "M-08", "M-09"]
@@ -92,6 +93,7 @@ var selected_assignment_id := "A-001"
 var archive_query := ""
 var session_signal_marks: Array[String] = []
 var receiver_details_expanded := false
+var live_waterfall_plot: Control
 var archive_search_input: LineEdit
 var note_source_select: OptionButton
 var note_class_select: OptionButton
@@ -150,6 +152,26 @@ func _return_to_illustrated_receiver() -> void:
 
 func _process(_delta: float) -> void:
 	_update_receiver_audio()
+	_sync_live_waterfall()
+
+func _sync_live_waterfall() -> void:
+	if live_waterfall_plot == null or not is_instance_valid(live_waterfall_plot) or game == null:
+		return
+	var frequency := float(game.data.get("frequency_mhz", 10.0))
+	var mode := String(game.data.get("mode", "AM"))
+	var powered := bool(game.data.get("receiver_power", false))
+	var signal := 0.0
+	var offset := 0.0
+	# Only a currently tuned authored event lights up the matching simulated carrier.
+	for event in Catalog.EVENTS:
+		if String(event.get("mode", "")) == mode and absf(float(event.get("frequency_mhz", -1.0)) - frequency) < 0.0005:
+			signal = maxf(signal, clampf(float(event.get("strength", 0.5)), 0.0, 1.0))
+	live_waterfall_plot.powered = powered
+	live_waterfall_plot.frequency_mhz = frequency
+	live_waterfall_plot.signal_strength = signal
+	live_waterfall_plot.signal_offset = offset
+	if not powered:
+		live_waterfall_plot.queue_redraw()
 
 func _receiver_volume_db() -> float:
 	if game == null:
@@ -473,12 +495,12 @@ func _draw_receiver() -> void:
 		_add_text("Buffered: %.1fs / 90s. No microphone or RF input." % monitor_capture.buffered_seconds(), 12, MUTED, capture_row)
 	var live_state := "RX ON" if bool(game.data.get("receiver_power", false)) else "RX OFF — retained events remain available"
 	_add_text(live_state, 13, ACCENT if bool(game.data.get("receiver_power", false)) else WARNING)
-	# Keep the active tuning controls and selected signal at the top on phones.
-	# The large historic plot and match list are available on demand.
-	var details_toggle := _button("HIDE EXTENDED DISPLAY" if receiver_details_expanded else "SHOW WATERFALL / MATCHES", _toggle_receiver_details)
-	details_toggle.custom_minimum_size = Vector2(260, 56)
+	# A real-time synthetic spectrogram is always in view. The historical
+	# event-match list remains collapsible for compact landscape Android use.
+	_draw_waterfall()
+	var details_toggle := _button("HIDE TUNED MATCHES" if receiver_details_expanded else "SHOW TUNED MATCHES", _toggle_receiver_details)
+	details_toggle.custom_minimum_size = Vector2(240, 52)
 	if receiver_details_expanded:
-		_draw_waterfall()
 		_draw_tuned_event_matches()
 
 	var selected := _find_event(String(game.data.get("selected_event_id", "SIG-0001")))
@@ -543,13 +565,14 @@ func _draw_waterfall() -> void:
 	body.add_child(frame)
 	var visual := VBoxContainer.new()
 	frame.add_child(visual)
-	_add_text("WATERFALL  /  FREQUENCY →     TIME ↓", 11, MUTED, visual)
-	var plot := WaterfallPlot.new()
-	plot.events = Catalog.EVENTS
-	plot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	visual.add_child(plot)
-	_add_text("Axes: frequency in MHz (horizontal); Site 04 displayed event time, 08:00–08:30 (vertical).", 11, MUTED, visual)
-	_add_text("Only SIG-0001–0003 are plotted. Prior-cycle and next-shift receptions are excluded because their dates are unknown; their records remain accessible.", 11, WARNING, visual)
+	_add_text("LIVE WATERFALL / SYNTHETIC RF SIMULATION / NEWEST AT TOP", 12, ACCENT, visual)
+	live_waterfall_plot = LiveWaterfall.new()
+	live_waterfall_plot.name = "LiveReceiverWaterfall"
+	live_waterfall_plot.custom_minimum_size = Vector2(0, 180)
+	live_waterfall_plot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	visual.add_child(live_waterfall_plot)
+	_sync_live_waterfall()
+	_add_text("Center: %.3f MHz %s | Updating ~10 lines/sec while RX is on. No antenna, RF capture, or new evidence." % [float(game.data.get("frequency_mhz", 10.0)), String(game.data.get("mode", "AM"))], 11, MUTED, visual)
 
 func _speech_rate() -> float:
 	return clampf(float(game.data.get("settings", {}).get("speech_rate", 1.0)), 0.75, 1.25)
