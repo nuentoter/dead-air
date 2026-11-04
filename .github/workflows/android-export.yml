@@ -71,6 +71,8 @@ jobs:
         run: godot --headless --path . --editor --quit
       - name: Validate investigator workflow (headless)
         run: godot --headless --path . --script res://tests/investigator_workflow_test.gd
+      - name: Validate live receiver waterfall (headless)
+        run: godot --headless --path . --script res://tests/live_waterfall_test.gd
       - name: Export Android debug APK
         run: |
           mkdir -p build
