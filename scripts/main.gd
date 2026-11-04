@@ -166,10 +166,10 @@ func _sync_live_waterfall() -> void:
 	for event in Catalog.EVENTS:
 		if String(event.get("mode", "")) == mode and absf(float(event.get("frequency_mhz", -1.0)) - frequency) < 0.0005:
 			signal = maxf(signal, clampf(float(event.get("strength", 0.5)), 0.0, 1.0))
-	live_waterfall_plot.powered = powered
-	live_waterfall_plot.frequency_mhz = frequency
-	live_waterfall_plot.signal_strength = signal
-	live_waterfall_plot.signal_offset = offset
+	live_waterfall_plot.set("powered", powered)
+	live_waterfall_plot.set("frequency_mhz", frequency)
+	live_waterfall_plot.set("signal_strength", signal)
+	live_waterfall_plot.set("signal_offset", offset)
 	if not powered:
 		live_waterfall_plot.queue_redraw()
 
