@@ -39,6 +39,37 @@ func _run() -> void:
 		push_error("Live waterfall did not advance scrolling rows")
 		quit(1)
 		return
+	# Holding and UI rebuilding must preserve visible history without generating new rows.
+	var rows_before_hold: int = (plot.get("rows") as Array).size()
+	app.call("_toggle_waterfall_hold")
+	plot = app.find_child("LiveReceiverWaterfall", true, false) as Control
+	if plot == null or (plot.get("rows") as Array).size() != rows_before_hold or not bool(plot.get("frozen")):
+		push_error("HOLD did not preserve existing waterfall history")
+		quit(1)
+		return
+	await create_timer(0.25).timeout
+	if (plot.get("rows") as Array).size() != rows_before_hold:
+		push_error("HOLD allowed synthetic waterfall to keep scrolling")
+		quit(1)
+		return
+	app.call("_adjust_waterfall_gain", 0.25)
+	plot = app.find_child("LiveReceiverWaterfall", true, false) as Control
+	if plot == null or absf(float(plot.get("display_gain")) - 1.25) > 0.001:
+		push_error("Display gain was not applied to recreated waterfall")
+		quit(1)
+		return
+	app.call("_clear_waterfall_trace")
+	if not (plot.get("rows") as Array).is_empty():
+		push_error("CLEAR TRACE did not empty the display")
+		quit(1)
+		return
+	app.call("_toggle_waterfall_hold")
+	plot = app.find_child("LiveReceiverWaterfall", true, false) as Control
+	await create_timer(0.23).timeout
+	if (plot.get("rows") as Array).is_empty():
+		push_error("RESUME did not restart the synthetic waterfall")
+		quit(1)
+		return
 	game.set_receiver(false, 14.070, "USB")
 	app.call("_sync_live_waterfall")
 	if bool(plot.get("powered")):
