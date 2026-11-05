@@ -127,7 +127,9 @@ func _sync_live_waterfall() -> void:
 	if live_waterfall_status_label != null and is_instance_valid(live_waterfall_status_label):
 		var state := "RX OFF" if not powered else ("HOLD" if waterfall_frozen else "RX LIVE")
 		var match_text := "CURATED " + matched_id if not matched_id.is_empty() else "NO CATALOG MATCH"
-		live_waterfall_status_label.text = "%s | %.3f MHz %s | %s | VIEW %.2fx" % [state, frequency, mode, match_text, waterfall_gain]
+		var display_text := "%s | %.3f MHz %s | %s | VIEW %.2fx" % [state, frequency, mode, match_text, waterfall_gain]
+		if live_waterfall_status_label.text != display_text:
+			live_waterfall_status_label.text = display_text
 	if not powered:
 		live_waterfall_plot.queue_redraw()
 
@@ -563,6 +565,7 @@ func _draw_waterfall() -> void:
 	live_waterfall_plot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	visual.add_child(live_waterfall_plot)
 	live_waterfall_status_label = _add_text("", 12, ACCENT, visual)
+	live_waterfall_status_label.name = "LiveWaterfallTelemetry"
 	_sync_live_waterfall()
 	_add_text("Simulated spectrum (approx. 10 lines/sec); no antenna, live RF capture, or newly discovered evidence.", 11, MUTED, visual)
 
