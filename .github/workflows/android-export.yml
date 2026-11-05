@@ -70,14 +70,6 @@ jobs:
           echo "GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD=dead-air-ci-password" >> "$GITHUB_ENV"
       - name: Import project
         run: godot --headless --path . --editor --quit
-      - name: Validate investigator workflow (headless)
-        env:
-          XDG_DATA_HOME: ${{ runner.temp }}/dead-air-test-investigator
-        run: godot --headless --path . --script res://tests/investigator_workflow_test.gd
-      - name: Validate live receiver waterfall (headless)
-        env:
-          XDG_DATA_HOME: ${{ runner.temp }}/dead-air-test-waterfall
-        run: godot --headless --path . --script res://tests/live_waterfall_test.gd
       - name: Export Android debug APK
         run: |
           mkdir -p build
@@ -106,6 +98,24 @@ jobs:
               exit 1
             fi
           done
+      - name: Record build source
+        shell: bash
+        run: |
+          {
+            echo "DEAD AIR Android test build"
+            echo "Commit: $GITHUB_SHA"
+            echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            echo "Build UTC: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo "Use the debug APK for testing; CI release is signed by a temporary key."
+          } > build/BUILD_INFO.txt
+      - name: Validate investigator workflow (headless)
+        env:
+          XDG_DATA_HOME: ${{ runner.temp }}/dead-air-test-investigator
+        run: godot --headless --path . --script res://tests/investigator_workflow_test.gd
+      - name: Validate live receiver waterfall (headless)
+        env:
+          XDG_DATA_HOME: ${{ runner.temp }}/dead-air-test-waterfall
+        run: godot --headless --path . --script res://tests/live_waterfall_test.gd
       - name: Upload Android APKs
         if: always()
         uses: actions/upload-artifact@v4
@@ -114,5 +124,6 @@ jobs:
           path: |
             build/dead-air-debug.apk
             build/dead-air-ci-release.apk
+            build/BUILD_INFO.txt
           if-no-files-found: warn
           retention-days: 14
