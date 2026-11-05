@@ -753,7 +753,7 @@ func _draw_session_signal_comparison() -> void:
 				var a: Dictionary = marked_events[a_index]
 				var b: Dictionary = marked_events[b_index]
 				var separation_khz := absf(float(a.get("frequency_mhz", 0.0)) - float(b.get("frequency_mhz", 0.0))) * 1000.0
-				var same_mode := String(a.get("mode", "")) == String(b.get("mode", "")
+				var same_mode := String(a.get("mode", "")) == String(b.get("mode", ""))
 				_add_text("%s / %s: %.1f kHz apart; mode %s" % [String(a.get("id", "")), String(b.get("id", "")), separation_khz, "MATCH" if same_mode else "DIFFERS"], 12, TEXT)
 		_add_text("Printed times have potentially different date bases. Frequency or mode similarity does not prove common origin.", 11, WARNING)
 	var comparison_actions := _row()
@@ -809,7 +809,7 @@ func _save_comparison_note() -> void:
 			var a: Dictionary = valid[a_index]
 			var b: Dictionary = valid[b_index]
 			var separation_khz := absf(float(a.get("frequency_mhz", 0.0)) - float(b.get("frequency_mhz", 0.0))) * 1000.0
-			var same_mode := String(a.get("mode", "")) == String(b.get("mode", "")
+			var same_mode := String(a.get("mode", "")) == String(b.get("mode", ""))
 			lines.append("%s / %s: %.1f kHz apart; mode %s." % [String(a.get("id", "")), String(b.get("id", "")), separation_khz, "MATCH" if same_mode else "DIFFERS"])
 	lines.append("Interpretation pending. Different date/time bases cannot be assumed to align.")
 	# Link the first retained source for one-tap reopening; all marked IDs remain in note text.
