@@ -111,13 +111,13 @@ func _sync_live_waterfall() -> void:
 		waterfall_history.clear()
 		live_waterfall_plot.call("clear_history")
 	var signal := 0.0
-	var matched_id := ""
+	var matched_ids := PackedStringArray()
 	var offset := 0.0
 	# Only a currently tuned authored event lights up the matching simulated carrier.
 	for event in Catalog.EVENTS:
 		if String(event.get("mode", "")) == mode and absf(float(event.get("frequency_mhz", -1.0)) - frequency) < 0.0005:
 			signal = maxf(signal, clampf(float(event.get("strength", 0.5)), 0.0, 1.0))
-			matched_id = String(event.get("id", ""))
+			matched_ids.append(String(event.get("id", "")))
 	live_waterfall_plot.set("powered", powered)
 	live_waterfall_plot.set("frequency_mhz", frequency)
 	live_waterfall_plot.set("signal_strength", signal)
@@ -126,7 +126,7 @@ func _sync_live_waterfall() -> void:
 	live_waterfall_plot.set("display_gain", waterfall_gain)
 	if live_waterfall_status_label != null and is_instance_valid(live_waterfall_status_label):
 		var state := "RX OFF" if not powered else ("HOLD" if waterfall_frozen else "RX LIVE")
-		var match_text := "CURATED " + matched_id if not matched_id.is_empty() else "NO CATALOG MATCH"
+		var match_text := "CATALOG " + ", ".join(matched_ids) if not matched_ids.is_empty() else "NO CATALOG MATCH"
 		var display_text := "%s | %.3f MHz %s | %s | VIEW %.2fx" % [state, frequency, mode, match_text, waterfall_gain]
 		if live_waterfall_status_label.text != display_text:
 			live_waterfall_status_label.text = display_text
