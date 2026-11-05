@@ -7,11 +7,17 @@ var frozen := false
 var elapsed := 0.0
 var signal_strength := 0.0
 var signal_offset := 0.0
+var display_gain := 1.0
 var rows: Array[PackedFloat32Array] = []
 const COLS := 128
 const ROWS := 68
 const FRAME := 0.10
 var _frame_counter := 0
+
+func clear_history() -> void:
+	rows.clear()
+	elapsed = 0.0
+	queue_redraw()
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -48,6 +54,8 @@ func _draw() -> void:
 		var off_font := ThemeDB.fallback_font
 		draw_string(off_font, Vector2(14, 26), "RECEIVER OFF", HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color(0.28, 0.47, 0.33))
 		return
+	if rows.is_empty():
+		draw_string(ThemeDB.fallback_font, Vector2(12, 27), "ACQUIRING SYNTHETIC SPECTRUM", HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color(0.35, 0.72, 0.51))
 	var cw := size.x / float(COLS)
 	var rh := size.y / float(ROWS)
 	# Draw adjacent pixels of similar intensity as horizontal runs.
@@ -56,9 +64,9 @@ func _draw() -> void:
 		var row: PackedFloat32Array = rows[y]
 		var x := 0
 		while x < COLS:
-			var level := mini(7, int(row[x] * 8.0))
+			var level := mini(7, int(clampf(row[x] * display_gain, 0.0, 1.0) * 8.0))
 			var finish := x + 1
-			while finish < COLS and mini(7, int(row[finish] * 8.0)) == level:
+			while finish < COLS and mini(7, int(clampf(row[finish] * display_gain, 0.0, 1.0) * 8.0)) == level:
 				finish += 1
 			var v := (float(level) + 0.5) / 8.0
 			var tint := Color(0.018 + v * 0.50, 0.055 + v * 0.90, 0.065 + v * 0.25, 1.0)
