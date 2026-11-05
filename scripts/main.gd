@@ -32,6 +32,7 @@ var archive_query := ""
 var session_signal_marks: Array[String] = []
 var receiver_details_expanded := false
 var live_waterfall_plot: Control
+var live_waterfall_status_label: Label
 var waterfall_history: Array[PackedFloat32Array] = []
 var waterfall_channel := ""
 var waterfall_frozen := false
@@ -110,17 +111,23 @@ func _sync_live_waterfall() -> void:
 		waterfall_history.clear()
 		live_waterfall_plot.call("clear_history")
 	var signal := 0.0
+	var matched_id := ""
 	var offset := 0.0
 	# Only a currently tuned authored event lights up the matching simulated carrier.
 	for event in Catalog.EVENTS:
 		if String(event.get("mode", "")) == mode and absf(float(event.get("frequency_mhz", -1.0)) - frequency) < 0.0005:
 			signal = maxf(signal, clampf(float(event.get("strength", 0.5)), 0.0, 1.0))
+			matched_id = String(event.get("id", ""))
 	live_waterfall_plot.set("powered", powered)
 	live_waterfall_plot.set("frequency_mhz", frequency)
 	live_waterfall_plot.set("signal_strength", signal)
 	live_waterfall_plot.set("signal_offset", offset)
 	live_waterfall_plot.set("frozen", waterfall_frozen)
 	live_waterfall_plot.set("display_gain", waterfall_gain)
+	if live_waterfall_status_label != null and is_instance_valid(live_waterfall_status_label):
+		var state := "RX OFF" if not powered else ("HOLD" if waterfall_frozen else "RX LIVE")
+		var match_text := "CURATED " + matched_id if not matched_id.is_empty() else "NO CATALOG MATCH"
+		live_waterfall_status_label.text = "%s | %.3f MHz %s | %s | VIEW %.2fx" % [state, frequency, mode, match_text, waterfall_gain]
 	if not powered:
 		live_waterfall_plot.queue_redraw()
 
@@ -555,8 +562,9 @@ func _draw_waterfall() -> void:
 	live_waterfall_plot.set("rows", waterfall_history.duplicate())
 	live_waterfall_plot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	visual.add_child(live_waterfall_plot)
+	live_waterfall_status_label = _add_text("", 12, ACCENT, visual)
 	_sync_live_waterfall()
-	_add_text("Center: %.3f MHz %s | Updating ~10 lines/sec while RX is on. No antenna, RF capture, or new evidence." % [float(game.data.get("frequency_mhz", 10.0)), String(game.data.get("mode", "AM"))], 11, MUTED, visual)
+	_add_text("Simulated spectrum (approx. 10 lines/sec); no antenna, live RF capture, or newly discovered evidence.", 11, MUTED, visual)
 
 func _speech_rate() -> float:
 	return clampf(float(game.data.get("settings", {}).get("speech_rate", 1.0)), 0.75, 1.25)
