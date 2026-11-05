@@ -30,6 +30,11 @@ func _run() -> void:
 		push_error("Live waterfall did not receive game tuning/power state")
 		quit(1)
 		return
+	var telemetry := app.find_child("LiveWaterfallTelemetry", true, false) as Label
+	if telemetry == null or not telemetry.text.contains("14.070 MHz USB") or not telemetry.text.contains("SIG-0003"):
+		push_error("Live waterfall telemetry did not show selected signal and tuning")
+		quit(1)
+		return
 	if float(plot.get("signal_strength")) <= 0.0:
 		push_error("Authored matching channel was not represented")
 		quit(1)
