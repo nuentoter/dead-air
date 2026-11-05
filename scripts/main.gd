@@ -18,68 +18,6 @@ const MUTED = Color(0.57, 0.68, 0.67, 1)
 const ACCENT = Color(0.45, 0.79, 0.65, 1)
 const WARNING = Color(0.91, 0.72, 0.43, 1)
 
-class WaterfallPlot extends Control:
-	var events: Array = []
-	var elapsed := 0.0
-
-	func _ready() -> void:
-		custom_minimum_size = Vector2(0, 190)
-		queue_redraw()
-
-	func _process(delta: float) -> void:
-		elapsed += delta
-		queue_redraw()
-
-	func _draw() -> void:
-		var font := ThemeDB.fallback_font
-		var label_size := 10
-		var left_gutter := 44.0
-		var bottom_gutter := 18.0
-		var plot_rect := Rect2(Vector2(left_gutter, 4.0), Vector2(maxf(1.0, size.x - left_gutter - 4.0), maxf(1.0, size.y - bottom_gutter - 4.0)))
-		draw_rect(Rect2(Vector2.ZERO, size), Color(0.018, 0.035, 0.04, 1), true)
-		# Synthetic running noise bed; authored signal traces remain separate.
-		var row_height := 3.0
-		var rows := int(ceil(plot_rect.size.y / row_height))
-		for row in range(rows):
-			var y := plot_rect.position.y + float(row) * row_height
-			var age := elapsed * 5.0 + float(row)
-			for col in range(72):
-				var x := plot_rect.position.x + plot_rect.size.x * float(col) / 72.0
-				var wave := absf(sin(float(col) * 0.41 + age * 0.17) * cos(float(col) * 0.13 - age * 0.09))
-				var noise := fposmod(sin(float(col * 37 + row * 19) * 12.9898 + floor(age) * 78.233) * 43758.5453, 1.0)
-				var intensity := clampf(0.07 + wave * 0.13 + noise * 0.12, 0.04, 0.32)
-				var tint := Color(0.06 + intensity * 0.25, 0.12 + intensity * 0.75, 0.11 + intensity * 0.42, 1)
-				draw_rect(Rect2(x, y, maxf(1.0, plot_rect.size.x / 72.0 + 0.5), row_height), tint, true)
-		for step in range(0, 5):
-			var x := plot_rect.position.x + plot_rect.size.x * float(step) / 4.0
-			draw_line(Vector2(x, plot_rect.position.y), Vector2(x, plot_rect.end.y), Color(0.12, 0.2, 0.19, 1), 1.0)
-			if step == 0 or step == 2 or step == 4:
-				var frequency_label: String = ["0", "7.5", "15"][int(step / 2)] + " MHz"
-				draw_string(font, Vector2(x - 18.0, size.y - 3.0), frequency_label, HORIZONTAL_ALIGNMENT_LEFT, 42.0, label_size, Color(0.57, 0.68, 0.67, 1))
-		for minute in [0, 15, 30]:
-			var y := plot_rect.position.y + plot_rect.size.y * float(minute) / 30.0
-			draw_line(Vector2(plot_rect.position.x, y), Vector2(plot_rect.end.x, y), Color(0.16, 0.25, 0.23, 1), 1.0)
-			var time_label: String = "08:%02d" % minute
-			var label_y := clampf(y + 4.0, 12.0, size.y - bottom_gutter)
-			draw_string(font, Vector2(2.0, label_y), time_label, HORIZONTAL_ALIGNMENT_LEFT, left_gutter - 5.0, label_size, Color(0.57, 0.68, 0.67, 1))
-		for event in events:
-			var event_id := String(event.get("id", ""))
-			if not ["SIG-0001", "SIG-0002", "SIG-0003"].has(event_id):
-				continue
-			var parts: PackedStringArray = String(event.get("time_label", "08:00")).split(":")
-			if parts.size() != 2:
-				continue
-			var minutes := int(parts[0]) * 60 + int(parts[1])
-			var relative_minutes := clampf(float(minutes - 480), 0.0, 30.0)
-			var y := plot_rect.position.y + plot_rect.size.y * relative_minutes / 30.0
-			var frequency := clampf(float(event.get("frequency_mhz", 0.0)), 0.0, 15.0)
-			var x := plot_rect.position.x + plot_rect.size.x * frequency / 15.0
-			var strength := clampf(float(event.get("strength", 0.5)), 0.0, 1.0)
-			var half_width := 5.0 + strength * 18.0
-			var trace_color := Color(0.22, 0.48, 0.39, 1).lerp(Color(0.5, 0.88, 0.68, 1), strength)
-			draw_line(Vector2(maxf(plot_rect.position.x, x - half_width), y), Vector2(minf(plot_rect.end.x, x + half_width), y), trace_color, 3.0)
-			draw_line(Vector2(x, maxf(plot_rect.position.y, y - 4.0)), Vector2(x, minf(plot_rect.end.y, y + 4.0)), trace_color, 2.0)
-
 var game
 var monitor_capture = CaptureEngine.new()
 var root_column: VBoxContainer
@@ -94,6 +32,10 @@ var archive_query := ""
 var session_signal_marks: Array[String] = []
 var receiver_details_expanded := false
 var live_waterfall_plot: Control
+var waterfall_history: Array[PackedFloat32Array] = []
+var waterfall_channel := ""
+var waterfall_frozen := false
+var waterfall_gain := 1.0
 var archive_search_input: LineEdit
 var note_source_select: OptionButton
 var note_class_select: OptionButton
@@ -160,6 +102,11 @@ func _sync_live_waterfall() -> void:
 	var frequency := float(game.data.get("frequency_mhz", 10.0))
 	var mode := String(game.data.get("mode", "AM"))
 	var powered := bool(game.data.get("receiver_power", false))
+	var channel := "%.3f/%s" % [frequency, mode]
+	if channel != waterfall_channel:
+		waterfall_channel = channel
+		waterfall_history.clear()
+		live_waterfall_plot.set("rows", [])
 	var signal := 0.0
 	var offset := 0.0
 	# Only a currently tuned authored event lights up the matching simulated carrier.
@@ -170,6 +117,8 @@ func _sync_live_waterfall() -> void:
 	live_waterfall_plot.set("frequency_mhz", frequency)
 	live_waterfall_plot.set("signal_strength", signal)
 	live_waterfall_plot.set("signal_offset", offset)
+	live_waterfall_plot.set("frozen", waterfall_frozen)
+	live_waterfall_plot.set("display_gain", waterfall_gain)
 	if not powered:
 		live_waterfall_plot.queue_redraw()
 
@@ -339,6 +288,9 @@ func _build_shell() -> void:
 func _refresh() -> void:
 	if body == null:
 		return
+	if live_waterfall_plot != null and is_instance_valid(live_waterfall_plot):
+		waterfall_history = (live_waterfall_plot.get("rows") as Array).duplicate()
+		live_waterfall_plot = null
 	for child in body.get_children():
 		body.remove_child(child)
 		child.queue_free()
@@ -448,6 +400,25 @@ func _find_document(document_id: String) -> Dictionary:
 			return document
 	return {}
 
+func _toggle_waterfall_hold() -> void:
+	waterfall_frozen = not waterfall_frozen
+	status_message = "Synthetic waterfall held." if waterfall_frozen else "Synthetic waterfall resumed."
+	_refresh()
+
+func _clear_waterfall_trace() -> void:
+	waterfall_history.clear()
+	if live_waterfall_plot != null and is_instance_valid(live_waterfall_plot):
+		live_waterfall_plot.set("rows", [])
+		live_waterfall_plot.queue_redraw()
+	status_message = "Waterfall display cleared. Saved recordings and evidence unaffected."
+	if status_label != null:
+		status_label.text = status_message
+
+func _adjust_waterfall_gain(change: float) -> void:
+	waterfall_gain = clampf(waterfall_gain + change, 0.5, 2.0)
+	status_message = "Waterfall display gain: %.2fx (visual only)." % waterfall_gain
+	_refresh()
+
 func _toggle_receiver_details() -> void:
 	receiver_details_expanded = not receiver_details_expanded
 	_refresh()
@@ -498,6 +469,12 @@ func _draw_receiver() -> void:
 	# A real-time synthetic spectrogram is always in view. The historical
 	# event-match list remains collapsible for compact landscape Android use.
 	_draw_waterfall()
+	var display_controls := _row()
+	var hold_button := _button("RESUME" if waterfall_frozen else "HOLD", _toggle_waterfall_hold, display_controls)
+	hold_button.custom_minimum_size.y = 48.0
+	_button("CLEAR TRACE", _clear_waterfall_trace, display_controls)
+	_button("GAIN −", _adjust_waterfall_gain.bind(-0.25), display_controls)
+	_button("GAIN +", _adjust_waterfall_gain.bind(0.25), display_controls)
 	var details_toggle := _button("HIDE TUNED MATCHES" if receiver_details_expanded else "SHOW TUNED MATCHES", _toggle_receiver_details)
 	details_toggle.custom_minimum_size = Vector2(240, 52)
 	if receiver_details_expanded:
@@ -569,6 +546,7 @@ func _draw_waterfall() -> void:
 	live_waterfall_plot = LiveWaterfall.new()
 	live_waterfall_plot.name = "LiveReceiverWaterfall"
 	live_waterfall_plot.custom_minimum_size = Vector2(0, 180)
+	live_waterfall_plot.set("rows", waterfall_history.duplicate())
 	live_waterfall_plot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	visual.add_child(live_waterfall_plot)
 	_sync_live_waterfall()
