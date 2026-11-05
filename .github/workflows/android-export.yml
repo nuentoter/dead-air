@@ -8,6 +8,7 @@ on:
       - "project.godot"
       - "scenes/**"
       - "scripts/**"
+      - "tests/**"
       - ".github/workflows/android-export.yml"
 
 permissions:
@@ -70,8 +71,12 @@ jobs:
       - name: Import project
         run: godot --headless --path . --editor --quit
       - name: Validate investigator workflow (headless)
+        env:
+          XDG_DATA_HOME: ${{ runner.temp }}/dead-air-test-investigator
         run: godot --headless --path . --script res://tests/investigator_workflow_test.gd
       - name: Validate live receiver waterfall (headless)
+        env:
+          XDG_DATA_HOME: ${{ runner.temp }}/dead-air-test-waterfall
         run: godot --headless --path . --script res://tests/live_waterfall_test.gd
       - name: Export Android debug APK
         run: |
