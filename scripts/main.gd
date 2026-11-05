@@ -106,7 +106,7 @@ func _sync_live_waterfall() -> void:
 	if channel != waterfall_channel:
 		waterfall_channel = channel
 		waterfall_history.clear()
-		live_waterfall_plot.set("rows", [])
+		live_waterfall_plot.call("clear_history")
 	var signal := 0.0
 	var offset := 0.0
 	# Only a currently tuned authored event lights up the matching simulated carrier.
