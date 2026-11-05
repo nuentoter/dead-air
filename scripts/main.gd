@@ -291,7 +291,9 @@ func _refresh() -> void:
 	if body == null:
 		return
 	if live_waterfall_plot != null and is_instance_valid(live_waterfall_plot):
-		waterfall_history = (live_waterfall_plot.get("rows") as Array).duplicate()
+		waterfall_history.clear()
+		for prior_line in live_waterfall_plot.get("rows"):
+			waterfall_history.append(prior_line)
 		live_waterfall_plot = null
 	for child in body.get_children():
 		body.remove_child(child)
