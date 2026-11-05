@@ -108,6 +108,8 @@ jobs:
             echo "Build UTC: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
             echo "Use the debug APK for testing; CI release is signed by a temporary key."
           } > build/BUILD_INFO.txt
+      - name: Validate startup shows game (headless)
+        run: godot --headless --path . --script res://tests/startup_smoke_test.gd
       - name: Validate investigator workflow (headless)
         env:
           XDG_DATA_HOME: ${{ runner.temp }}/dead-air-test-investigator
