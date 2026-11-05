@@ -803,8 +803,14 @@ func _save_comparison_note() -> void:
 			String(event.get("time_basis", "unknown")),
 			String(event.get("kind", "unknown"))
 		])
-	var separation_khz := absf(float(valid[0].get("frequency_mhz", 0.0)) - float(valid[1].get("frequency_mhz", 0.0))) * 1000.0
-	lines.append("First pair separation: %.1f kHz. Mode match: %s." % [separation_khz, "yes" if String(valid[0].get("mode", "")) == String(valid[1].get("mode", "")) else "no"])
+	lines.append("Pairwise display measurements (not source identification):")
+	for a_index in range(valid.size() - 1):
+		for b_index in range(a_index + 1, valid.size()):
+			var a: Dictionary = valid[a_index]
+			var b: Dictionary = valid[b_index]
+			var separation_khz := absf(float(a.get("frequency_mhz", 0.0)) - float(b.get("frequency_mhz", 0.0))) * 1000.0
+			var same_mode := String(a.get("mode", "")) == String(b.get("mode", "")
+			lines.append("%s / %s: %.1f kHz apart; mode %s." % [String(a.get("id", "")), String(b.get("id", "")), separation_khz, "MATCH" if same_mode else "DIFFERS"])
 	lines.append("Interpretation pending. Different date/time bases cannot be assumed to align.")
 	# Link the first retained source for one-tap reopening; all marked IDs remain in note text.
 	game.add_note("\n".join(lines), String(valid[0].get("id", "")), "WORKING HYPOTHESIS")
