@@ -6,7 +6,7 @@ config_version=5
 config/name="DEAD AIR"
 config/icon="res://icon.svg"
 config/description="An offline radio-conspiracy investigation at Remote Monitoring Site 04."
-run/main_scene="res://scenes/main.tscn"
+run/main_scene="res://scenes/boot.tscn"
 config/features=PackedStringArray("4.2", "GL Compatibility")
 config/version="0.1.0"
 
