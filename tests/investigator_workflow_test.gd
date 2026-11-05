@@ -10,6 +10,20 @@ func _check(ok: bool, message: String) -> bool:
 	return ok
 
 func _run() -> void:
+	# The same CI test protects core authored evidence and time-basis ambiguity.
+	var catalog = load("res://scripts/content_catalog.gd")
+	var indexed: Dictionary = {}
+	for event in catalog.EVENTS:
+		var id := String(event.get("id", ""))
+		if not _check(not id.is_empty() and not indexed.has(id), "Duplicate or missing retained signal ID"):
+			return
+		if not _check(not String(event.get("provenance", "")).is_empty() and not String(event.get("time_basis", "")).is_empty(), "Signal provenance or time basis missing"):
+			return
+		indexed[id] = event
+	if not _check(indexed.has("SIG-0004") and indexed.has("SIG-0005"), "Core NR-041 records missing"):
+		return
+	if not _check(String(indexed["SIG-0004"].get("time_basis", "")) != String(indexed["SIG-0005"].get("time_basis", "")), "Distinct monitoring cycles collapsed"):
+		return
 	var packed: PackedScene = load("res://scenes/main.tscn")
 	if not _check(packed != null, "Main scene missing"):
 		return
