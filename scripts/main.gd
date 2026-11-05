@@ -430,7 +430,8 @@ func _draw_receiver() -> void:
 	_button(power_text, _toggle_receiver, control_row)
 	_button("AUDIO ON" if audio_enabled else "AUDIO OFF", _toggle_audio, control_row)
 
-	_add_text("FREQUENCY (MHz)", 12, MUTED, control_row)
+	var frequency_row := _row()
+	_add_text("FREQUENCY (MHz)", 12, MUTED, frequency_row)
 	frequency_spin = SpinBox.new()
 	frequency_spin.min_value = 0.1
 	frequency_spin.max_value = 30000.0
@@ -438,7 +439,7 @@ func _draw_receiver() -> void:
 	frequency_spin.rounded = false
 	frequency_spin.value = float(game.data.get("frequency_mhz", 10.0))
 	frequency_spin.custom_minimum_size = Vector2(145, 38)
-	control_row.add_child(frequency_spin)
+	frequency_row.add_child(frequency_spin)
 
 	mode_select = OptionButton.new()
 	for mode in ["AM", "FM", "NFM", "USB", "LSB", "CW"]:
@@ -448,22 +449,23 @@ func _draw_receiver() -> void:
 		if mode_select.get_item_text(i) == current_mode:
 			mode_select.select(i)
 	mode_select.custom_minimum_size = Vector2(100, 38)
-	control_row.add_child(mode_select)
-	_button("APPLY", _apply_receiver_settings, control_row)
-	_button("SEEK NEXT", _seek_next, control_row)
-	_button("−1 kHz", _quick_tune.bind(-0.001), control_row)
-	_button("+1 kHz", _quick_tune.bind(0.001), control_row)
+	frequency_row.add_child(mode_select)
+	_button("APPLY", _apply_receiver_settings, frequency_row)
+	var seek_row := _row()
+	_button("SEEK NEXT", _seek_next, seek_row)
+	_button("−1 kHz", _quick_tune.bind(-0.001), seek_row)
+	_button("+1 kHz", _quick_tune.bind(0.001), seek_row)
 	frequency_spin.value_changed.connect(_on_frequency_changed)
 	mode_select.item_selected.connect(_on_mode_changed)
 
 	var capture_row := _row()
 	if monitor_capture.is_recording():
 		_button("STOP MONITOR RECORDING", _stop_monitor_recording, capture_row)
-		_add_text("Recording synthetic monitor PCM; channel changes or app pause finalize as interrupted.", 12, WARNING, capture_row)
+		_add_text("Recording synthetic monitor PCM; channel changes or app pause finalize as interrupted.", 12, WARNING)
 	else:
 		var start_button := _button("RECORD MONITOR (+30s PRE-ROLL)", _start_monitor_recording, capture_row)
 		start_button.disabled = not bool(game.data.get("receiver_power", false))
-		_add_text("Buffered: %.1fs / 90s. No microphone or RF input." % monitor_capture.buffered_seconds(), 12, MUTED, capture_row)
+		_add_text("Buffered: %.1fs / 90s. No microphone or RF input." % monitor_capture.buffered_seconds(), 12, MUTED)
 	var live_state := "RX ON" if bool(game.data.get("receiver_power", false)) else "RX OFF — retained events remain available"
 	_add_text(live_state, 13, ACCENT if bool(game.data.get("receiver_power", false)) else WARNING)
 	# A real-time synthetic spectrogram is always in view. The historical
