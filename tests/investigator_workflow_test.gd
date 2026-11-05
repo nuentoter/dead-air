@@ -50,6 +50,13 @@ func _run() -> void:
 		return
 	if not _check(String(note.get("text", "")).contains("SIG-0003"), "Comparison note missing second signal"):
 		return
+	var saved_note_id := String(note.get("id", ""))
+	app.call("_delete_note", saved_note_id)
+	if not _check((game.data.get("notes", []) as Array).size() == notes_before, "Deleted note remained in notebook"):
+		return
+	app.call("_undo_note_delete")
+	if not _check((game.data.get("notes", []) as Array).size() == notes_before + 1, "Undo did not restore deleted note"):
+		return
 	app.call("_open_investigator_notebook")
 	if not _check(String(game.data.get("current_section", "")) == "Notebook", "Notebook navigation failed"):
 		return
