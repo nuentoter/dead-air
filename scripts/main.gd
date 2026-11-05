@@ -41,6 +41,8 @@ var note_source_select: OptionButton
 var note_class_select: OptionButton
 var report_editor: TextEdit
 var note_editor: TextEdit
+var last_deleted_note: Dictionary = {}
+var last_deleted_note_index := -1
 var recommendation_select: OptionButton
 var frequency_spin: SpinBox
 var mode_select: OptionButton
@@ -1055,6 +1057,9 @@ func _draw_notebook() -> void:
 	source_row.add_child(note_source_select)
 	_button("SAVE NOTE", _save_note_from_ui, source_row)
 	_add_text("SAVED NOTES", 14, ACCENT)
+	if not last_deleted_note.is_empty():
+		var undo_button := _button("UNDO DELETE / " + String(last_deleted_note.get("id", "")), _undo_note_delete)
+		undo_button.custom_minimum_size.y = 56.0
 	if game.data.get("notes", []).is_empty():
 		_add_text("No saved notes yet.", 13, MUTED)
 	for note in game.data.get("notes", []):
@@ -1068,6 +1073,15 @@ func _draw_notebook() -> void:
 			_add_text("Evidence reference: " + source_title, 12, MUTED)
 			var open_note_button := _button("OPEN SOURCE " + source_id, _open_note_source.bind(source_id), note_actions)
 			open_note_button.custom_minimum_size.y = 56.0
+		# Comparison notes cite several signals in their text; make each source
+		# directly accessible without converting the investigator note to evidence.
+		if String(note.get("text", "")).begins_with("INVESTIGATOR COMPARISON"):
+			var source_links := _row()
+			for signal in Catalog.EVENTS:
+				var compared_id := String(signal.get("id", ""))
+				if compared_id != source_id and String(note.get("text", "")).contains(compared_id + " |"):
+					var compared_button := _button("OPEN " + compared_id, _open_note_source.bind(compared_id), source_links)
+					compared_button.custom_minimum_size.y = 56.0
 		var delete_note_button := _button("DELETE " + note_id, _delete_note.bind(note_id), note_actions)
 		delete_note_button.custom_minimum_size.y = 56.0
 
@@ -1096,13 +1110,36 @@ func _on_note_draft_changed() -> void:
 		game.save_game()
 
 func _delete_note(note_id: String) -> void:
-	var retained: Array = []
-	for note in game.data.get("notes", []):
-		if String(note.get("id", "")) != note_id:
-			retained.append(note)
-	game.data["notes"] = retained
+	var notes: Array = game.data.get("notes", [])
+	for index in range(notes.size()):
+		if String(notes[index].get("id", "")) == note_id:
+			last_deleted_note = notes[index].duplicate(true)
+			last_deleted_note_index = index
+			notes.remove_at(index)
+			game.data["notes"] = notes
+			game.save_game()
+			status_message = "Deleted " + note_id + ". UNDO DELETE is available during this session."
+			_refresh()
+			return
+	status_message = "Note " + note_id + " was not found."
+	_refresh()
+
+func _undo_note_delete() -> void:
+	if last_deleted_note.is_empty():
+		return
+	var notes: Array = game.data.get("notes", [])
+	var deleted_id := String(last_deleted_note.get("id", ""))
+	for existing in notes:
+		if String(existing.get("id", "")) == deleted_id:
+			last_deleted_note.clear()
+			last_deleted_note_index = -1
+			return
+	notes.insert(clampi(last_deleted_note_index, 0, notes.size()), last_deleted_note.duplicate(true))
+	game.data["notes"] = notes
+	last_deleted_note.clear()
+	last_deleted_note_index = -1
 	game.save_game()
-	status_message = "Deleted " + note_id + ". Other notes are unchanged."
+	status_message = "Notebook entry " + deleted_id + " restored."
 	_refresh()
 
 func _source_display_title(source_id: String) -> String:
