@@ -1,4 +1,4 @@
-name: Android Graphite Green Mk II APK export
+name: DEAD AIR Recovery APK export
 
 on:
   workflow_dispatch:
@@ -126,7 +126,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: dead-air-graphite-green-mkii-apks
+          name: dead-air-recovery-apks
           path: |
             build/dead-air-debug.apk
             build/dead-air-ci-release.apk
