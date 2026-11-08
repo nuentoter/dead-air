@@ -74,6 +74,13 @@ jobs:
           mkdir -p build
           set -o pipefail
           godot --headless --path . --editor --quit 2>&1 | tee build/godot-import.log
+      - name: Validate live waterfall recovery (headless)
+        shell: bash
+        env:
+          XDG_DATA_HOME: ${{ runner.temp }}/dead-air-live-test
+        run: |
+          set -o pipefail
+          godot --headless --path . --script res://tests/live_recovery_test.gd 2>&1 | tee build/live-recovery-test.log
       - name: Export Android debug APK
         run: |
           mkdir -p build
@@ -134,5 +141,6 @@ jobs:
             build/godot-import.log
             build/startup-test.log
             build/recovery-test.log
+            build/live-recovery-test.log
           if-no-files-found: warn
           retention-days: 14
