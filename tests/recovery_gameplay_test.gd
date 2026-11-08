@@ -33,7 +33,10 @@ func _run() -> void:
 		push_error("RECOVERY FAIL: receiver could not power on")
 		quit(1)
 		return
-	app.call("_tune_to_retained_event", "SIG-0003") if app.has_method("_tune_to_retained_event") else app.call("_select_event", "SIG-0003")
+	if app.has_method("_tune_to_retained_event"):
+		app.call("_tune_to_retained_event", "SIG-0003")
+	else:
+		app.call("_select_event", "SIG-0003")
 	if String(state.data.get("selected_event_id", "")) != "SIG-0003":
 		push_error("RECOVERY FAIL: retained signal unavailable")
 		quit(1)
