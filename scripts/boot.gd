@@ -79,6 +79,8 @@ func _try_launch() -> void:
 		instance.queue_free()
 		_failure("MAIN GAME STARTUP INCOMPLETE. Check Godot Android log for a runtime error.")
 		return
+	instance.set("status_message", "RECOVERY BUILD — standard receiver restored. Newer experimental UI temporarily disabled.")
+	instance.call("_refresh")
 	instance.visible = true
 	instance.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	# The status launcher stays behind the functional game scene.
