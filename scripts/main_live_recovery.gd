@@ -37,8 +37,7 @@ func _draw_waterfall() -> void:
 	live_plot.name = "LiveRecoveryWaterfall"
 	live_plot.custom_minimum_size = Vector2(0.0, 190.0)
 	live_plot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	for row in live_trace:
-		live_plot.rows.append(row)
+	live_plot.set("rows", live_trace.duplicate())
 	panel.add_child(live_plot)
 	_sync_live_plot()
 	_add_text("Animated while receiver is on. Tuned catalog signals are simulated; no live RF or new evidence.", 11, MUTED, panel)
