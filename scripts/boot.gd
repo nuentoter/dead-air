@@ -52,39 +52,39 @@ func _try_launch() -> void:
 	if started:
 		return
 	started = true
-	status.text = "Starting verified standard receiver recovery..."
-	var packed := load("res://scenes/main_recovery.tscn") as PackedScene
-	if packed == null:
-		_failure("MAIN SCENE FAILED TO LOAD. GDScript parse error or missing resource.")
-		return
-	var instance := packed.instantiate() as Control
-	if instance == null or instance.get_script() == null:
-		if instance != null:
+	status.text = "Starting live receiver..."
+	for candidate_path in ["res://scenes/main_live_recovery.tscn", "res://scenes/main_recovery.tscn"]:
+		var packed := load(candidate_path) as PackedScene
+		if packed == null:
+			continue
+		var instance := packed.instantiate() as Control
+		if instance == null:
+			continue
+		# A missing controller is a recoverable candidate failure.
+		if instance.get_script() == null or not instance.has_method("_refresh"):
 			instance.free()
-		_failure("MAIN GAME SCRIPT FAILED TO PARSE OR ATTACH.")
+			continue
+		instance.visible = false
+		add_child(instance)
+		await get_tree().process_frame
+		if not is_instance_valid(instance):
+			continue
+		var game_state = instance.get("game")
+		var standard_ui = instance.get("root_column")
+		if game_state == null or standard_ui == null:
+			instance.queue_free()
+			continue
+		var using_live := candidate_path == "res://scenes/main_live_recovery.tscn"
+		if using_live and not instance.has_method("_sync_live_plot"):
+			instance.queue_free()
+			continue
+		instance.set("status_message", "LIVE WATERFALL TEST — synthetic signal display." if using_live else "RECOVERY FALLBACK — standard receiver.")
+		instance.call("_refresh")
+		instance.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		instance.visible = true
+		status.text = "Live receiver ready." if using_live else "Recovered standard receiver."
 		return
-	instance.visible = false
-	add_child(instance)
-	await get_tree().process_frame
-	if not is_instance_valid(instance):
-		_failure("MAIN GAME INSTANCE DISAPPEARED DURING STARTUP.")
-		return
-	if not instance.has_method("_refresh"):
-		instance.queue_free()
-		_failure("STANDARD RECEIVER RECOVERY CONTROLLER MISSING.")
-		return
-	var game_state = instance.get("game")
-	var standard_ui = instance.get("root_column")
-	if game_state == null or standard_ui == null:
-		instance.queue_free()
-		_failure("MAIN GAME STARTUP INCOMPLETE. Check Godot Android log for a runtime error.")
-		return
-	instance.set("status_message", "RECOVERY BUILD — standard receiver restored. Newer experimental UI temporarily disabled.")
-	instance.call("_refresh")
-	instance.visible = true
-	instance.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	# The status launcher stays behind the functional game scene.
-	status.text = "Standard receiver recovery ready."
+	_failure("NO GAME CONTROLLER INITIALIZED. Recovery scene unavailable.")
 
 func _failure(message: String) -> void:
 	started = false
