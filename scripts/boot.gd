@@ -52,8 +52,8 @@ func _try_launch() -> void:
 	if started:
 		return
 	started = true
-	status.text = "Checking main game scene..."
-	var packed := load("res://scenes/main.tscn") as PackedScene
+	status.text = "Starting verified standard receiver recovery..."
+	var packed := load("res://scenes/main_recovery.tscn") as PackedScene
 	if packed == null:
 		_failure("MAIN SCENE FAILED TO LOAD. GDScript parse error or missing resource.")
 		return
@@ -71,7 +71,7 @@ func _try_launch() -> void:
 		return
 	if not instance.has_method("_refresh"):
 		instance.queue_free()
-		_failure("MAIN GAME CONTROLLER MISSING.")
+		_failure("STANDARD RECEIVER RECOVERY CONTROLLER MISSING.")
 		return
 	var game_state = instance.get("game")
 	var standard_ui = instance.get("root_column")
@@ -82,7 +82,7 @@ func _try_launch() -> void:
 	instance.visible = true
 	instance.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	# The status launcher stays behind the functional game scene.
-	status.text = "Ready."
+	status.text = "Standard receiver recovery ready."
 
 func _failure(message: String) -> void:
 	started = false
