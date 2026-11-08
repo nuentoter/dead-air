@@ -117,14 +117,11 @@ jobs:
         run: |
           set -o pipefail
           godot --headless --path . --script res://tests/startup_smoke_test.gd 2>&1 | tee build/startup-test.log
-      - name: Validate investigator workflow (headless)
-        env:
-          XDG_DATA_HOME: ${{ runner.temp }}/dead-air-test-investigator
-        run: godot --headless --path . --script res://tests/investigator_workflow_test.gd
-      - name: Validate live receiver waterfall (headless)
-        env:
-          XDG_DATA_HOME: ${{ runner.temp }}/dead-air-test-waterfall
-        run: godot --headless --path . --script res://tests/live_waterfall_test.gd
+      - name: Validate recovered standard receiver (headless)
+        shell: bash
+        run: |
+          set -o pipefail
+          godot --headless --path . --script res://tests/recovery_gameplay_test.gd 2>&1 | tee build/recovery-test.log
       - name: Upload Android APKs
         if: always()
         uses: actions/upload-artifact@v4
@@ -136,5 +133,6 @@ jobs:
             build/BUILD_INFO.txt
             build/godot-import.log
             build/startup-test.log
+            build/recovery-test.log
           if-no-files-found: warn
           retention-days: 14
