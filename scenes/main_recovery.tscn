@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/main_recovery.gd" id="1_recovery"]
 
-[node name="DeadAirRecovery" type="Control"]
+[node name="DeadAir" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
